@@ -1,0 +1,10 @@
+**/__pycache__
+**/node_modules
+**/.django
+*.py[cod]
+.venv
+*.egg-info
+*.egg
+.coverage
+.tox
+.eggs
