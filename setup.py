@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-staticfiles-vite',
-    version='0.0.0',
+    version='0.1.0',
     description='',
     url='https://github.com/jorrete/django-staticfiles-vite/',
     author='Jorge Rodríguez-Flores Esparza',
