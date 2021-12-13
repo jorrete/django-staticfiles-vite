@@ -5,8 +5,11 @@ from django.contrib.staticfiles.management.commands.collectstatic import (
 )
 from django.contrib.staticfiles.storage import staticfiles_storage
 from ...utils import (
-    vite_build, path_is_vite_import,
-    path_is_vite_bunlde, is_path_css, vite_postcss,
+    vite_build,
+    path_is_vite_import,
+    path_is_vite_bunlde,
+    is_path_css,
+    vite_postcss,
 )
 
 
@@ -27,18 +30,20 @@ def patch_storage(storage):
 
 class Command(CollectStaticCommand):
     vite_files = []
-    has_manifest = hasattr(staticfiles_storage, 'manifest_name')
+    has_manifest = hasattr(staticfiles_storage, "manifest_name")
 
     def add_arguments(self, parser):
         super().add_arguments(parser)
         parser.add_argument(
-            '--vite', action="store_true", dest='vite',
-            help='Serve static files from from Vite',
+            "--vite",
+            action="store_true",
+            dest="vite",
+            help="Serve static files from from Vite",
         )
 
     def set_options(self, **options):
         super().set_options(**options)
-        self.use_vite = options['vite']
+        self.use_vite = options["vite"]
 
     def copy_file(self, path, prefixed_path, source_storage):
         if self.use_vite:
@@ -75,11 +80,10 @@ class Command(CollectStaticCommand):
 
         super().handle(**options)
 
-
         if self.use_vite and self.has_manifest:
             for name, filename in self.vite_files:
-                css_name = name.replace('js', 'css')
-                css_filename = filename.replace('js', 'css')
+                css_name = name.replace("js", "css")
+                css_filename = filename.replace("js", "css")
                 if not is_path_css(name) and isfile(staticfiles_storage.path(css_name)):
                     staticfiles_storage.hashed_files[css_name] = css_filename
                     rename(

@@ -4,9 +4,7 @@ from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.templatetags.static import static
 from ..utils import path_is_vite_bunlde, clean_bundle_name
-from ..settings import (
-    VITE_BUNDLE_KEYWORD
-)
+from ..settings import VITE_BUNDLE_KEYWORD
 
 register = template.Library()
 regexp = compile(
@@ -17,7 +15,7 @@ regexp = compile(
 @register.simple_tag
 def vite_hrm(*args):
     if not settings.DEBUG:
-        return ''
+        return ""
     return mark_safe('<script type="module" src="/static/@vite/client"></script>')
 
 
@@ -34,8 +32,11 @@ def vite_static(name):
         {% static variable_with_path as varname %}
     """
     if not path_is_vite_bunlde(name):
-        raise Exception('Missing vite bundle keyworkd "{0}" for static path: {1}'.format(
-            VITE_BUNDLE_KEYWORD, name))
+        raise Exception(
+            'Missing vite bundle keyworkd "{0}" for static path: {1}'.format(
+                VITE_BUNDLE_KEYWORD, name
+            )
+        )
 
     if not settings.DEBUG:
         name = clean_bundle_name(name)
@@ -45,24 +46,29 @@ def vite_static(name):
 
 @register.simple_tag
 def vite_script(name, **kwargs):
-    """
-    """
-    defer = kwargs.get('defer', False)
-    style = kwargs.get('style', False)
+    """ """
+    defer = kwargs.get("defer", False)
+    style = kwargs.get("style", False)
 
     if not settings.DEBUG:
         name = clean_bundle_name(name)
 
     path = static(name)
 
-    return mark_safe('\n'.join([
-        '<script src="{}" type="module"{}></script>'.format(
-            path,
-            ' defer' if defer else '',
-        ),
-        (
-            '<link href="{}" rel="stylesheet">'.format(path.replace('js', 'css'))
-            if (style and not settings.DEBUG) else
-            ''
+    return mark_safe(
+        "\n".join(
+            [
+                '<script src="{}" type="module"{}></script>'.format(
+                    path,
+                    " defer" if defer else "",
+                ),
+                (
+                    '<link href="{}" rel="stylesheet">'.format(
+                        path.replace("js", "css")
+                    )
+                    if (style and not settings.DEBUG)
+                    else ""
+                ),
+            ]
         )
-    ]))
+    )
