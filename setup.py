@@ -17,6 +17,7 @@ setup(
     extras_require={
         'dev': [
             'bump2version',
+            'nodeenv'
         ]
     },
     zip_safe=False
