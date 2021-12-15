@@ -8,3 +8,11 @@ development:
 	pip install --upgrade pip
 	pip install -e .[dev]
 	nodeenv -p
+
+black:
+	black ${MODULE_PATH}
+
+flake8:
+	flake8 ${MODULE_PATH}
+
+prepare: black flake8
