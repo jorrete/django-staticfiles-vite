@@ -1,8 +1,13 @@
 import os
-from os.path import splitext
+import signal
+import subprocess
 from json import dumps
+from os.path import splitext
+
+import psutil
 from django.apps import apps
 from django.conf import settings
+
 from .settings import (
     BUILD_PATH,
     CSS_EXTENSIONS,
@@ -66,9 +71,28 @@ def vite_serve():
             "configPath": VITE_CONFIG,
         }
     )
-    os.system(
-        "NODE_PATH={} node {} '{}'".format(VITE_NODE_MODULES, SERVE_PATH, arguments)
+    env = os.environ.copy()
+    env["NODE_PATH"] = VITE_NODE_MODULES
+    subprocess.run(
+        args=[
+            "node",
+            SERVE_PATH,
+            "{}".format(arguments),
+        ],
+        env=env,
+        encoding="utf8",
     )
+
+
+def kill_vite_server():
+    for proc in psutil.process_iter():
+        cmd = proc.cmdline()
+        path = cmd[1] if len(cmd) > 1 else None
+        try:
+            if SERVE_PATH == path:
+                os.kill(proc.pid, signal.SIGTERM)
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
 
 
 def vite_build(name, entry):

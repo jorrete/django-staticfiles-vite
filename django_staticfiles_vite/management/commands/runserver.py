@@ -1,6 +1,5 @@
 import multiprocessing
 import os
-import time
 
 from django.contrib.staticfiles.handlers import StaticFilesHandlerMixin
 from django.contrib.staticfiles.management.commands.runserver import (
@@ -19,9 +18,10 @@ def patch_static_server():
 
 
 def thread_vite_server():
-    print("Wakeup Vite server.")
-    vite_process = multiprocessing.Process(target=vite_serve)
-    vite_process.start()
+    if os.environ.get("DJANGO_VITE_RUNNING") != "1":
+        vite_process = multiprocessing.Process(target=vite_serve)
+        vite_process.start()
+    os.environ["DJANGO_VITE_RUNNING"] = "1"
 
 
 class Command(RunserverCommand):
@@ -38,8 +38,5 @@ class Command(RunserverCommand):
         use_vite = options["vite"]
         if use_vite:
             patch_static_server()
-            if os.environ.get("DJANGO_VITE_RUNNING") != "1":
-                thread_vite_server()
-            os.environ["DJANGO_VITE_RUNNING"] = "1"
-
+            thread_vite_server()
         super().handle(*args, **options)
