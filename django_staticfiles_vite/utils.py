@@ -8,7 +8,7 @@ import psutil
 from django.apps import apps
 from django.conf import settings
 
-from .settings import (
+from .settings import (  # VITE_IMPORT_KEYWORD,
     BUILD_PATH,
     CSS_EXTENSIONS,
     JS_EXTENSIONS,
@@ -17,7 +17,6 @@ from .settings import (
     VITE_BUNDLE_KEYWORD,
     VITE_CONFIG,
     VITE_EXTENSION_MAP,
-    VITE_IMPORT_KEYWORD,
     VITE_NODE_MODULES,
     VITE_OUT_DIR,
     VITE_PORT,
@@ -49,8 +48,8 @@ def path_is_vite_import(name):
     if ".{}".format("module") in name:
         return True
 
-    if ".{}".format(VITE_IMPORT_KEYWORD) in name:
-        return True
+    # if ".{}".format(VITE_IMPORT_KEYWORD) in name:
+    # return True
 
     for target in VITE_EXTENSION_MAP.keys():
         if extension in VITE_EXTENSION_MAP.get(target):
@@ -144,7 +143,7 @@ def is_path_css(path):
 def is_static_request_direct(request):
     return (
         is_path_css(request.path)
-        and "import" not in request.path
+        # and "import" not in request.path
         and "direct" not in request.path
         and "django" not in request.path
     )

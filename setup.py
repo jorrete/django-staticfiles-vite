@@ -14,7 +14,16 @@ setup(
         "django >= 4.0.0",
     ],
     extras_require={
-        "dev": ["bump2version", "nodeenv", "flake8", "blacke", "isort", "playwright"]
+        "dev": [
+            "bump2version",
+            "nodeenv",
+            "flake8",
+            "blacke",
+            "isort",
+            "playwright",
+            "psutil",
+            "markdown",
+        ]
     },
     zip_safe=False,
 )

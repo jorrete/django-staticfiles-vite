@@ -1,0 +1,32 @@
+{% load markdown vite static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{% block title %}{% endblock title %}</title>
+    <link rel="icon" type="image/x-icon"  href="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{% static "base_import.css" %}" rel="stylesheet">
+    {% vite_hrm %}
+    {% vite_style "qunit/qunit/qunit.css" %}
+    <script type="module">
+      import '/static/qunit';
+      QUnit.done((event) => {
+        const passed = event.failed === 0;
+        window.qunitPassed = passed;
+        console.log('[QUnit] passed', passed);
+      });
+    </script>
+    {% block load %}{% endblock load %}
+  </head>
+  <body>
+    <div id="qunit-wrapper">
+      <div id="qunit"></div>
+      <div id="qunit-fixture"></div>
+    </div>
+    {% filter markdown %}
+    {% block description %}{% endblock description %}
+    {% endfilter %}
+  </body>
+</html>
+

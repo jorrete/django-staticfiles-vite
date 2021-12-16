@@ -1,10 +1,12 @@
 from re import compile
+
 from django import template
 from django.conf import settings
-from django.utils.safestring import mark_safe
 from django.templatetags.static import static
-from ..utils import path_is_vite_bunlde, clean_bundle_name
+from django.utils.safestring import mark_safe
+
 from ..settings import VITE_BUNDLE_KEYWORD
+from ..utils import clean_bundle_name, path_is_vite_bunlde
 
 register = template.Library()
 regexp = compile(
@@ -71,4 +73,19 @@ def vite_script(name, **kwargs):
                 ),
             ]
         )
+    )
+
+
+@register.simple_tag
+def vite_style(name, **kwargs):
+    """ """
+    defer = kwargs.get("defer", False)
+
+    if not settings.DEBUG:
+        name = clean_bundle_name(name)
+
+    path = static(name)
+
+    return mark_safe(
+        '<link href="{}" rel="stylesheet"{}>'.format(path, " defer" if defer else "")
     )
