@@ -9,6 +9,7 @@ const {
   nodeModulesPath,
   extensions,
   configPath,
+  port,
 } = JSON.parse(process.argv[2] || '{}');
 
 const config = require(configPath);
@@ -38,7 +39,7 @@ const config = require(configPath);
     base,
     root,
     server: {
-      port: 3000,
+      port,
       fs: {
         strict: true,
         allow: [

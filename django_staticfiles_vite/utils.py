@@ -62,12 +62,13 @@ def vite_serve():
     paths = apps.get_app_config("django_staticfiles_vite").paths
     arguments = dumps(
         {
-            "paths": paths if settings.DEBUG else [str(settings.STATIC_ROOT)],
             "base": VITE_URL,
-            "root": VITE_ROOT,
-            "nodeModulesPath": VITE_NODE_MODULES,
-            "extensions": JS_EXTENSIONS,
             "configPath": VITE_CONFIG,
+            "extensions": JS_EXTENSIONS,
+            "nodeModulesPath": VITE_NODE_MODULES,
+            "paths": paths if settings.DEBUG else [str(settings.STATIC_ROOT)],
+            "port": VITE_PORT,
+            "root": VITE_ROOT if settings.DEBUG else str(settings.STATIC_ROOT),
         }
     )
     env = os.environ.copy()
@@ -100,14 +101,14 @@ def vite_build(name, entry):
     filename = "{}{}".format(base, extension)
     arguments = dumps(
         {
-            "paths": paths,
-            "outDir": VITE_OUT_DIR,
+            "configPath": VITE_CONFIG,
             "entry": entry,
+            "extensions": JS_EXTENSIONS,
+            "filename": filename,
             "format": "iife",
             "name": base,
-            "filename": filename,
-            "extensions": JS_EXTENSIONS,
-            "configPath": VITE_CONFIG,
+            "outDir": VITE_OUT_DIR,
+            "paths": paths,
         }
     )
     os.system(

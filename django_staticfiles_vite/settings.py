@@ -1,6 +1,9 @@
+import sys
 from os.path import abspath, dirname, join
 
 from django.conf import settings
+
+TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
 
 # DEFAULTS
 VITE_BUNDLE_KEYWORD_DEFAULT = "vite"
@@ -30,7 +33,9 @@ VITE_NODE_MODULES = getattr(
     settings, "VITE_NODE_MODULES", VITE_NODE_MODULES_DEFAULT
 )  # noqa: E261
 VITE_OUT_DIR = str(settings.STATIC_ROOT)
-VITE_PORT = getattr(settings, "VITE_PORT", VITE_PORT_DEFAULT)  # noqa: E261
+VITE_PORT = getattr(settings, "VITE_PORT", VITE_PORT_DEFAULT) + (
+    1 if TESTING else 0
+)  # noqa: E261
 VITE_ROOT = getattr(settings, "VITE_ROOT", VITE_ROOT_DEFAULT)  # noqa: E261
 VITE_URL = settings.STATIC_URL
 

@@ -1,4 +1,5 @@
 import os
+from time import sleep
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.template.loader import engines
@@ -17,7 +18,7 @@ class ViteTestCase(StaticLiveServerTestCase):
         os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
         super().setUpClass()
         cls.playwright = sync_playwright().start()
-        cls.browser = cls.playwright.chromium.launch(headless=False)
+        cls.browser = cls.playwright.chromium.launch(headless=True)
         patch_static_server()
 
     @classmethod
@@ -28,6 +29,7 @@ class ViteTestCase(StaticLiveServerTestCase):
 
     def setUp(self):
         thread_vite_server()
+        sleep(1)
 
     def tearDown(self):
         kill_vite_server()
