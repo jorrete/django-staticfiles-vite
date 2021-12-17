@@ -18,7 +18,7 @@ setup(
             "bump2version",
             "nodeenv",
             "flake8",
-            "blacke",
+            "black",
             "isort",
             "playwright",
             "psutil",
