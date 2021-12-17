@@ -62,7 +62,7 @@ def vite_serve():
     paths = apps.get_app_config("django_staticfiles_vite").paths
     arguments = dumps(
         {
-            "paths": paths,
+            "paths": paths if settings.DEBUG else [str(settings.STATIC_ROOT)],
             "base": VITE_URL,
             "root": VITE_ROOT,
             "nodeModulesPath": VITE_NODE_MODULES,
@@ -153,7 +153,8 @@ def get_proxy_url(request):
     url = request.build_absolute_uri().replace(str(request.get_port()), str(VITE_PORT))
 
     # check is doesnt have part of the paths
-    if settings.DEBUG and is_static_request_direct(request):
+    # if settings.DEBUG and is_static_request_direct(request):
+    if is_static_request_direct(request):
         url = url + "{}direct".format("&" if "?" in url else "?")
 
     return url

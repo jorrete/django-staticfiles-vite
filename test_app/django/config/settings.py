@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-@o^mdvms*kjg*9-d*oac@prfu8p8c_5amf1fj3c8*aetu_(tpa
 DEBUG = True
 ALLOWED_HOSTS = []
 # DEBUG = False
-# ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -39,9 +39,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django_staticfiles_vite",
     "django.contrib.staticfiles",
+    "macros",
     "www",
     "tests",
-    "macros",
 ]
 
 MIDDLEWARE = [
@@ -123,7 +123,7 @@ USE_TZ = True
 # Static files (CSS, JavaScriptgg, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]

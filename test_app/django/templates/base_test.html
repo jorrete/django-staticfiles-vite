@@ -11,9 +11,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="{% static "base_import.css" %}" rel="stylesheet">
     {% vite_hrm %}
-    {% vite_style "qunit/qunit/qunit.css" %}
+    {% vite_style "qunit.vite.css" %}
+    {% vite_script "qunit.vite.js" %}
     <script type="module">
-      import '/static/qunit';
       QUnit.done((event) => {
         const passed = event.failed === 0;
         window.qunitPassed = passed;
