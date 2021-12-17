@@ -88,8 +88,9 @@ def kill_vite_server():
     for proc in psutil.process_iter():
         cmd = proc.cmdline()
         path = cmd[1] if len(cmd) > 1 else None
+        args = cmd[2] if len(cmd) > 2 else None
         try:
-            if SERVE_PATH == path:
+            if SERVE_PATH == path and str(VITE_PORT) in args:
                 os.kill(proc.pid, signal.SIGTERM)
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass

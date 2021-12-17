@@ -7,6 +7,7 @@ from .response import ProxyResponse
 from .utils import get_proxy_url
 
 
+
 def serve_vite(request, **kwargs):
     """
     Serve from proxy server.
