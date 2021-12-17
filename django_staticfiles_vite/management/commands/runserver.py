@@ -18,10 +18,8 @@ def patch_static_server():
 
 
 def thread_vite_server():
-    if os.environ.get("DJANGO_VITE_RUNNING") != "1":
-        vite_process = multiprocessing.Process(target=vite_serve)
-        vite_process.start()
-    os.environ["DJANGO_VITE_RUNNING"] = "1"
+    vite_process = multiprocessing.Process(target=vite_serve)
+    vite_process.start()
 
 
 class Command(RunserverCommand):
@@ -38,5 +36,7 @@ class Command(RunserverCommand):
         use_vite = options["vite"]
         if use_vite:
             patch_static_server()
-            thread_vite_server()
+            if os.environ.get("DJANGO_VITE_RUNNING") != "1":
+                thread_vite_server()
+            os.environ["DJANGO_VITE_RUNNING"] = "1"
         super().handle(*args, **options)

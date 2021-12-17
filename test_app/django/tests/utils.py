@@ -46,7 +46,9 @@ def get_test_templates():
         for root, dir, files in os.walk(template_dir):
             for file in files:
                 if file.startswith("test_"):
-                    templates.append(
-                        os.path.join(root, file).replace(template_dir, "")[1:]
-                    )
+                    template_name = os.path.join(root, file).replace(template_dir, "")[
+                        1:
+                    ]
+                    if template_name not in templates:
+                        templates.append(template_name)
     return templates
