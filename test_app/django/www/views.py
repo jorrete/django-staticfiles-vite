@@ -1,17 +1,28 @@
 from django.shortcuts import render
-from django.template.loader import engines
+from tests.utils import get_test_templates
+
+# from django.http import HttpResponse
+# from django.template import loader
+
+# from .models import Question
 
 
-def get_template_dirs():
-    """
-    Load and return a template for the given name.
-    Raise TemplateDoesNotExist if no such template exists.
-    """
-    for engine in engines.all():
-        print(engine, type(engine))
-        print(engine.template_dirs)
+# def index(request):
+#     latest_question_list = Question.objects.order_by('-pub_date')[:5]
+#     template = loader.get_template('polls/index.html')
+#     context = {
+#         'latest_question_list': latest_question_list,
+#     }
+#     return HttpResponse(template.render(context, equest))
 
 
 def index(request):
-    get_template_dirs()
-    return render(request, "test_import.html")
+    test_templates = get_test_templates()
+    print(test_templates)
+    return render(request, "base.html", context={"tests": ["foo"]})
+
+
+# def index(request):
+#     test_templates = get_test_templates()
+#     print(test_templates)
+#     return render(request, "base.html", context={"tests": ["foo"]})

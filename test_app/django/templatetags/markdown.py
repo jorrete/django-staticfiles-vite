@@ -9,7 +9,6 @@ register = template.Library()
 
 @register.filter
 def markdown(value):
-    print(value)
     return mark_safe(
         _markdown.markdown(inspect.cleandoc(value).strip(), extensions=["fenced_code"])
     )

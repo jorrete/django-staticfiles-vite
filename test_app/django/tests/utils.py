@@ -1,6 +1,7 @@
 import os
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.template.loader import engines
 from playwright.sync_api import sync_playwright
 
 from django_staticfiles_vite.management.commands.runserver import (
@@ -30,3 +31,22 @@ class ViteTestCase(StaticLiveServerTestCase):
 
     def tearDown(self):
         kill_vite_server()
+
+
+def get_template_dirs():
+    template_dirs = []
+    for engine in engines.all():
+        template_dirs.extend([str(path) for path in engine.template_dirs])
+    return template_dirs
+
+
+def get_test_templates():
+    templates = []
+    for template_dir in get_template_dirs():
+        for root, dir, files in os.walk(template_dir):
+            for file in files:
+                if file.startswith("test_"):
+                    templates.append(
+                        os.path.join(root, file).replace(template_dir, "")[1:]
+                    )
+    return templates
