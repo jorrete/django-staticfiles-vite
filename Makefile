@@ -12,11 +12,16 @@ install:
 
 dev:
 	source ${VENV_PATH}/bin/activate
-	cd ${EXAMPLE_PATH}/django && ./manage.py runserver --vite
+	./${EXAMPLE_PATH}/django/manage.py runserver --vite=auto
 
 test:
 	source ${VENV_PATH}/bin/activate
-	cd ${EXAMPLE_PATH}/django && ./manage.py test
+	./${EXAMPLE_PATH}/django/manage.py test
+
+debugpy:
+	source ${VENV_PATH}/bin/activate
+	./${EXAMPLE_PATH}/django/manage.py runvite &
+	python -m debugpy --listen 5678 --wait-for-client ./${EXAMPLE_PATH}/django/manage.py runserver --noreload --nothreading --vite=manual
 
 black:
 	black ${MODULE_PATH}

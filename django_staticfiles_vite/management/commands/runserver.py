@@ -27,7 +27,8 @@ class Command(RunserverCommand):
         super().add_arguments(parser)
         parser.add_argument(
             "--vite",
-            action="store_true",
+            nargs="?",
+            type=str,
             dest="vite",
             help="Serve static files from from Vite",
         )
@@ -36,7 +37,9 @@ class Command(RunserverCommand):
         use_vite = options["vite"]
         if use_vite:
             patch_static_server()
-            if os.environ.get("DJANGO_VITE_RUNNING") != "1":
-                thread_vite_server()
-            os.environ["DJANGO_VITE_RUNNING"] = "1"
+            if use_vite == "auto":
+                if os.environ.get("DJANGO_VITE_RUNNING") != "1":
+                    thread_vite_server()
+                os.environ["DJANGO_VITE_RUNNING"] = "1"
+
         super().handle(*args, **options)
