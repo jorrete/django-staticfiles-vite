@@ -1,4 +1,5 @@
 import styles from './App.module.scss';
+import 'www/font.scss';
 
 const App = () => {
   return (
