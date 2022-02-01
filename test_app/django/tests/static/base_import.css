@@ -1,0 +1,20 @@
+body {
+  left: 0;
+  height: 50%;
+  width: 100%;
+  position: fixed;
+}
+
+#qunit-wrapper {
+  background-color: lightgray;
+  left: 0;
+  top: 50%;
+  height: 50%;
+  width: 100%;
+  position: fixed;
+  background-color: blink;
+}
+
+#qunit {
+  position: absolute !important;
+}

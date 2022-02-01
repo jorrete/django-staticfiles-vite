@@ -1,0 +1,19 @@
+{% load vite %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>tests</title>
+    <link rel="icon" type="image/x-icon"  href="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <h1>Vite playground</h1>
+    {% vite_hrm %}
+    {% vite_style "www/index.vite.css" %}
+    {% vite_script "www/index.vite.js" %}
+    <div id="app"></div>
+  </body>
+</html>
+
+

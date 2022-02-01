@@ -1,0 +1,15 @@
+{% extends 'base_test.html' %}
+{% load vite %}
+
+{% block title %}test_preact{% endblock title %}
+
+{% block load %}
+{% vite_style "test_preact/test_preact.vite.css" defer=True %}
+{% vite_script "test_preact/test_preact.vite.js" defer=True %}
+{% endblock load %}
+
+{% block description %}
+Import js and css from a template and let vite to serve the assets.
+
+Vite config has preact configured so a Preact app must be rendered.
+{% endblock description %}

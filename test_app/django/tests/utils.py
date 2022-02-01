@@ -47,7 +47,7 @@ def get_test_templates():
     for template_dir in get_template_dirs():
         for root, dir, files in os.walk(template_dir):
             for file in files:
-                if file.startswith("test_"):
+                if file.startswith("test_") and file.endswith(".html"):
                     template_name = os.path.join(root, file).replace(template_dir, "")[
                         1:
                     ]

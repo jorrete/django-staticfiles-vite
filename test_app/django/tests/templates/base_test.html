@@ -1,0 +1,43 @@
+{% load markdown vite static macros %}
+{% macro title %}{% block title %}{% endblock title %}{% endmacro %}
+{% macro load %}{% block load %}{% endblock load %}{% endmacro %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{% use_macro title %}</title>
+    <link rel="icon" type="image/x-icon"  href="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{% static "base_import.css" %}" rel="stylesheet">
+    {% vite_hrm %}
+    {% vite_style "qunit.vite.css" %}
+    {% vite_script "qunit.vite.js" %}
+    <script type="module">
+      QUnit.done((event) => {
+        const passed = event.failed === 0;
+        window.qunitPassed = passed;
+        console.log('[QUnit] passed', passed);
+      });
+    </script>
+    {% use_macro load %}
+  </head>
+  <body>
+    <div id="qunit-wrapper">
+      <div id="qunit"></div>
+      <div id="qunit-fixture"></div>
+    </div>
+    <div>
+      <a href="{% url 'tests:index' %}">index</a>
+    </div>
+    {% filter markdown %}
+    # {% use_macro title %}
+
+```{% use_macro load %}```
+
+    {% block description %}{% endblock description %}
+    {% endfilter %}
+    <div id="content"></div>
+  </body>
+</html>
+
