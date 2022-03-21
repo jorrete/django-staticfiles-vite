@@ -1,7 +1,7 @@
 # django-staticfiles-vite (POC)
 
 This package explores the integration of [vitejs](https://vitejs.dev/) as static asset provider during development.
-It serves (and process accordingly with vitejs configuration). It is able to use imports (js and css) with the django static path like you would use in a django template, allowing to split js and css assets with in third party apps.
+It serves (and process accordingly with vitejs configuration) static assets. It is able to use imports (js and css) with the django static path like you would use in a django template, allowing to split js and css assets with in third party apps.
 When using collectstatic in deployment the assets are compiled with vitejs.
 
 # Status
