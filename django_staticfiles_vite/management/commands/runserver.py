@@ -35,7 +35,7 @@ class Command(RunserverCommand):
 
     def handle(self, *args, **options):
         use_vite = options["vite"]
-        if use_vite:
+        if use_vite in ['auto', 'external']:
             patch_static_server()
             if use_vite == "auto":
                 if os.environ.get("DJANGO_VITE_RUNNING") != "1":

@@ -65,9 +65,7 @@ def vite_script(name, **kwargs):
                     " defer" if defer else "",
                 ),
                 (
-                    '<link href="{}" rel="stylesheet">'.format(
-                        path.replace("js", "css")
-                    )
+                    '<link href="{}" rel="stylesheet">'.format(path + ".css")
                     if (style and not settings.DEBUG)
                     else ""
                 ),

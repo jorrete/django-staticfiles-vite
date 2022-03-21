@@ -22,10 +22,10 @@ const config = require(configPath);
     root: process.cwd(),
     css: {
       postcss: {
+        import: {
+          path: paths,
+        },
         plugins: [
-          postcssImport({
-            path: paths,
-          }),
           ...(config?.css?.postcss?.plugins || []),
         ]
       }
@@ -42,7 +42,7 @@ const config = require(configPath);
       outDir,
       rollupOptions: {
         output: {
-          assetFileNames: () => `${name}.css`,
+          assetFileNames: () => `${name}.js.css`,
         },
       },
       lib: {

@@ -1,14 +1,16 @@
 from os import rename
 from os.path import isfile
+
 from django.contrib.staticfiles.management.commands.collectstatic import (
     Command as CollectStaticCommand,
 )
 from django.contrib.staticfiles.storage import staticfiles_storage
+
 from ...utils import (
-    vite_build,
-    path_is_vite_import,
-    path_is_vite_bunlde,
     is_path_css,
+    path_is_vite_bunlde,
+    path_is_vite_import,
+    vite_build,
     vite_postcss,
 )
 
@@ -82,18 +84,22 @@ class Command(CollectStaticCommand):
 
         if self.use_vite and self.has_manifest:
             for name, filename in self.vite_files:
-                css_name = name.replace("js", "css")
-                css_filename = filename.replace("js", "css")
+                # here we create hashed vite files and save it to manifest
+                staticfiles_storage.hashed_files[name] = filename
+                rename(
+                    staticfiles_storage.path(name),
+                    staticfiles_storage.path(filename),
+                )
+
+                # vite when a js file imports some styles creates a companion file
+                # let look for it and if it exits hashit and save it to manifest
+                css_name = name + ".css"
+                css_filename = filename + ".css"
                 if not is_path_css(name) and isfile(staticfiles_storage.path(css_name)):
                     staticfiles_storage.hashed_files[css_name] = css_filename
                     rename(
                         staticfiles_storage.path(css_name),
                         staticfiles_storage.path(css_filename),
                     )
-                staticfiles_storage.hashed_files[name] = filename
-                rename(
-                    staticfiles_storage.path(name),
-                    staticfiles_storage.path(filename),
-                )
 
             staticfiles_storage.save_manifest()

@@ -27,10 +27,10 @@ const config = require(configPath);
     ],
     css: {
       postcss: {
+        import: {
+          path: paths,
+        },
         plugins: [
-          postcssImport({
-            path: paths,
-          }),
           ...(config?.css?.postcss?.plugins || []),
         ]
       }
@@ -52,4 +52,3 @@ const config = require(configPath);
   await server.listen()
   server.printUrls()
 })()
-
