@@ -14,6 +14,17 @@ There is an issue opened in [vitejs](https://github.com/vitejs/vite/pull/4679) t
 
 # Use
 
+Create a **package.json** and a **vite.config.js** files in your project ddirectory and install dependencies.
+
+In you **settings.py** add **staticfiles_vite** before **staticfiles** app.
+```python
+INSTALLED_APPS = [
+    ...
+    "django_staticfiles_vite",
+    "django.contrib.staticfiles",
+    ...
+]
+```
 ## Commands
 
 ### runserver

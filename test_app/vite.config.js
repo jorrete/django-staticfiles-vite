@@ -5,10 +5,4 @@ module.exports = defineConfig({
   plugins: [
     preact(),
   ],
-  // css: {
-  //   postcss: {
-  //     plugins: [
-  //     ]
-  //   }
-  // },
 });
