@@ -23,7 +23,7 @@ runserver --vite=auto
 ```
 
 ### collectstatic
-Overrides default **collectstatic** and adds one that spawns a vitejs server automatically.
+Overrides default **collectstatic** and adds one that process the assets with vitejs
 ```bash
 collectstatic --vite
 ```
