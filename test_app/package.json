@@ -6,7 +6,7 @@
     "postcss-import": "^14.0.2",
     "preact": "^10.5.15",
     "sass": "^1.44.0",
-    "vite": "file:../../../javascript/vite/packages/vite",
+    "vite": "file:../vite",
     "yaml": "^1.10.2"
   },
   "devDependencies": {
