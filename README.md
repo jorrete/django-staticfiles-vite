@@ -18,4 +18,10 @@ Run test suite
 make test
 ```
 
-To test manually each test navigate to **http://localhost:8000/tests/**
+To test manually each test run
+
+```
+make dev
+```
+
+Then navigate to **http://localhost:8000/tests/**
