@@ -7,11 +7,26 @@ It is able to use imports (JS and CSS) with the DJANGO static path like you woul
 
 When using **collectstatic** in deployment the assets are compiled with vitejs.
 
+Also allow to integrate easily npm dependencies as javascript assets.
+
 ## Status
 There is an issue opened in [vitejs](https://github.com/vitejs/vite/pull/4679) that prevents to pass extra paths to the postcss configuration. Until that issue is fixed we use a patched version.
 
 # Use
- 
+
+## Commands
+
+### runserver
+Overrides default **runserver** and adds one that spawns a vitejs server automatically.
+```bash
+runserver --vite=auto
+```
+
+### collectstatic
+Overrides default **collectstatic** and adds one that spawns a vitejs server automatically.
+```bash
+collectstatic --vite
+```
 
 # Development
 
