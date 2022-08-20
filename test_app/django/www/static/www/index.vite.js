@@ -1,5 +1,5 @@
 // import from directory
-import mongo from 'www/mongo';
+import mongo from '@static/www/mongo';
 // import relative
 import foo from './foo';
 // check preact render

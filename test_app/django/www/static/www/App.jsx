@@ -1,5 +1,5 @@
-import styles from './App.module.scss';
-import 'www/font.scss';
+import styles from '@static/www/App.module.scss';
+import './font.scss';
 
 const App = () => {
   return (
