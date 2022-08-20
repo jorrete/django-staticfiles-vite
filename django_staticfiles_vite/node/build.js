@@ -1,5 +1,4 @@
 const djangoStatic = require('./plugin-django-static');
-const postcssImport = require('postcss-import');
 const { build, defineConfig } = require('vite');
 
 const {
@@ -22,14 +21,18 @@ const config = require(configPath);
     root: process.cwd(),
     css: {
       postcss: {
-        import: {
-          path: paths,
-        },
         plugins: [
           ...(config?.css?.postcss?.plugins || []),
         ]
       }
     },
+    // use instead of plugins
+    // resolve: {
+    //   alias: {
+    //     'my_app': '/home/jorro/tmp/css/my_app',
+    //     'modules': resolve(__dirname, 'src/modules'),
+    //   },
+    // },
     plugins: [
       djangoStatic({
         paths,

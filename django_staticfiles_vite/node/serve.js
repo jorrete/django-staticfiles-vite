@@ -1,4 +1,4 @@
-const postcssImport = require('postcss-import');
+const { resolve } = require('path');
 const { createServer, defineConfig } = require('vite');
 const djangoStatic = require('./plugin-django-static');
 
@@ -27,9 +27,6 @@ const config = require(configPath);
     ],
     css: {
       postcss: {
-        import: {
-          path: paths,
-        },
         plugins: [
           ...(config?.css?.postcss?.plugins || []),
         ]
