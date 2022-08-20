@@ -11,6 +11,7 @@ install:
 	source ${VENV_PATH}/bin/activate && ./${EXAMPLE_PATH}/django/manage.py migrate
 	cd ${EXAMPLE_PATH} && npm install
 	cd vite && npm install
+	playwright install
 
 dev:
 	source ${VENV_PATH}/bin/activate && ./${EXAMPLE_PATH}/django/manage.py runserver --vite=auto
