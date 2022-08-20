@@ -18,6 +18,7 @@ const config = require(configPath);
   const dest = `${outDir}/${filename}`;
   const plugins = [
     postcssImport({
+      resolve: (css) => css.replace('@static/', ''),
       path: paths,
     }),
     ...(config?.css?.postcss?.plugins || []),
