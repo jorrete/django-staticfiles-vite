@@ -62,9 +62,10 @@ def vite_serve():
     paths = apps.get_app_config("django_staticfiles_vite").paths
     arguments = dumps(
         {
+            "baseUrl": settings.STATIC_URL,
             "base": VITE_URL,
             "configPath": VITE_CONFIG,
-            "extensions": JS_EXTENSIONS,
+            "extensions": JS_EXTENSIONS + CSS_EXTENSIONS,
             "nodeModulesPath": VITE_NODE_MODULES,
             "paths": paths if settings.DEBUG else [str(settings.STATIC_ROOT)],
             "port": VITE_PORT,
@@ -102,9 +103,10 @@ def vite_build(name, entry):
     filename = "{}{}".format(base, extension)
     arguments = dumps(
         {
+            "baseUrl": settings.STATIC_URL,
             "configPath": VITE_CONFIG,
             "entry": entry,
-            "extensions": JS_EXTENSIONS,
+            "extensions": JS_EXTENSIONS + CSS_EXTENSIONS,
             "filename": filename,
             "format": "iife",
             "name": base,
@@ -124,6 +126,7 @@ def vite_postcss(name, entry):
     filename = "{}.css".format(base)
     arguments = dumps(
         {
+            "baseUrl": settings.STATIC_URL,
             "paths": paths,
             "outDir": VITE_OUT_DIR,
             "entry": entry,

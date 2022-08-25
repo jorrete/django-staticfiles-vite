@@ -11,8 +11,13 @@ from ...views import serve_vite
 
 
 def patch_static_server():
+    _serve = StaticFilesHandlerMixin.serve
+
     def serve(self, request):
-        return serve_vite(request)
+        response = serve_vite(request)
+        if response.status_code == 404:
+            return _serve(self, request)
+        return response
 
     StaticFilesHandlerMixin.serve = serve
 
@@ -35,7 +40,7 @@ class Command(RunserverCommand):
 
     def handle(self, *args, **options):
         use_vite = options["vite"]
-        if use_vite in ['auto', 'external']:
+        if use_vite in ["auto", "external"]:
             patch_static_server()
             if use_vite == "auto":
                 if os.environ.get("DJANGO_VITE_RUNNING") != "1":

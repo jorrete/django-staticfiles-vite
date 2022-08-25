@@ -10,6 +10,7 @@ const {
   extensions,
   configPath,
   port,
+  baseUrl,
 } = JSON.parse(process.argv[2] || '{}');
 
 const config = require(configPath);
@@ -20,6 +21,7 @@ const config = require(configPath);
     envFile: false,
     plugins: [
       djangoStatic({
+        baseUrl,
         paths,
         extensions,
       }),

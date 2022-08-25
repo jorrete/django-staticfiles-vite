@@ -30,14 +30,21 @@ function resolveId(id, paths, extensions) {
   return match.filter(Boolean).join('?');
 }
 
-function djangoStatic({ paths, extensions }) {
+function djangoStatic({ baseUrl, paths, extensions }) {
+  const find = (
+    baseUrl.slice(-1) === '/'
+      ? baseUrl.slice(0, -1)
+      : baseUrl
+  );
+
   return {
     name: 'django-static',
     config: () => ({
+      appType: 'custom',
       resolve: {
         alias: [
           {
-            find: '@static',
+            find,
             replacement: '',
             customResolver: (id) => resolveId(id, paths, extensions),
           }

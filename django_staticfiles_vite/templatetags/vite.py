@@ -18,7 +18,10 @@ regexp = compile(
 def vite_hrm(*args):
     if not settings.DEBUG:
         return ""
-    return mark_safe('<script type="module" src="/static/@vite/client"></script>')
+
+    path = static("@vite/client")
+
+    return mark_safe('<script type="module" src="{}"></script>'.format(path))
 
 
 @register.simple_tag

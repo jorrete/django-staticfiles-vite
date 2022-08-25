@@ -1,6 +1,6 @@
-@import '@static/www/mongo/tongo.css';
-@import '@static/admin/css/nav_sidebar.css';
+@import '/static/www/mongo/tongo.css';
+@import '/static/admin/css/nav_sidebar.css';
 
 html {
-  background-color: lightgreen;
+  background-color: lightseagreen;
 }

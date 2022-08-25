@@ -26,13 +26,6 @@ const config = require(configPath);
         ]
       }
     },
-    // use instead of plugins
-    // resolve: {
-    //   alias: {
-    //     'my_app': '/home/jorro/tmp/css/my_app',
-    //     'modules': resolve(__dirname, 'src/modules'),
-    //   },
-    // },
     plugins: [
       djangoStatic({
         paths,
