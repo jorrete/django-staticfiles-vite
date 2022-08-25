@@ -10,10 +10,7 @@ setup(
     license="MIT",
     packages=find_packages(),
     include_package_data=True,
-    install_requires=[
-        "django >= 4.0.0",
-        "django-macros >= 0.4.0",
-    ],
+    install_requires=["django >= 4.0.0", "django-macros >= 0.4.0", "psutil >= 5.9.1"],
     extras_require={
         "dev": [
             "bump2version",
