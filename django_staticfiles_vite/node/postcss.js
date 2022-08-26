@@ -8,17 +8,21 @@ const {
   paths,
   outDir,
   configPath,
+  baseUrl,
 } = JSON.parse(process.argv[2] || '{}');
 
 const config = require(configPath);
 
 (async () => {
   console.log(`[postCss] ${filename}`);
+
+  const find = baseUrl;
+
   const src = entry;
   const dest = `${outDir}/${filename}`;
   const plugins = [
     postcssImport({
-      resolve: (css) => css.replace('/static', ''),
+      resolve: (css) => css.replace(find, ''),
       path: paths,
     }),
     ...(config?.css?.postcss?.plugins || []),
