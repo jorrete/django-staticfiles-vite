@@ -39,6 +39,9 @@ const config = require(configPath);
     root,
     server: {
       port,
+      hmr: {
+        port,
+      },
       fs: {
         strict: true,
         allow: [
