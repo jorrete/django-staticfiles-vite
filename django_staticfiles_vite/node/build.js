@@ -35,6 +35,7 @@ const config = require(configPath);
       }),
       ...(config?.plugins || []),
     ],
+    // TODO mangling
     build: {
       emptyOutDir: false,
       outDir,
