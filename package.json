@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "postcss-import": "^14.1.0"
-  },
-  "devDependencies": {
-    "postcss-minify": "^1.1.0"
-  }
-}
