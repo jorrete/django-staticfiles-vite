@@ -51,5 +51,9 @@ const config = require(configPath);
         fileName: () => filename,
       },
     },
+    minify: true,
+    esbuild: {
+      drop: minify ? ['console', 'debugger'] : [],
+    },
   }));
 })()

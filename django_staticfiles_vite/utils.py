@@ -122,7 +122,7 @@ def vite_build(name, entry):
 
 
 def vite_postcss(name, entry):
-    paths = apps.get_app_config("django_staticfiles_vite").paths
+    paths = apps.get_app_config("django_staticfiles_vite").paths + VITE_EXTRA_PATHS
     base, _ = splitext(clean_bundle_name(name))
     filename = "{}.css".format(base)
     arguments = dumps(
