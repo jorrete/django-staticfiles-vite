@@ -28,7 +28,6 @@ ALLOWED_HOSTS = []
 # DEBUG = False
 # ALLOWED_HOSTS = ["*"]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django_staticfiles_vite",
     "django.contrib.staticfiles",
+    "channels",
     "macros",
     "www",
     "tests",
@@ -78,7 +78,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
-
+ASGI_APPLICATION = "config.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
