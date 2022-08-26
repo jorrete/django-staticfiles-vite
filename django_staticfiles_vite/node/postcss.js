@@ -1,6 +1,7 @@
 const fs = require('fs').promises;
 const postcss = require('postcss')
 const postcssImport = require('postcss-import');
+const postcssMinify = require('postcss-minify');
 
 const {
   filename,
@@ -25,6 +26,7 @@ const config = require(configPath);
       resolve: (css) => css.replace(find, ''),
       path: paths,
     }),
+    postcssMinify(),
     ...(config?.css?.postcss?.plugins || []),
   ];
   const css = await fs.readFile(src);

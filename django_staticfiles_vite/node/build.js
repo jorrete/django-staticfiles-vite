@@ -53,7 +53,7 @@ const config = require(configPath);
     },
     minify: true,
     esbuild: {
-      drop: minify ? ['console', 'debugger'] : [],
+      drop: ['console', 'debugger'],
     },
   }));
 })()
