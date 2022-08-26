@@ -17,6 +17,7 @@ from .settings import (  # VITE_IMPORT_KEYWORD,
     VITE_BUNDLE_KEYWORD,
     VITE_CONFIG,
     VITE_EXTENSION_MAP,
+    VITE_EXTRA_PATHS,
     VITE_NODE_MODULES,
     VITE_OUT_DIR,
     VITE_PORT,
@@ -59,7 +60,7 @@ def path_is_vite_import(name):
 
 
 def vite_serve():
-    paths = apps.get_app_config("django_staticfiles_vite").paths
+    paths = apps.get_app_config("django_staticfiles_vite").paths + VITE_EXTRA_PATHS
     arguments = dumps(
         {
             "baseUrl": settings.STATIC_URL,
@@ -98,7 +99,7 @@ def kill_vite_server():
 
 
 def vite_build(name, entry):
-    paths = apps.get_app_config("django_staticfiles_vite").paths
+    paths = apps.get_app_config("django_staticfiles_vite").paths + VITE_EXTRA_PATHS
     base, extension = splitext(clean_bundle_name(name))
     filename = "{}{}".format(base, extension)
     arguments = dumps(
