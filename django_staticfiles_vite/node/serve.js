@@ -40,6 +40,7 @@ const config = require(configPath);
     server: {
       port,
       hmr: {
+        host: 'localhost',
         port,
       },
       fs: {
