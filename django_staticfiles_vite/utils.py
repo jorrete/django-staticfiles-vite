@@ -155,7 +155,8 @@ def is_static_request_direct(request):
 
 
 def get_proxy_url(request):
-    url = request.build_absolute_uri().replace(str(request.get_port()), str(VITE_PORT))
+    # url = request.build_absolute_uri().replace(str(request.get_port()), str(VITE_PORT))
+    url = "http://localhost:{}{}".format(VITE_PORT, request.path)
 
     # check is doesnt have part of the paths
     # if settings.DEBUG and is_static_request_direct(request):
