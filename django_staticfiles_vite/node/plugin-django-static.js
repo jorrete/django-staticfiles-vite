@@ -46,7 +46,9 @@ function djangoStatic({ baseUrl, paths, extensions }) {
           {
             find,
             replacement: '',
-            customResolver: (id) => resolveId(id, paths, extensions),
+            customResolver: (id) => {
+              return resolveId(id, paths, extensions)
+            },
           }
         ],
       }

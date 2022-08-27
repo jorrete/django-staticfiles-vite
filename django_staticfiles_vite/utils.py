@@ -149,18 +149,15 @@ def is_path_css(path):
 def is_static_request_direct(request):
     return (
         is_path_css(request.path)
-        # and "import" not in request.path
-        and "?direct" not in request.path
-        and path_is_vite_bunlde(request.path)
+        # if is ajax HTTP_ACCEPT is */*
+        # here we check that is a link tag in some html document
+        and 'text/css' in request.META.get('HTTP_ACCEPT')
     )
 
 
 def get_proxy_url(request):
-    # url = request.build_absolute_uri().replace(str(request.get_port()), str(VITE_PORT))
     url = "http://localhost:{}{}".format(VITE_PORT, request.path)
 
-    # check is doesnt have part of the paths
-    # if settings.DEBUG and is_static_request_direct(request):
     if is_static_request_direct(request):
         url = url + "{}direct".format("&" if "?" in url else "?")
 
