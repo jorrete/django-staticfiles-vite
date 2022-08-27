@@ -150,8 +150,8 @@ def is_static_request_direct(request):
     return (
         is_path_css(request.path)
         # and "import" not in request.path
-        and "direct" not in request.path
-        and "django" not in request.path
+        and "?direct" not in request.path
+        and path_is_vite_bunlde(request.path)
     )
 
 

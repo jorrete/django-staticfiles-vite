@@ -11,6 +11,9 @@ import color from 'color-convert';
 
 // inject styles
 import './styles.css';
+import styles from './styles.css';
+
+console.log(styles);
 
 console.log(color, mongo, foo);
 render(<App />, document.getElementById('app'))
