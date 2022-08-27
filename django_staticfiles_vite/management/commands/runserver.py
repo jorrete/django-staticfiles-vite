@@ -1,6 +1,7 @@
 import multiprocessing
 import os
 
+from django.conf import settings
 from django.contrib.staticfiles.handlers import StaticFilesHandlerMixin
 from django.contrib.staticfiles.management.commands.runserver import (
     Command as RunserverCommand,
@@ -50,10 +51,12 @@ class Command(RunserverCommand):
 
     def get_handler(self, *args, **options):
         handler = super().get_handler(*args, **options)
-        patch_static_server(handler.__class__)
+        if settings.DEBUG:
+            patch_static_server(handler.__class__)
         return handler
 
     def get_application(self, options):
         application = super().get_application(options)
-        patch_static_server(application.staticfiles_handler_class)
+        if settings.DEBUG:
+            patch_static_server(application.staticfiles_handler_class)
         return application
