@@ -17,6 +17,7 @@ const config = require(configPath);
 
 (async () => {
   const server = await createServer(defineConfig({
+    appType: 'custom',
     configFile: false,
     envFile: false,
     plugins: [

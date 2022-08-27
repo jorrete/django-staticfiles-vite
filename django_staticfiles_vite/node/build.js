@@ -17,6 +17,7 @@ const config = require(configPath);
 
 (async () => {
   await build(defineConfig({
+    appType: 'custom',
     configFile: false,
     envFile: false,
     root: process.cwd(),
