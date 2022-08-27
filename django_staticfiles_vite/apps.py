@@ -1,5 +1,4 @@
 from django.apps import AppConfig, apps
-from django.conf.urls import static
 from django.contrib.staticfiles.finders import get_finders
 
 
