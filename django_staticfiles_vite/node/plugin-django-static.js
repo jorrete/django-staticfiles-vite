@@ -56,6 +56,12 @@ function djangoStatic({ baseUrl, paths, extensions }) {
     resolveId(id) {
       return resolveId(id, paths, extensions);
     },
+    handleHotUpdate(ctx) {
+      if (ctx.file.endsWith('.html')) {
+        ctx.server.ws.send({ type: 'full-reload' });
+        return []
+      }
+    }
   }
 }
 
