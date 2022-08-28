@@ -8,7 +8,7 @@ import psutil
 from django.apps import apps
 from django.conf import settings
 
-from .settings import (  # VITE_IMPORT_KEYWORD,
+from .settings import (
     BUILD_PATH,
     CSS_EXTENSIONS,
     JS_EXTENSIONS,

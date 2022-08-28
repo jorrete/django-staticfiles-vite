@@ -35,10 +35,15 @@ const config = require(configPath);
         ]
       }
     },
+    esbuild: {
+      logOverride: { 'this-is-undefined-in-esm': 'silent' }
+    },
     clearScreen: false,
     base,
     root,
     server: {
+      cors: true,
+      host: true,
       port,
       hmr: {
         host: 'localhost',

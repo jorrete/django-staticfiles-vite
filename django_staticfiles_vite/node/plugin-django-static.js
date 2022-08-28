@@ -1,7 +1,7 @@
-const { existsSync, statSync} = require('fs');
+const { existsSync, statSync, readFileSync } = require('fs');
 const { resolve } = require('path');
 
-function resolveId(id, paths, extensions) {
+function resolveId(id, paths, extensions = []) {
   // TODO check if is css and the return null
   const match = paths
     .map((path) => resolve(path, (id.startsWith('/') ? id.slice(1) : id)).split('?'))
@@ -61,7 +61,26 @@ function djangoStatic({ baseUrl, paths, extensions }) {
         ctx.server.ws.send({ type: 'full-reload' });
         return []
       }
-    }
+    },
+    configureServer(server) {
+      // return a post hook that is called after internal middlewares are
+      // installed
+      return () => {
+        server.middlewares.use((req, res, next) => {
+          if (req.originalUrl === baseUrl) {
+            next();
+          } else {
+            const path = resolveId(req.url, paths);
+
+            if (!path) {
+              next();
+            } else {
+              res.end(readFileSync(path));
+            }
+          }
+        });
+      };
+    },
   }
 }
 

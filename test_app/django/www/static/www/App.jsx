@@ -7,7 +7,7 @@ const App = () => {
       class={styles.App}
       onClick={() => console.log('click')}
     >
-      preact!!
+      preact!!!!!!
     </div>
   );
 }

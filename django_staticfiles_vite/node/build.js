@@ -55,6 +55,7 @@ const config = require(configPath);
     minify: true,
     esbuild: {
       drop: ['console', 'debugger'],
+      logOverride: { 'this-is-undefined-in-esm': 'silent' }
     },
   }));
 })()
