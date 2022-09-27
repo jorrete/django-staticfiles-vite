@@ -13,6 +13,7 @@ setup(
     install_requires=["django >= 4.0.0", "django-macros >= 0.4.0", "psutil >= 5.9.1"],
     extras_require={
         "dev": [
+            "channels",
             "bump2version",
             "nodeenv",
             "flake8",
