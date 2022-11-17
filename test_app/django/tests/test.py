@@ -2,7 +2,7 @@ from django.core.management import call_command
 from django.test import override_settings
 from tests.utils import get_test_templates
 
-from .utils import ViteTestCase
+from .utils import ViteLiveServerTestCase, PlaywrightTestCase, LiveServerTestCase
 
 
 class TemplatesMixin(object):
@@ -16,12 +16,12 @@ class TemplatesMixin(object):
 
 
 @override_settings(DEBUG=True, ALLOWED_HOSTS=[])
-class DevTests(TemplatesMixin, ViteTestCase):
+class DevTests(TemplatesMixin, PlaywrightTestCase, ViteLiveServerTestCase):
     pass
 
 
 @override_settings(DEBUG=False, ALLOWED_HOSTS=["*"])
-class ProdTests(TemplatesMixin, ViteTestCase):
+class ProdTests(TemplatesMixin, PlaywrightTestCase, LiveServerTestCase):
     def setUp(self):
         call_command("collectstatic", clear=True, interactive=False, vite=True)
         super().setUp()
