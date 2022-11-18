@@ -10,18 +10,7 @@ from django_staticfiles_vite.management.commands.runserver import (
     thread_vite_server,
     restore_storage,
 )
-from django_staticfiles_vite.utils import kill_vite_server
-
-
-class ViteLiveServerTestCase(LiveServerTestCase):
-    def setUp(self):
-        patch_storage()
-        thread_vite_server()
-        sleep(1)
-
-    def tearDown(self):
-        kill_vite_server()
-        restore_storage()
+from django_staticfiles_vite.tests import ViteLiveServerTestCase
 
 
 class PlaywrightTestCase():
