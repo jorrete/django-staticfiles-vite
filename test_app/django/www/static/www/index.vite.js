@@ -16,4 +16,4 @@ import styles from './styles2.css';
 console.log(styles);
 
 console.log(color, mongo, foo);
-render(<App />, document.getElementById('app'))
+render(<App foo={3} />, document.getElementById('app'))

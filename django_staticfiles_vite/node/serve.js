@@ -21,11 +21,14 @@ const config = require(configPath);
     configFile: false,
     envFile: false,
     plugins: [
-      djangoStatic({
-        baseUrl,
-        paths,
-        extensions,
-      }),
+      {
+        ...djangoStatic({
+          baseUrl,
+          paths,
+          extensions,
+        }),
+        enforce: 'pre',
+      },
       ...(config?.plugins || []),
     ],
     css: {
