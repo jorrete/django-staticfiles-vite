@@ -9,10 +9,12 @@
   </head>
   <body>
     <h1>Vite playground</h1>
-    {% vite_hrm %}
     {% vite_style "www/index.vite.css" %}
     {% vite_script "www/index.vite.js" style=True %}
     {% vite_style "www/styles3.css" %}
+    <!-- this works on dev but collectstatic will not find them -->
+    <link href="{% static "www/main.scss" %}" rel="stylesheet">
+    <script type="module" src="{% static "www/main.js" %}"></script>
     <div id="app"></div>
   </body>
 </html>
