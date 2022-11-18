@@ -11,6 +11,7 @@ const {
   configPath,
   port,
   baseUrl,
+  extraAllowedPaths,
 } = JSON.parse(process.argv[2] || '{}');
 
 const config = require(configPath);
@@ -57,6 +58,7 @@ const config = require(configPath);
         allow: [
           ...paths,
           nodeModulesPath,
+          ...extraAllowedPaths,
         ]
       }
     },

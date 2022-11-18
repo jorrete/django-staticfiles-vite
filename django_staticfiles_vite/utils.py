@@ -18,6 +18,7 @@ from .settings import (
     VITE_CONFIG,
     VITE_EXTENSION_MAP,
     VITE_EXTRA_PATHS,
+    VITE_EXTRA_ALLOWED_PATHS,
     VITE_NODE_MODULES,
     VITE_OUT_DIR,
     VITE_PORT,
@@ -71,6 +72,7 @@ def vite_serve():
             "paths": paths if settings.DEBUG else [str(settings.STATIC_ROOT)],
             "port": VITE_PORT,
             "root": VITE_ROOT if settings.DEBUG else str(settings.STATIC_ROOT),
+            "extraAllowedPaths": VITE_EXTRA_ALLOWED_PATHS,
         }
     )
     env = os.environ.copy()

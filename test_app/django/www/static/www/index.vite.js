@@ -8,11 +8,13 @@ import App from './App.jsx';
 // check import from node
 import color from 'color-convert';
 
+import deepClone from 'deep-clone';
 
 // inject styles
 import './styles.css';
 import styles from './styles2.css';
 
+console.log(deepClone);
 console.log(styles);
 
 console.log(color, mongo, foo);
