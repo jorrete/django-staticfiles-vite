@@ -23,5 +23,11 @@ class DevTests(TemplatesMixin, PlaywrightTestCase, ViteLiveServerTestCase):
 @override_settings(DEBUG=False, ALLOWED_HOSTS=["*"])
 class ProdTests(TemplatesMixin, PlaywrightTestCase, LiveServerTestCase):
     def setUp(self):
-        call_command("collectstatic", clear=True, interactive=False, vite=True)
+        call_command(
+            "collectstatic",
+            clear=True,
+            interactive=False,
+            verbosity=0,  # no output to keep test clean
+            vite=True,
+        )
         super().setUp()

@@ -1,6 +1,7 @@
 import os
 import signal
 import subprocess
+import sys
 from json import dumps
 from os.path import splitext
 
@@ -17,14 +18,16 @@ from .settings import (
     VITE_BUNDLE_KEYWORD,
     VITE_CONFIG,
     VITE_EXTENSION_MAP,
-    VITE_EXTRA_PATHS,
     VITE_EXTRA_ALLOWED_PATHS,
+    VITE_EXTRA_PATHS,
     VITE_NODE_MODULES,
     VITE_OUT_DIR,
     VITE_PORT,
     VITE_ROOT,
     VITE_URL,
 )
+
+TESTING = sys.argv[1:2] == ["test"]
 
 
 def path_is_vite_bunlde(name):
@@ -77,6 +80,9 @@ def vite_serve():
     )
     env = os.environ.copy()
     env["NODE_PATH"] = VITE_NODE_MODULES
+
+    # Can't remeber why here use subprocess and os.system in others
+    # maybe because it's a live command
     subprocess.run(
         args=[
             "node",
@@ -85,6 +91,7 @@ def vite_serve():
         ],
         env=env,
         encoding="utf8",
+        capture_output=TESTING,
     )
 
 
@@ -117,8 +124,11 @@ def vite_build(name, entry):
             "paths": paths,
         }
     )
-    os.system(
-        "NODE_PATH={} node {} '{}'".format(VITE_NODE_MODULES, BUILD_PATH, arguments)
+
+    subprocess.run(
+        "NODE_PATH={} node {} '{}'".format(VITE_NODE_MODULES, BUILD_PATH, arguments),
+        shell=True,
+        stdout=subprocess.PIPE if TESTING else None,
     )
     return filename
 
@@ -137,8 +147,11 @@ def vite_postcss(name, entry):
             "configPath": VITE_CONFIG,
         }
     )
-    os.system(
-        "NODE_PATH={} node {} '{}'".format(VITE_NODE_MODULES, POSTCSS_PATH, arguments)
+
+    subprocess.run(
+        "NODE_PATH={} node {} '{}'".format(VITE_NODE_MODULES, POSTCSS_PATH, arguments),
+        shell=True,
+        stdout=subprocess.PIPE if TESTING else None,
     )
     return filename
 
@@ -153,7 +166,7 @@ def is_static_request_direct(request):
         is_path_css(request.path)
         # if is ajax HTTP_ACCEPT is */*
         # here we check that is a link tag in some html document
-        and 'text/css' in request.META.get('HTTP_ACCEPT')
+        and "text/css" in request.META.get("HTTP_ACCEPT")
     )
 
 
