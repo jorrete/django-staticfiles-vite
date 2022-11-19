@@ -11,11 +11,15 @@ from .utils import kill_vite_server
 
 
 class ViteLiveServerTestCase(LiveServerTestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
         patch_storage()
         thread_vite_server()
         sleep(1)
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
         kill_vite_server()
         restore_storage()
