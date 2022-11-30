@@ -79,16 +79,16 @@ def vite_serve():
         }
     )
     env = os.environ.copy()
-    env["NODE_PATH"] = VITE_NODE_MODULES
 
     # Can't remeber why here use subprocess and os.system in others
     # maybe because it's a live command
     subprocess.run(
         args=[
-            "node",
-            SERVE_PATH,
+            "npx",
+            "django-vite-serve",
             "{}".format(arguments),
         ],
+        cwd=settings.ROOT_DIR,
         env=env,
         encoding="utf8",
         capture_output=TESTING,
@@ -101,7 +101,7 @@ def kill_vite_server():
         path = cmd[1] if len(cmd) > 1 else None
         args = cmd[2] if len(cmd) > 2 else None
         try:
-            if SERVE_PATH == path and str(VITE_PORT) in args:
+            if path and path.endswith("django-vite-serve") and str(VITE_PORT) in args:
                 os.kill(proc.pid, signal.SIGTERM)
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
@@ -125,11 +125,20 @@ def vite_build(name, entry):
         }
     )
 
+    env = os.environ.copy()
+
     subprocess.run(
-        "NODE_PATH={} node {} '{}'".format(VITE_NODE_MODULES, BUILD_PATH, arguments),
-        shell=True,
-        stdout=subprocess.PIPE if TESTING else None,
+        args=[
+            "npx",
+            "django-vite-build",
+            "{}".format(arguments),
+        ],
+        cwd=settings.ROOT_DIR,
+        env=env,
+        encoding="utf8",
+        capture_output=TESTING,
     )
+
     return filename
 
 
@@ -148,11 +157,20 @@ def vite_postcss(name, entry):
         }
     )
 
+    env = os.environ.copy()
+
     subprocess.run(
-        "NODE_PATH={} node {} '{}'".format(VITE_NODE_MODULES, POSTCSS_PATH, arguments),
-        shell=True,
-        stdout=subprocess.PIPE if TESTING else None,
+        args=[
+            "npx",
+            "django-vite-postcss",
+            "{}".format(arguments),
+        ],
+        cwd=settings.ROOT_DIR,
+        env=env,
+        encoding="utf8",
+        capture_output=TESTING,
     )
+
     return filename
 
 
