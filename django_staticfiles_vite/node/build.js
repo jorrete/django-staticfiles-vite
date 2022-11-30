@@ -1,4 +1,4 @@
-#!/usr/bin/node
+#!/usr/bin/env node
 const djangoStatic = require('./plugin-django-static');
 const { build, defineConfig } = require('vite');
 

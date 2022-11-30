@@ -1,4 +1,4 @@
-#!/usr/bin/node
+#!/usr/bin/env node
 const { resolve } = require('path');
 const { createServer, defineConfig } = require('vite');
 const djangoStatic = require('./plugin-django-static');

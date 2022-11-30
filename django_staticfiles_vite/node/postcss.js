@@ -1,4 +1,4 @@
-#!/usr/bin/node
+#!/usr/bin/env node
 const fs = require('fs').promises;
 const postcss = require('postcss')
 const postcssImport = require('postcss-import');
