@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const djangoStatic = require('./plugin-django-static');
-const { build, defineConfig } = require('vite');
+const { build, defineConfig, mergeConfig, loadConfigFromFile } = require('vite');
 
 const {
   entry,
@@ -9,57 +9,50 @@ const {
   name,
   outDir,
   paths,
-  extensions,
-  configPath,
-  baseUrl,
+  cssExtensions,
+  jsExtensions,
+  base,
 } = JSON.parse(process.argv[2] || '{}');
 
-const config = require(configPath);
-
 (async () => {
-  await build(defineConfig({
-    appType: 'custom',
-    configFile: false,
-    envFile: false,
-    root: process.cwd(),
-    css: {
-      postcss: {
-        plugins: [
-          ...(config?.css?.postcss?.plugins || []),
-        ]
-      }
-    },
-    plugins: [
-      {
-        ...djangoStatic({
-          baseUrl,
-          paths,
-          extensions,
-        }),
-        enforce: 'pre',
+  const finalConfig = mergeConfig(
+    (await loadConfigFromFile())?.config,
+    {
+      appType: 'custom',
+      configFile: false,
+      envFile: false,
+      root: process.cwd(),
+      resolve: {
+        extensions: jsExtensions,
       },
-      ...(config?.plugins || []),
-    ],
-    // TODO mangling
-    build: {
-      emptyOutDir: false,
-      outDir,
-      rollupOptions: {
-        output: {
-          assetFileNames: () => `${name}.js.css`,
+      plugins: [
+        {
+          ...djangoStatic({
+            base,
+            paths,
+            extensions: [].concat(jsExtensions, cssExtensions),
+          }),
+          enforce: 'pre',
+        },
+      ],
+      // TODO mangling
+      build: {
+        emptyOutDir: false,
+        outDir,
+        rollupOptions: {
+          output: {
+            assetFileNames: () => `${name}.js.css`,
+          },
+        },
+        lib: {
+          entry,
+          formats: [format],
+          name,
+          fileName: () => filename,
         },
       },
-      lib: {
-        entry,
-        formats: [format],
-        name,
-        fileName: () => filename,
-      },
     },
-    minify: true,
-    esbuild: {
-      drop: ['console', 'debugger'],
-      logOverride: { 'this-is-undefined-in-esm': 'silent' }
-    },
-  }));
+  );
+
+  await build(defineConfig(finalConfig));
 })()

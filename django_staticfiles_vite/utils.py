@@ -1,5 +1,6 @@
 import os
 import signal
+import multiprocessing
 import subprocess
 import sys
 from json import dumps
@@ -10,21 +11,16 @@ from django.apps import apps
 from django.conf import settings
 
 from .settings import (
-    BUILD_PATH,
     CSS_EXTENSIONS,
     JS_EXTENSIONS,
-    POSTCSS_PATH,
-    SERVE_PATH,
     VITE_BUNDLE_KEYWORD,
-    VITE_CONFIG,
     VITE_EXTENSION_MAP,
-    VITE_EXTRA_ALLOWED_PATHS,
-    VITE_EXTRA_PATHS,
-    VITE_NODE_MODULES,
     VITE_OUT_DIR,
     VITE_PORT,
     VITE_ROOT,
     VITE_URL,
+    VITE_TSCONFIG_GENERATE,
+    VITE_TSCONFIG_PATH,
 )
 
 TESTING = sys.argv[1:2] == ["test"]
@@ -42,8 +38,6 @@ def clean_bundle_name(name):
         if extension in VITE_EXTENSION_MAP.get(target):
             new_extension = target
 
-    # new_base = base.replace('.{}'.format(VITE_BUNDLE_KEYWORD), '')
-
     return "{}{}".format(base, new_extension)
 
 
@@ -53,9 +47,6 @@ def path_is_vite_import(name):
     if ".{}".format("module") in name:
         return True
 
-    # if ".{}".format(VITE_IMPORT_KEYWORD) in name:
-    # return True
-
     for target in VITE_EXTENSION_MAP.keys():
         if extension in VITE_EXTENSION_MAP.get(target):
             return True
@@ -63,21 +54,46 @@ def path_is_vite_import(name):
     return False
 
 
+def write_tsconfig(paths):
+    with open(VITE_TSCONFIG_PATH, 'w') as file:
+        file.write(dumps({
+          "compilerOptions": {
+            "include": ["{}/**/*".format(path) for path in paths],
+            "paths": {
+              "/static/*": ["{}/*".format(path) for path in paths]
+            }
+          }
+        }))
+
+
+def kill_vite_server():
+    for proc in psutil.process_iter():
+        cmd = proc.cmdline()
+        path = cmd[1] if len(cmd) > 1 else None
+        args = cmd[2] if len(cmd) > 2 else None
+        try:
+            if path and path.endswith("django-vite-serve") and str(VITE_PORT) in args:
+                os.kill(proc.pid, signal.SIGTERM)
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+
+
 def vite_serve():
-    paths = apps.get_app_config("django_staticfiles_vite").paths + VITE_EXTRA_PATHS
+    paths = apps.get_app_config("django_staticfiles_vite").paths
     arguments = dumps(
         {
-            "baseUrl": settings.STATIC_URL,
             "base": VITE_URL,
-            "configPath": VITE_CONFIG,
-            "extensions": JS_EXTENSIONS + CSS_EXTENSIONS,
-            "nodeModulesPath": VITE_NODE_MODULES,
+            "cssExtensions": CSS_EXTENSIONS,
+            "jsExtensions": JS_EXTENSIONS,
             "paths": paths if settings.DEBUG else [str(settings.STATIC_ROOT)],
             "port": VITE_PORT,
             "root": VITE_ROOT if settings.DEBUG else str(settings.STATIC_ROOT),
-            "extraAllowedPaths": VITE_EXTRA_ALLOWED_PATHS,
         }
     )
+
+    if VITE_TSCONFIG_GENERATE:
+        write_tsconfig(paths)
+
     env = os.environ.copy()
 
     # Can't remeber why here use subprocess and os.system in others
@@ -95,28 +111,16 @@ def vite_serve():
     )
 
 
-def kill_vite_server():
-    for proc in psutil.process_iter():
-        cmd = proc.cmdline()
-        path = cmd[1] if len(cmd) > 1 else None
-        args = cmd[2] if len(cmd) > 2 else None
-        try:
-            if path and path.endswith("django-vite-serve") and str(VITE_PORT) in args:
-                os.kill(proc.pid, signal.SIGTERM)
-        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-            pass
-
-
 def vite_build(name, entry):
-    paths = apps.get_app_config("django_staticfiles_vite").paths + VITE_EXTRA_PATHS
+    paths = apps.get_app_config("django_staticfiles_vite").paths
     base, extension = splitext(clean_bundle_name(name))
     filename = "{}{}".format(base, extension)
     arguments = dumps(
         {
-            "baseUrl": settings.STATIC_URL,
-            "configPath": VITE_CONFIG,
+            "base": VITE_URL,
             "entry": entry,
-            "extensions": JS_EXTENSIONS + CSS_EXTENSIONS,
+            "cssExtensions": CSS_EXTENSIONS,
+            "jsExtensions": JS_EXTENSIONS,
             "filename": filename,
             "format": "iife",
             "name": base,
@@ -143,17 +147,16 @@ def vite_build(name, entry):
 
 
 def vite_postcss(name, entry):
-    paths = apps.get_app_config("django_staticfiles_vite").paths + VITE_EXTRA_PATHS
+    paths = apps.get_app_config("django_staticfiles_vite").paths
     base, _ = splitext(clean_bundle_name(name))
     filename = "{}.css".format(base)
     arguments = dumps(
         {
-            "baseUrl": settings.STATIC_URL,
+            "base": VITE_URL,
             "paths": paths,
             "outDir": VITE_OUT_DIR,
             "entry": entry,
             "filename": filename,
-            "configPath": VITE_CONFIG,
         }
     )
 
@@ -177,21 +180,3 @@ def vite_postcss(name, entry):
 def is_path_css(path):
     _, extension = splitext(path)
     return extension in CSS_EXTENSIONS
-
-
-def is_static_request_direct(request):
-    return (
-        is_path_css(request.path)
-        # if is ajax HTTP_ACCEPT is */*
-        # here we check that is a link tag in some html document
-        and "text/css" in request.META.get("HTTP_ACCEPT")
-    )
-
-
-def get_proxy_url(request):
-    url = "http://localhost:{}{}".format(VITE_PORT, request.path)
-
-    if is_static_request_direct(request):
-        url = url + "{}direct".format("&" if "?" in url else "?")
-
-    return url

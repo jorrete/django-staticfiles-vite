@@ -1,69 +1,60 @@
 #!/usr/bin/env node
 const { resolve } = require('path');
-const { createServer, defineConfig } = require('vite');
+const { defineConfig, createServer, mergeConfig, loadConfigFromFile } = require('vite');
 const djangoStatic = require('./plugin-django-static');
 
 const {
   paths,
   base,
-  root,
-  nodeModulesPath,
-  extensions,
-  configPath,
+  cssExtensions,
+  jsExtensions,
   port,
-  baseUrl,
-  extraAllowedPaths,
 } = JSON.parse(process.argv[2] || '{}');
 
-const config = require(configPath);
-
 (async () => {
-  const server = await createServer(defineConfig({
-    appType: 'custom',
-    configFile: false,
-    envFile: false,
-    plugins: [
-      {
-        ...djangoStatic({
-          baseUrl,
-          paths,
-          extensions,
-        }),
-        enforce: 'pre',
+  const finalConfig = mergeConfig(
+    (await loadConfigFromFile())?.config,
+    {
+      base,
+      publicDir: false,
+      root: process.cwd(),
+      clearScreen: false,
+      appType: 'custom', // don't include html middlewares
+      configFile: false,
+      envFile: false,
+      resolve: {
+        extensions: jsExtensions,
       },
-      ...(config?.plugins || []),
-    ],
-    css: {
-      postcss: {
-        plugins: [
-          ...(config?.css?.postcss?.plugins || []),
-        ]
-      }
-    },
-    esbuild: {
-      logOverride: { 'this-is-undefined-in-esm': 'silent' }
-    },
-    clearScreen: false,
-    base,
-    root,
-    server: {
-      cors: true,
-      host: true,
-      port,
-      hmr: {
-        host: 'localhost',
+      plugins: [
+        {
+          ...djangoStatic({
+            base,
+            paths,
+            extensions: [].concat(jsExtensions, cssExtensions),
+          }),
+          enforce: 'pre',
+        },
+      ],
+      server: {
+        cors: true,
+        host: true,
         port,
+        hmr: {
+          host: 'localhost',
+          port,
+        },
+        fs: {
+          strict: true,
+          allow: [
+            ...paths,
+            resolve(process.cwd(), 'node_modules'),
+          ]
+        }
       },
-      fs: {
-        strict: true,
-        allow: [
-          ...paths,
-          nodeModulesPath,
-          ...extraAllowedPaths,
-        ]
-      }
     },
-  }));
+  );
+
+  const server = await createServer(defineConfig(finalConfig));
   await server.listen()
   server.printUrls()
 })()

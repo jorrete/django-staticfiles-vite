@@ -3,22 +3,22 @@ const fs = require('fs').promises;
 const postcss = require('postcss')
 const postcssImport = require('postcss-import');
 const postcssMinify = require('postcss-minify');
+const { loadConfigFromFile } = require('vite');
 
 const {
   filename,
   entry,
   paths,
   outDir,
-  configPath,
-  baseUrl,
+  base,
 } = JSON.parse(process.argv[2] || '{}');
-
-const config = require(configPath);
 
 (async () => {
   console.log(`[postCss] ${filename}`);
 
-  const find = baseUrl;
+  const config = (await loadConfigFromFile()).config || {};
+
+  const find = base;
 
   const src = entry;
   const dest = `${outDir}/${filename}`;
@@ -27,7 +27,7 @@ const config = require(configPath);
       resolve: (css) => css.replace(find, ''),
       path: paths,
     }),
-    postcssMinify(),
+    ...(config?.build?.mifify ? [postcssMinify()] : []),
     ...(config?.css?.postcss?.plugins || []),
   ];
   const css = await fs.readFile(src);

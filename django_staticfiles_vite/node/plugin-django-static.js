@@ -30,11 +30,11 @@ function resolveId(id, paths, extensions = []) {
   return match.filter(Boolean).join('?');
 }
 
-function djangoStatic({ baseUrl, paths, extensions }) {
+function djangoStatic({ base, paths, extensions }) {
   const find = (
-    baseUrl.slice(-1) === '/'
-      ? baseUrl.slice(0, -1)
-      : baseUrl
+    base.slice(-1) === '/'
+      ? base.slice(0, -1)
+      : base
   );
 
   return {
@@ -67,7 +67,7 @@ function djangoStatic({ baseUrl, paths, extensions }) {
       // installed
       return () => {
         server.middlewares.use((req, res, next) => {
-          if (req.originalUrl === baseUrl) {
+          if (req.originalUrl === base) {
             next();
           } else {
             const path = resolveId(req.url, paths);
