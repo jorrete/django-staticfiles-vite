@@ -7,6 +7,13 @@ import { render } from 'preact'
 // check import from node
 import color from 'color-convert';
 
+import('../../../out')
+  .then((mod) => {
+    console.log('out should fail', mod);
+  })
+  .catch(() => {
+  console.log('out failed, it is ok') ;
+  });
 
 // inject styles
 import './styles.css';

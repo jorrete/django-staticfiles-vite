@@ -13,6 +13,7 @@ import deepClone from 'deep-clone';
 // inject styles
 import './styles.css';
 import styles from './styles2.css';
+import './main';
 
 console.log(deepClone);
 console.log(styles);
