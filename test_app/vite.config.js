@@ -5,4 +5,11 @@ module.exports = defineConfig({
   plugins: [
     preact(),
   ],
+  build: {
+    // minify: false,
+    minify: 'esbuild',
+  },
+  esbuild: {
+    drop: ['console', 'debugger'],
+  },
 });
