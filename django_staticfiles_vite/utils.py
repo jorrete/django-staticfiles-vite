@@ -1,9 +1,9 @@
+import multiprocessing
 import os
 import signal
-import multiprocessing
 import subprocess
 import sys
-from json import dumps
+from json import dumps, loads
 from os.path import splitext
 
 import psutil
@@ -18,9 +18,9 @@ from .settings import (
     VITE_OUT_DIR,
     VITE_PORT,
     VITE_ROOT,
-    VITE_URL,
     VITE_TSCONFIG_GENERATE,
     VITE_TSCONFIG_PATH,
+    VITE_URL,
 )
 
 TESTING = sys.argv[1:2] == ["test"]
@@ -41,29 +41,27 @@ def clean_bundle_name(name):
     return "{}{}".format(base, new_extension)
 
 
-def path_is_vite_import(name):
-    _, extension = splitext(name)
-
-    if ".{}".format("module") in name:
-        return True
-
-    for target in VITE_EXTENSION_MAP.keys():
-        if extension in VITE_EXTENSION_MAP.get(target):
-            return True
-
-    return False
+def get_bundle_css_name(path):
+    return path.replace(".js", ".js.css")
 
 
 def write_tsconfig(paths):
-    with open(VITE_TSCONFIG_PATH, 'w') as file:
-        file.write(dumps({
-          "compilerOptions": {
-            "include": ["{}/**/*".format(path) for path in paths],
-            "paths": {
-              "/static/*": ["{}/*".format(path) for path in paths]
-            }
-          }
-        }))
+    with open(VITE_TSCONFIG_PATH, "w") as file:
+        file.write(
+            dumps(
+                {
+                    "compilerOptions": {
+                        "include": ["{}/**/*".format(path) for path in paths],
+                        "paths": {"/static/*": ["{}/*".format(path) for path in paths]},
+                    }
+                }
+            )
+        )
+
+
+def thread_vite_server():
+    vite_process = multiprocessing.Process(target=vite_serve)
+    vite_process.start()
 
 
 def kill_vite_server():
@@ -111,14 +109,13 @@ def vite_serve():
     )
 
 
-def vite_build(name, entry):
+def vite_build(name):
     paths = apps.get_app_config("django_staticfiles_vite").paths
     base, extension = splitext(clean_bundle_name(name))
     filename = "{}{}".format(base, extension)
     arguments = dumps(
         {
             "base": VITE_URL,
-            "entry": entry,
             "cssExtensions": CSS_EXTENSIONS,
             "jsExtensions": JS_EXTENSIONS,
             "filename": filename,
@@ -131,7 +128,7 @@ def vite_build(name, entry):
 
     env = os.environ.copy()
 
-    subprocess.run(
+    pipe = subprocess.run(
         args=[
             "npx",
             "django-vite-build",
@@ -140,43 +137,12 @@ def vite_build(name, entry):
         cwd=settings.ROOT_DIR,
         env=env,
         encoding="utf8",
-        capture_output=TESTING,
+        stdout=subprocess.PIPE,
     )
 
-    return filename
+    return loads(pipe.stdout.split("\n")[-1])
 
 
-def vite_postcss(name, entry):
-    paths = apps.get_app_config("django_staticfiles_vite").paths
-    base, _ = splitext(clean_bundle_name(name))
-    filename = "{}.css".format(base)
-    arguments = dumps(
-        {
-            "base": VITE_URL,
-            "paths": paths,
-            "outDir": VITE_OUT_DIR,
-            "entry": entry,
-            "filename": filename,
-        }
-    )
-
-    env = os.environ.copy()
-
-    subprocess.run(
-        args=[
-            "npx",
-            "django-vite-postcss",
-            "{}".format(arguments),
-        ],
-        cwd=settings.ROOT_DIR,
-        env=env,
-        encoding="utf8",
-        capture_output=TESTING,
-    )
-
-    return filename
-
-
-def is_path_css(path):
+def is_path_js(path):
     _, extension = splitext(path)
-    return extension in CSS_EXTENSIONS
+    return extension in JS_EXTENSIONS

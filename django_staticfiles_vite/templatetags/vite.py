@@ -5,7 +5,7 @@ from django.conf import settings
 from django.templatetags.static import static
 from django.utils.safestring import mark_safe
 
-from ..settings import VITE_BUNDLE_KEYWORD
+from ..settings import VITE_BUNDLE_KEYWORD, VITE_PORT
 from ..utils import clean_bundle_name, path_is_vite_bunlde
 
 register = template.Library()
@@ -14,12 +14,16 @@ regexp = compile(
 )
 
 
+def build_vite_url(name):
+    return "http://localhost:{}/{}".format(VITE_PORT, name)
+
+
 @register.simple_tag
 def vite_hrm(*args):
     if not settings.DEBUG:
         return ""
 
-    path = static("@vite/client")
+    path = build_vite_url("@vite/client")
 
     return mark_safe('<script type="module" src="{}"></script>'.format(path))
 
@@ -45,8 +49,9 @@ def vite_static(name):
 
     if not settings.DEBUG:
         name = clean_bundle_name(name)
+        return static(name)
 
-    return static(name)
+    return "http://localhost:{}/{}".format(VITE_PORT, name)
 
 
 @register.simple_tag
@@ -55,10 +60,7 @@ def vite_script(name, **kwargs):
     defer = kwargs.get("defer", False)
     style = kwargs.get("style", False)
 
-    if not settings.DEBUG:
-        name = clean_bundle_name(name)
-
-    path = static(name)
+    path = vite_static(name)
 
     return mark_safe(
         "\n".join(
@@ -82,10 +84,7 @@ def vite_style(name, **kwargs):
     """ """
     defer = kwargs.get("defer", False)
 
-    if not settings.DEBUG:
-        name = clean_bundle_name(name)
-
-    path = static(name)
+    path = vite_static(name)
 
     return mark_safe(
         '<link href="{}" rel="stylesheet"{}>'.format(path, " defer" if defer else "")

@@ -5,11 +5,6 @@ from django.contrib.staticfiles.testing import LiveServerTestCase
 from django.template.loader import engines
 from playwright.sync_api import sync_playwright
 
-from django_staticfiles_vite.management.commands.runserver import (
-    patch_storage,
-    thread_vite_server,
-    restore_storage,
-)
 from django_staticfiles_vite.tests import ViteLiveServerTestCase
 
 

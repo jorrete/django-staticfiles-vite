@@ -22,7 +22,7 @@ VITE_BUNDLE_KEYWORD = getattr(
 VITE_EXTENSION_MAP = getattr(
     settings, "VITE_EXTENSION_MAP", VITE_EXTENSION_MAP_DEFAULT
 )
-VITE_OUT_DIR = str(settings.STATIC_ROOT)
+VITE_OUT_DIR = "/tmp/vite_static"
 VITE_PORT = getattr(settings, "VITE_PORT", VITE_PORT_DEFAULT) + (
     1 if TESTING else 0
 )

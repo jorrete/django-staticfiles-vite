@@ -1,36 +1,7 @@
-const { existsSync, statSync, readFileSync } = require('fs');
-const { resolve } = require('path');
+const { readFileSync } = require('fs');
+const { resolveId } = require('./utils');
 
-function resolveId(id, paths, extensions = []) {
-  // TODO check if is css and the return null
-  const match = paths
-    .map((path) => resolve(path, (id.startsWith('/') ? id.slice(1) : id)).split('?'))
-    .map(([path, query = null]) =>  {
-      if (existsSync(path)) {
-        if (statSync(path).isDirectory()) {
-          return extensions.map((ext) => {
-            const finalPath = `${path}${path.endsWith('/') ? '' : '/'}index${ext}`;
-            return (existsSync(finalPath) ? [finalPath, query] : null);
-          }).filter(Boolean).find(Boolean);
-        } else {
-          return [path, query];
-        }
-      }
-      
-      return extensions.map((ext) => {
-        const finalPath = `${path}${ext}`;
-        return (existsSync(finalPath) ? [finalPath, query] : null);
-      }).filter(Boolean).find(Boolean);
-  }).filter(Boolean).find(Boolean);
-
-  if (!match) {
-    return null;
-  }
-
-  return match.filter(Boolean).join('?');
-}
-
-function djangoStatic({ base, paths, extensions }) {
+function djangoStatic({ base, paths, extensions, addDependicies }) {
   const find = (
     base.slice(-1) === '/'
       ? base.slice(0, -1)
@@ -80,6 +51,20 @@ function djangoStatic({ base, paths, extensions }) {
           }
         });
       };
+    },
+    buildEnd(foo, bar) {
+      if (addDependicies) {
+        addDependicies(Array.from(this.getModuleIds())
+          .filter((path) => {
+            return (
+              !path.includes('node_modules')
+                && path[0] === '/'
+            )
+          })
+          .map((path) => {
+            return path.split('?')[0].replace('\x00', '')
+          }));
+      }
     },
   }
 }

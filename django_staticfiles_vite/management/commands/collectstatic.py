@@ -1,38 +1,55 @@
-from os import rename
-from os.path import isfile
+import shutil
+from os.path import exists, join
 
+from django.conf import settings
+from django.contrib.staticfiles.finders import FileSystemFinder, find, get_finders
 from django.contrib.staticfiles.management.commands.collectstatic import (
     Command as CollectStaticCommand,
 )
 from django.contrib.staticfiles.storage import staticfiles_storage
+from django.core.files import File
+from django.utils._os import safe_join
 
+from ...settings import VITE_OUT_DIR
 from ...utils import (
-    is_path_css,
+    get_bundle_css_name,
+    is_path_js,
     path_is_vite_bunlde,
-    path_is_vite_import,
     vite_build,
-    vite_postcss,
+    clean_bundle_name,
 )
 
 
-def patch_storage(storage):
-    original_post_process = staticfiles_storage.post_process
+class ViteStorage(staticfiles_storage.__class__):
+    def post_process(self, *args, **kwargs):
+        found_files = args[0]
 
-    def post_process(*args, **kwargs):
-        args = list(args)
-        args[0] = {
-            key: value
-            for key, value in args[0].items()
-            if not path_is_vite_import(key) and not path_is_vite_bunlde(key)
-        }
-        return original_post_process(*args, **kwargs)
+        for path in list(found_files.keys()):
+            if path_is_vite_bunlde(path):
+                filepath = found_files[path][1]
+                found_files[path] = (self, filepath)
 
-    staticfiles_storage.post_process = post_process
+                if is_path_js(path):
+                    path_css = get_bundle_css_name(path)
+                    filepath_css = get_bundle_css_name(filepath)
+                    if exists(self.path(filepath_css)):
+                        found_files[path_css] = (self, filepath_css)
+
+        return super().post_process(*args, **kwargs)
+
+    def _open(self, name, mode):
+        path = (
+            safe_join(VITE_OUT_DIR, name)
+            if path_is_vite_bunlde(name)
+            else self.path(name)
+        )
+        return File(open(path, mode))
 
 
 class Command(CollectStaticCommand):
-    vite_files = []
-    has_manifest = hasattr(staticfiles_storage, "manifest_name")
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.storage = ViteStorage()
 
     def add_arguments(self, parser):
         super().add_arguments(parser)
@@ -43,63 +60,55 @@ class Command(CollectStaticCommand):
             help="Serve static files from from Vite",
         )
 
-    def set_options(self, **options):
-        super().set_options(**options)
-        self.use_vite = options["vite"]
+    def vite_proccess(self):
+        self.vite_files = {}
+        vite_deps = set()
+        found_files = {}
+
+        if exists(VITE_OUT_DIR):
+            shutil.rmtree(VITE_OUT_DIR)
+
+        for finder in get_finders():
+            for path, storage in finder.list(self.ignore_patterns):
+                # Prefix the relative path if the source storage contains it
+                if getattr(storage, "prefix", None):
+                    prefixed_path = join(storage.prefix, path)
+                else:
+                    prefixed_path = path
+
+                if prefixed_path not in found_files:
+                    found_files[prefixed_path] = (path, find(path))
+
+                    if path_is_vite_bunlde(path):
+                        deps = vite_build(prefixed_path)
+
+                        for dep in deps:
+                            vite_deps.add(dep)
+
+        for prefixed_path, (path, filepath) in found_files.items():
+            if filepath in vite_deps and not path_is_vite_bunlde(prefixed_path):
+                self.vite_files[prefixed_path] = (path, filepath)
 
     def copy_file(self, path, prefixed_path, source_storage):
-        if self.use_vite:
-            if path_is_vite_bunlde(prefixed_path):
-                self.log("Vite build '%s'" % prefixed_path)
-                if is_path_css(prefixed_path):
-                    name = vite_postcss(
-                        prefixed_path,
-                        source_storage.path(prefixed_path),
-                    )
-                else:
-                    name = vite_build(
-                        prefixed_path,
-                        source_storage.path(prefixed_path),
-                    )
+        if path_is_vite_bunlde(path):
+            bundle_path = join(VITE_OUT_DIR, prefixed_path)
+            dest_path = self.storage.path(prefixed_path)
+            shutil.copy(bundle_path, dest_path)
 
-                filename = name
-
-                if self.has_manifest:
-                    filename = staticfiles_storage.hashed_name(filename)
-
-                self.vite_files.append([name, filename])
-            elif path_is_vite_import(prefixed_path):
-                self.log("Vite delete import '%s'" % prefixed_path)
-                self.delete_file(path, prefixed_path, source_storage)
-            else:
-                super().copy_file(path, prefixed_path, source_storage)
+            if is_path_js(prefixed_path):
+                bundle_path_css = get_bundle_css_name(bundle_path)
+                dest_path_css = get_bundle_css_name(dest_path)
+                if exists(bundle_path_css):
+                    shutil.copy(bundle_path_css, dest_path_css)
         else:
             super().copy_file(path, prefixed_path, source_storage)
 
     def handle(self, **options):
-        if self.has_manifest:
-            patch_storage(staticfiles_storage)
+        self.set_options(**options)
+        use_vite = options["vite"]
+
+        if use_vite:
+            self.vite_proccess()
+            options["ignore_patterns"].extend(self.vite_files.keys())
 
         super().handle(**options)
-
-        if self.use_vite and self.has_manifest:
-            for name, filename in self.vite_files:
-                # here we create hashed vite files and save it to manifest
-                staticfiles_storage.hashed_files[name] = filename
-                rename(
-                    staticfiles_storage.path(name),
-                    staticfiles_storage.path(filename),
-                )
-
-                # vite when a js file imports some styles creates a companion file
-                # let look for it and if it exits hashit and save it to manifest
-                css_name = name + ".css"
-                css_filename = filename + ".css"
-                if not is_path_css(name) and isfile(staticfiles_storage.path(css_name)):
-                    staticfiles_storage.hashed_files[css_name] = css_filename
-                    rename(
-                        staticfiles_storage.path(css_name),
-                        staticfiles_storage.path(css_filename),
-                    )
-
-            staticfiles_storage.save_manifest()
