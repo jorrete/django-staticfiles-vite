@@ -1,13 +1,14 @@
 import multiprocessing
 import os
 
+from django.conf import settings as _settings
 from django.contrib.staticfiles.management.commands.runserver import (
     Command as RunserverCommand,
 )
 from django.contrib.staticfiles.storage import staticfiles_storage
 
 from ... import settings
-from ...utils import vite_serve
+from ...utils import vite_serve, kill_vite_server
 
 _base_url = staticfiles_storage._base_url
 
@@ -44,7 +45,7 @@ class Command(RunserverCommand):
 
     def handle(self, *args, **options):
         use_vite = options["vite"]
-        if use_vite in ["auto", "external"]:
+        if _settings.DEBUG and use_vite in ["auto", "external"]:
             patch_storage()
 
             if use_vite == "auto":
@@ -53,3 +54,4 @@ class Command(RunserverCommand):
                 os.environ["DJANGO_VITE_RUNNING"] = "1"
 
         super().handle(*args, **options)
+        os.environ["DJANGO_VITE_RUNNING"] = "0"
