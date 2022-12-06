@@ -4,9 +4,10 @@ from django import template
 from django.conf import settings
 from django.templatetags.static import static
 from django.utils.safestring import mark_safe
+from django.contrib.staticfiles.storage import staticfiles_storage
 
 from ..settings import VITE_BUNDLE_KEYWORD, VITE_PORT
-from ..utils import clean_bundle_name, path_is_vite_bunlde
+from ..utils import clean_bundle_name, path_is_vite_bunlde, get_bundle_css_name
 
 register = template.Library()
 regexp = compile(
@@ -61,6 +62,7 @@ def vite_script(name, **kwargs):
     style = kwargs.get("style", False)
 
     path = vite_static(name)
+    path_css = vite_static(get_bundle_css_name(name))
 
     return mark_safe(
         "\n".join(
@@ -70,7 +72,7 @@ def vite_script(name, **kwargs):
                     " defer" if defer else "",
                 ),
                 (
-                    '<link href="{}" rel="stylesheet">'.format(path + ".css")
+                    '<link href="{}" rel="stylesheet">'.format(path_css)
                     if (style and not settings.DEBUG)
                     else ""
                 ),
