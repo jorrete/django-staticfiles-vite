@@ -1,0 +1,9 @@
+{
+  "extends": "/tmp/tsconfig.django.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "allowJs": true,
+    "maxNodeModuleJsDepth": 2,
+    "esModuleInterop": true
+  }
+}
