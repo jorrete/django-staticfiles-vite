@@ -32,7 +32,6 @@ class ViteStorage(staticfiles_storage.__class__):
                 if is_path_js(path):
                     path_css = get_bundle_css_name(path)
                     filepath_css = get_bundle_css_name(filepath)
-                    print(path_css, filepath_css)
                     if exists(self.path(filepath_css)):
                         found_files[path_css] = (self, filepath_css)
 
