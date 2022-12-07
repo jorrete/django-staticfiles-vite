@@ -6,7 +6,7 @@ function djangoStatic({ base, paths, addDependicies }) {
       const path = paths[index];
       const match = await this.resolve(`${path}${id}`);
       if (match) {
-        addDependicies([match.id.split('?')[0]]);
+        addDependicies?.([match.id.split('?')[0]]);
         return match;
       }
     }
@@ -78,18 +78,16 @@ function djangoStatic({ base, paths, addDependicies }) {
       }
     },
     buildEnd(foo, bar) {
-      if (addDependicies) {
-        addDependicies(Array.from(this.getModuleIds())
-          .filter((path) => {
-            return (
-              !path.includes('node_modules')
-                && path[0] === '/'
-            )
-          })
-          .map((path) => {
-            return path.split('?')[0].replace('\x00', '')
-          }));
-      }
+      addDependicies?.(Array.from(this.getModuleIds())
+        .filter((path) => {
+          return (
+            !path.includes('node_modules')
+              && path[0] === '/'
+          )
+        })
+        .map((path) => {
+          return path.split('?')[0].replace('\x00', '')
+        }));
     },
   }
 }
