@@ -16,7 +16,7 @@ regexp = compile(
 
 
 def build_vite_url(name):
-    return "http://localhost:{}/{}".format(VITE_PORT, name)
+    return "http://localhost:{}/static/{}".format(VITE_PORT, name)
 
 
 @register.simple_tag
@@ -24,7 +24,8 @@ def vite_hrm(*args):
     if not settings.DEBUG:
         return ""
 
-    path = build_vite_url("@vite/client")
+    # path = build_vite_url("@vite/client")
+    path = "http://localhost:{}/{}".format(VITE_PORT, "@vite/client")
 
     return mark_safe('<script type="module" src="{}"></script>'.format(path))
 
@@ -52,7 +53,7 @@ def vite_static(name):
         name = clean_bundle_name(name)
         return static(name)
 
-    return "http://localhost:{}/{}".format(VITE_PORT, name)
+    return build_vite_url(name)
 
 
 @register.simple_tag

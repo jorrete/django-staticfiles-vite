@@ -9,6 +9,7 @@
   "dependencies": {
     "postcss-import": "^14.0.2",
     "postcss-minify": "^1.1.0",
+    "postcss-replace": "^2.0.0",
     "vite": "^3.2.4"
   }
 }

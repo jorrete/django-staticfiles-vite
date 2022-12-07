@@ -6,8 +6,8 @@ module.exports = defineConfig({
     preact(),
   ],
   build: {
-    // minify: false,
-    minify: 'esbuild',
+    minify: false,
+    // minify: 'esbuild',
   },
   esbuild: {
     drop: ['console', 'debugger'],

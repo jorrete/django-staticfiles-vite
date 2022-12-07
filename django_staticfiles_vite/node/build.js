@@ -4,6 +4,8 @@ const { build, defineConfig, mergeConfig, loadConfigFromFile } = require('vite')
 const { resolveId } = require('./utils');
 const { mkdirSync, writeFileSync, readFileSync, readFile, unlinkSync } = require('fs');
 const { join, dirname } = require('path');
+const replace = require("postcss-replace");
+const { deprecate } = require('util');
 
 const {
   filename,
@@ -43,36 +45,53 @@ function getEntryPath(filename, paths, extensions) {
   const extensions = [].concat(jsExtensions, cssExtensions);
   const dependencies = [];
   const cleanName = filename.split('?')[0];
-  const entry = getEntryPath(cleanName, paths, extensions);
+  const entry = '/home/jorro/Development/python/django-staticfiles-vite/test_app/django/www/static/' + cleanName;
 
   function addDependicies(deps) {
     dependencies.push(...deps);
   }
 
-  console.log(dirname(join(outDir, name)));
+  console.log(name, entry);
 
   const finalConfig = mergeConfig(
     (await loadConfigFromFile())?.config,
     {
-      appType: 'custom',
+      publicDir: false,
+      root: process.cwd(),
+      clearScreen: false,
+      appType: 'custom', // don't include html middlewares
       configFile: false,
       envFile: false,
-      root: process.cwd(),
-      resolve: {
-        extensions: jsExtensions,
+      css: {
+        postcss: {
+          plugins: [
+            replace({
+              pattern: '/static/',
+              data: {
+                replaceAll: 'http://foo.com/static/',
+              },
+            }),
+            replace({
+              pattern: 'static@',
+              data: {
+                replaceAll: 'http://foo.com/static/',
+              },
+            }),
+          ],
+        },
       },
       plugins: [
         {
           ...djangoStatic({
             base,
             paths,
-            extensions,
             addDependicies,
           }),
           enforce: 'pre',
         },
       ],
       build: {
+        assetsInlineLimit: 10,
         emptyOutDir: false,
         outDir,
         rollupOptions: {
@@ -103,8 +122,8 @@ function getEntryPath(filename, paths, extensions) {
   await build(defineConfig(finalConfig));
 
   if (isCSS(cleanName)) {
-    unlinkSync(entry);
+    unlinkSync(join(outDir, cleanName + '.js'));
   }
 
-  process.stdout.write(JSON.stringify(dependencies));
+  process.stdout.write(JSON.stringify(Array.from(new Set(dependencies))));
 })()

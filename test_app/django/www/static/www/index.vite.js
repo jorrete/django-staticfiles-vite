@@ -1,5 +1,6 @@
-// import from directory
-import mongo from '/static/www/mongo';
+// import static
+import mongo from 'static@www/mongo/index.js';
+console.log(mongo);
 // import relative
 import foo from './foo';
 // check preact render
@@ -14,6 +15,7 @@ import deepClone from 'deep-clone';
 import './styles.css';
 import styles from './styles2.css';
 import './main';
+import './raw.css';
 
 console.log(deepClone);
 console.log(styles);

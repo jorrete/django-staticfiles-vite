@@ -15,22 +15,17 @@ const {
   const finalConfig = mergeConfig(
     (await loadConfigFromFile())?.config,
     {
-      base,
       publicDir: false,
       root: process.cwd(),
       clearScreen: false,
       appType: 'custom', // don't include html middlewares
       configFile: false,
       envFile: false,
-      resolve: {
-        extensions: jsExtensions,
-      },
       plugins: [
         {
           ...djangoStatic({
             base,
             paths,
-            extensions: [].concat(jsExtensions, cssExtensions),
           }),
           enforce: 'pre',
         },
