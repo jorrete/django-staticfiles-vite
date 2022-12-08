@@ -25,14 +25,13 @@ class ViteStorage(staticfiles_storage.__class__):
     def post_process(self, *args, **kwargs):
         found_files = args[0]
 
-        for path in list(found_files.keys()):
-            if path_is_vite_bunlde(path):
-                filepath = found_files[path][1]
-                found_files[path] = (self, filepath)
+        for prefixed_path in list(found_files.keys()):
+            if path_is_vite_bunlde(prefixed_path):
+                found_files[prefixed_path] = (self, prefixed_path)
 
-                if is_path_js(path):
-                    path_css = get_bundle_css_name(path)
-                    filepath_css = get_bundle_css_name(filepath)
+                if is_path_js(prefixed_path):
+                    path_css = get_bundle_css_name(prefixed_path)
+                    filepath_css = get_bundle_css_name(prefixed_path)
                     if exists(self.path(filepath_css)):
                         found_files[path_css] = (self, filepath_css)
 
