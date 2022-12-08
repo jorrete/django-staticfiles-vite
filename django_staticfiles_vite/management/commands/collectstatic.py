@@ -81,6 +81,7 @@ class Command(CollectStaticCommand):
                     found_files[prefixed_path] = (path, find(path))
 
                     if path_is_vite_bunlde(path):
+                        self.log("Vite building '%s'" % prefixed_path, level=1)
                         deps = vite_build(prefixed_path, find(path))
 
                         for dep in deps:
