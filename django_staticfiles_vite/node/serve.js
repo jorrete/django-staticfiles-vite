@@ -26,6 +26,7 @@ const {
           ...djangoStatic({
             base,
             paths,
+            command: 'serve',
           }),
           enforce: 'pre',
         },

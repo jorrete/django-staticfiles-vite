@@ -86,6 +86,7 @@ function getEntryPath(filename, paths, extensions) {
             base,
             paths,
             addDependicies,
+            command: 'build',
           }),
           enforce: 'pre',
         },

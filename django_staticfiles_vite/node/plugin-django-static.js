@@ -1,6 +1,6 @@
 const vite = require('vite');
 
-function djangoStatic({ base, paths, addDependicies }) {
+function djangoStatic({ base, paths, command, addDependicies }) {
   async function djangoResolver(id) {
     for (let index = 0; index < paths.length; index++) {
       const path = paths[index];
@@ -57,14 +57,12 @@ function djangoStatic({ base, paths, addDependicies }) {
       resolve: {
         alias: [
           {
-            // find: findStaticAliasServe,
-            find: findStaticAliasBuild,
+            find: command === 'build' ? findStaticAliasBuild : findStaticAliasServe,
             replacement: '/$1',
             customResolver: djangoResolver,
           },
           {
-            // find: findStaticBaseServe,
-            find: findStaticBaseBuild,
+            find: command === 'build' ? findStaticBaseBuild : findStaticBaseServe,
             replacement: '/$1',
             customResolver: djangoResolver,
           },
