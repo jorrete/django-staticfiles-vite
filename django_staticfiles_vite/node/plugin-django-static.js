@@ -1,5 +1,5 @@
 const vite = require('vite');
-const { resolveId, extensions, STATIC_TOKEN } = require('./utils');
+const { resolveId, excludeExtCSS, hasExtension, STATIC_TOKEN, isCSS } = require('./utils');
 
 function djangoStatic({
   addDependicies,
@@ -7,10 +7,6 @@ function djangoStatic({
   command,
   paths,
 }) {
-  const findStaticAliasBuild = new RegExp(`^${STATIC_TOKEN}(?!.*\.(${extensions.join('|')}))`)
-  const findStaticAliasServe = new RegExp(`^${STATIC_TOKEN}(.*)`);
-  const findStaticBaseServe = new RegExp(`^${base}(.*)`);
-
   return {
     name: 'django-static',
     config: () => ({
@@ -21,9 +17,17 @@ function djangoStatic({
       resolve: {
         alias: [
           {
-            find: command === 'build' ? findStaticAliasBuild : findStaticAliasServe,
+            find: findStaticAliasServe = new RegExp(`^${STATIC_TOKEN}(.*)`),
             replacement: '/$1',
             async customResolver(id, importer) {
+              if (command === 'build') {
+                if (isCSS(importer)) {
+                  if (hasExtension(id, excludeExtCSS)) {
+                    return null;
+                  }
+                }
+              }
+
               const match = await resolveId.call(this, id, paths);
 
               if (match) {
@@ -33,7 +37,7 @@ function djangoStatic({
             },
           },
           command === 'serve' ? {
-            find: findStaticBaseServe,
+            find: findStaticBaseServe = new RegExp(`^${base}(.*)`),
             replacement: '/$1',
             async customResolver(id, importer) {
               if (!importer.endsWith('.html')) {

@@ -1,3 +1,7 @@
+const { extname } = require('path');
+
+const STATIC_TOKEN = 'static@';
+
 async function resolveId(id, paths) {
   for (let index = 0; index < paths.length; index++) {
     const path = paths[index];
@@ -7,6 +11,31 @@ async function resolveId(id, paths) {
     }
   }
 }
+
+function hasExtension(filename, extensions) {
+  return extensions.some((ext) => (new RegExp(ext).test(extname(filename).slice(1))));
+}
+
+function isCSS(filename) {
+  return hasExtension(filename, [
+    "css",
+    "scss",
+    "sass",
+  ]);
+}
+
+const excludeExtCSS = [
+  'png',
+  'jpe?g',
+  'jfif',
+  'pjpeg',
+  'pjp',
+  'gif',
+  'svg',
+  'ico',
+  'webp',
+  'avif',
+];
 
 const extensions = [
   // images
@@ -42,19 +71,11 @@ const extensions = [
   'txt',
 ];
 
-function isCSS(filename) {
-  return [
-    "css",
-    "scss",
-    "sass",
-  ].some((ext) => filename.endsWith(ext));
-}
-
-const STATIC_TOKEN = 'static@';
-
 module.exports = {
   resolveId,
   extensions,
+  hasExtension,
+  excludeExtCSS,
   isCSS,
   STATIC_TOKEN,
 };

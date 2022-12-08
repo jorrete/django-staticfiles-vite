@@ -16,6 +16,8 @@ import './styles.css';
 import styles from './styles2.css';
 import './main';
 import './raw.css';
+import fox from 'static@www/pics/fox.txt';
+console.log(fox);
 
 console.log(deepClone);
 console.log(styles);

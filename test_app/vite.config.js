@@ -9,7 +9,7 @@ module.exports = defineConfig({
     minify: false,
     // minify: 'esbuild',
   },
-  esbuild: {
-    drop: ['console', 'debugger'],
-  },
+  // esbuild: {
+  //   drop: ['console', 'debugger'],
+  // },
 });
