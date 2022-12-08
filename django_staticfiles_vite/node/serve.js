@@ -4,8 +4,8 @@ const { defineConfig, createServer, mergeConfig, loadConfigFromFile } = require(
 const djangoStatic = require('./plugin-django-static');
 
 const {
-  base,
   paths,
+  base,
   port,
 } = JSON.parse(process.argv[2] || '{}');
 
