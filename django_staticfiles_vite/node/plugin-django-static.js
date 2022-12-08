@@ -1,7 +1,15 @@
 const vite = require('vite');
+const { resolveId } = require('./utils');
 
 function djangoStatic({ base, paths, command, addDependicies }) {
   async function djangoResolver(id) {
+    const match = await resolveId.call(this, id, paths);
+
+    if (match) {
+      addDependicies?.([match.id.split('?')[0]]);
+      return match;
+    }
+
     for (let index = 0; index < paths.length; index++) {
       const path = paths[index];
       const match = await this.resolve(`${path}${id}`);
@@ -53,6 +61,10 @@ function djangoStatic({ base, paths, command, addDependicies }) {
   return {
     name: 'django-static',
     config: () => ({
+      publicDir: false,
+      root: process.cwd(),
+      clearScreen: false,
+      appType: 'custom', // don't include html middlewares
       resolve: {
         alias: [
           {

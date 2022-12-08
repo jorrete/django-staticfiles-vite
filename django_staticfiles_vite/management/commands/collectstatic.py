@@ -7,6 +7,7 @@ from django.contrib.staticfiles.management.commands.collectstatic import (
     Command as CollectStaticCommand,
 )
 from django.contrib.staticfiles.storage import staticfiles_storage
+from django.contrib.staticfiles.finders import find
 from django.core.files import File
 from django.utils._os import safe_join
 
@@ -80,7 +81,7 @@ class Command(CollectStaticCommand):
                     found_files[prefixed_path] = (path, find(path))
 
                     if path_is_vite_bunlde(path):
-                        deps = vite_build(prefixed_path)
+                        deps = vite_build(prefixed_path, find(path))
 
                         for dep in deps:
                             vite_deps.add(dep)

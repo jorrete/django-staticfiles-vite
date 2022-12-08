@@ -15,10 +15,6 @@ const {
   const finalConfig = mergeConfig(
     (await loadConfigFromFile())?.config,
     {
-      publicDir: false,
-      root: process.cwd(),
-      clearScreen: false,
-      appType: 'custom', // don't include html middlewares
       configFile: false,
       envFile: false,
       plugins: [

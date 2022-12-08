@@ -8,14 +8,12 @@ const replace = require("postcss-replace");
 const { deprecate } = require('util');
 
 const {
-  filename,
+  base,
+  entry,
   format,
   name,
   outDir,
   paths,
-  cssExtensions,
-  jsExtensions,
-  base,
 } = JSON.parse(process.argv[2] || '{}');
 
 function isCSS(filename) {
@@ -26,42 +24,20 @@ function isCSS(filename) {
   ].some((ext) => filename.endsWith(ext));
 }
 
-function getEntryPath(filename, paths, extensions) {
-  let entry = resolveId(filename, paths, extensions);
-
-  if (!isCSS(filename)) {
-    return entry;
-  }
-  const cssEntry = join(outDir, filename + '.js');
-
-  writeFileSync(cssEntry, `import '${filename}';`);
-
-  return cssEntry;
-}
-
 (async () => {
   mkdirSync(dirname(join(outDir, name)), { recursive: true });
-
-  const extensions = [].concat(jsExtensions, cssExtensions);
   const dependencies = [];
-  const cleanName = filename.split('?')[0];
-  const entry = '/home/jorro/Development/python/django-staticfiles-vite/test_app/django/www/static/' + cleanName;
 
   function addDependicies(deps) {
     dependencies.push(...deps);
   }
 
-  console.log(name, entry);
-
   const finalConfig = mergeConfig(
     (await loadConfigFromFile())?.config,
     {
-      publicDir: false,
-      root: process.cwd(),
-      clearScreen: false,
-      appType: 'custom', // don't include html middlewares
       configFile: false,
       envFile: false,
+      logLevel: 'silent', // since the assets management to avoid inlining is it a hack supress warnings
       css: {
         postcss: {
           plugins: [
@@ -98,7 +74,7 @@ function getEntryPath(filename, paths, extensions) {
         rollupOptions: {
           output: {
             assetFileNames: () => {
-              if (isCSS(cleanName)) {
+              if (isCSS(entry)) {
                 return `${name}.css`
               }
               return `${name}.js.css`
@@ -110,7 +86,7 @@ function getEntryPath(filename, paths, extensions) {
           formats: [format],
           name,
           fileName: () => {
-            if (isCSS(cleanName)) {
+            if (isCSS(entry)) {
               return `${name}.css.js`
             }
             return `${name}.js`
@@ -122,8 +98,8 @@ function getEntryPath(filename, paths, extensions) {
 
   await build(defineConfig(finalConfig));
 
-  if (isCSS(cleanName)) {
-    unlinkSync(join(outDir, cleanName + '.js'));
+  if (isCSS(entry)) {
+    unlinkSync(join(outDir, `${name}.css.js`));
   }
 
   process.stdout.write(JSON.stringify(Array.from(new Set(dependencies))));

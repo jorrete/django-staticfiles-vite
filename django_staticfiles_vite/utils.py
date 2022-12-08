@@ -109,24 +109,21 @@ def vite_serve():
     )
 
 
-def vite_build(name):
+def vite_build(name, filename):
     paths = apps.get_app_config("django_staticfiles_vite").paths
-    base, extension = splitext(clean_bundle_name(name))
-    filename = "{}{}".format(base, extension)
+    base, _ = splitext(name)
     arguments = dumps(
         {
             "base": VITE_URL,
-            "cssExtensions": CSS_EXTENSIONS,
-            "jsExtensions": JS_EXTENSIONS,
-            "filename": filename,
+            "entry": filename,
             "format": "iife",
             "name": base,
             "outDir": VITE_OUT_DIR,
             "paths": paths,
         }
     )
-
     env = os.environ.copy()
+    # print(arguments)
 
     pipe = subprocess.run(
         args=[
