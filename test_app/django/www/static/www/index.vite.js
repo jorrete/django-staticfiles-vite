@@ -1,6 +1,6 @@
-// import static
 import mongo from 'static@www/mongo/index.js';
 console.log(mongo);
+import 'static@download/congo.js';
 // import relative
 import foo from './foo';
 // check preact render

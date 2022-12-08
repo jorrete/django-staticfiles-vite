@@ -5,7 +5,15 @@ const STATIC_TOKEN = 'static@';
 async function resolveId(id, paths) {
   for (let index = 0; index < paths.length; index++) {
     const [alias, path] = paths[index];
-    const match = await this.resolve(join(path, id));
+
+    const name = (
+      id.startsWith(`${alias}/`)
+        ? id.replace(`${alias}/`, '')
+        : id
+    );
+
+    const match = await this.resolve(join(path, name));
+
     if (match) {
       return match;
     }
