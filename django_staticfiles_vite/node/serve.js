@@ -50,7 +50,7 @@ const {
         fs: {
           strict: true,
           allow: [
-            ...paths,
+            ...paths.map(([alias, path]) => path),
             resolve(process.cwd(), 'node_modules'),
           ]
         }
