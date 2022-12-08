@@ -137,3 +137,7 @@ def vite_build(name, filename):
 def is_path_js(path):
     _, extension = splitext(path)
     return extension in JS_EXTENSIONS
+
+
+def clean_path(path):
+    return path.replace("lib64", "lib")

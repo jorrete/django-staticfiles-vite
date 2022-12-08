@@ -1,24 +1,63 @@
+import os
 import shutil
 from os.path import exists, join
 
 from django.conf import settings
+from django.contrib.staticfiles import utils
 from django.contrib.staticfiles.finders import FileSystemFinder, find, get_finders
 from django.contrib.staticfiles.management.commands.collectstatic import (
     Command as CollectStaticCommand,
 )
 from django.contrib.staticfiles.storage import staticfiles_storage
-from django.contrib.staticfiles.finders import find
 from django.core.files import File
 from django.utils._os import safe_join
 
-from ...settings import VITE_OUT_DIR
+from ...settings import VITE_IGNORE_EXCLUDE, VITE_OUT_DIR
 from ...utils import (
+    clean_bundle_name,
+    clean_path,
     get_bundle_css_name,
     is_path_js,
     path_is_vite_bunlde,
     vite_build,
-    clean_bundle_name,
 )
+
+
+def get_files_patched(storage, ignore_patterns=None, location=""):
+    """
+    Recursively walk the storage directories yielding the paths
+    of all files that should be copied.
+    """
+    if ignore_patterns is None:
+        ignore_patterns = []
+    directories, files = storage.listdir(location)
+    prefix = getattr(storage, "prefix", None)
+
+    for fn in files:
+        # Match only the basename.
+        if utils.matches_patterns(fn, ignore_patterns):
+            continue
+
+        if prefix and utils.matches_patterns(join(prefix, fn), ignore_patterns):
+            continue
+
+        if location:
+            fn = os.path.join(location, fn)
+            # Match the full file path.
+            if utils.matches_patterns(fn, ignore_patterns):
+                continue
+        yield fn
+    for dir in directories:
+        if utils.matches_patterns(dir, ignore_patterns):
+            continue
+        if prefix and utils.matches_patterns(join(prefix, dir), ignore_patterns):
+            continue
+        if location:
+            dir = os.path.join(location, dir)
+        yield from get_files_patched(storage, ignore_patterns, dir)
+
+
+utils.get_files = get_files_patched
 
 
 class ViteStorage(staticfiles_storage.__class__):
@@ -86,8 +125,14 @@ class Command(CollectStaticCommand):
                             vite_deps.add(dep)
 
         for prefixed_path, (path, filepath) in found_files.items():
-            if filepath in vite_deps and not path_is_vite_bunlde(prefixed_path):
-                self.vite_files.append(path)
+            filepath = clean_path(filepath)
+            if (
+                filepath in vite_deps
+                and not path_is_vite_bunlde(prefixed_path)
+                and prefixed_path not in VITE_IGNORE_EXCLUDE
+            ):
+                # self.vite_files.append(path)
+                self.vite_files.append(prefixed_path)
 
     def copy_file(self, path, prefixed_path, source_storage):
         if path_is_vite_bunlde(path):
@@ -111,4 +156,8 @@ class Command(CollectStaticCommand):
             self.vite_proccess()
             options["ignore_patterns"].extend(self.vite_files)
 
+        print(self.vite_files)
         super().handle(**options)
+
+
+# ['download/congo.js', 'test_preact/App.jsx', 'test_preact/App.module.scss', 'www/App.module.scss', 'www/font.scss', 'www/foo.js', 'www/styles.css', 'www/styles2.css', 'www/App.jsx', 'www/main.js', 'www/raw.css', 'www/mongo/index.js', 'www/pics/fox.txt']

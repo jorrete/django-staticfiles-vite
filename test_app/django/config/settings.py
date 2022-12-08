@@ -137,3 +137,8 @@ STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesSto
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# vite
+VITE_IGNORE_EXCLUDE = [
+    "admin/css/nav_sidebar.css",
+]

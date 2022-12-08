@@ -1,9 +1,7 @@
 from django.apps import AppConfig, apps
 from django.contrib.staticfiles.finders import get_finders
 
-
-def clean_path(path):
-    return path.replace("lib64", "lib")
+from .utils import clean_path
 
 
 def get_static_paths():
