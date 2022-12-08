@@ -5,7 +5,6 @@ const STATIC_TOKEN = 'static@';
 async function resolveId(id, paths) {
   for (let index = 0; index < paths.length; index++) {
     const match = await this.resolve(join(paths[index], id));
-
     if (match) {
       return match;
     }

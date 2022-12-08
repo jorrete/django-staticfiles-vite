@@ -19,7 +19,7 @@ function djangoStatic({
           {
             find: findStaticAliasServe = new RegExp(`^${STATIC_TOKEN}(.*)`),
             replacement: '$1',
-            async customResolver(id, importer) {
+            async customResolver(id, importer, foo, bar) {
               if (id.startsWith('/')) {
                 return null;
               }

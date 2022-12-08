@@ -2,6 +2,8 @@
 const { resolve } = require('path');
 const { defineConfig, createServer, mergeConfig, loadConfigFromFile } = require('vite');
 const djangoStatic = require('./plugin-django-static');
+const replace = require("postcss-replace");
+const { STATIC_TOKEN } = require('./utils');
 
 const {
   paths,
@@ -15,6 +17,18 @@ const {
     {
       configFile: false,
       envFile: false,
+      css: {
+        postcss: {
+          plugins: [
+            replace({
+              pattern: /(url\(["\']?)/,
+              data: {
+                replaceAll: `$1http://localhost:${port}`,
+              },
+            }),
+          ],
+        },
+      },
       plugins: [
         {
           ...djangoStatic({

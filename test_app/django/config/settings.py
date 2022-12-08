@@ -127,6 +127,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [
+    ("download", BASE_DIR / "static"),
     BASE_DIR / "tests/test_suite",
 ]
 STATIC_ROOT = BASE_DIR / "../.django" / "collectedstatic"
