@@ -18,8 +18,12 @@ function djangoStatic({
         alias: [
           {
             find: findStaticAliasServe = new RegExp(`^${STATIC_TOKEN}(.*)`),
-            replacement: '/$1',
+            replacement: '$1',
             async customResolver(id, importer) {
+              if (id[0] === '/') {
+                return;
+              }
+
               if (command === 'build') {
                 if (isCSS(importer)) {
                   if (hasExtension(id, excludeExtCSS)) {
@@ -28,7 +32,7 @@ function djangoStatic({
                 }
               }
 
-              const match = await resolveId.call(this, id, paths);
+              const match = await resolveId.call(this, '/' + id, paths);
 
               if (match) {
                 addDependicies?.([match.id.split('?')[0]]);
@@ -38,13 +42,17 @@ function djangoStatic({
           },
           command === 'serve' ? {
             find: findStaticBaseServe = new RegExp(`^${base}(.*)`),
-            replacement: '/$1',
+            replacement: '$1',
             async customResolver(id, importer) {
+              if (id[0] === '/') {
+                return;
+              }
+
               if (!importer.endsWith('.html')) {
                 return null;
               }
 
-              return await resolveId.call(this, id, paths);
+              return await resolveId.call(this, '/' + id, paths);
             },
           } : null,
         ].filter(Boolean),
