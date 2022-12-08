@@ -1,15 +1,17 @@
-const { extname } = require('path');
+const { extname, join } = require('path');
 
 const STATIC_TOKEN = 'static@';
 
 async function resolveId(id, paths) {
   for (let index = 0; index < paths.length; index++) {
-    const path = paths[index];
-    const match = await this.resolve(`${path}${id}`);
+    const match = await this.resolve(join(paths[index], id));
+
     if (match) {
       return match;
     }
   }
+
+  return null;
 }
 
 function hasExtension(filename, extensions) {

@@ -32,7 +32,7 @@ function djangoStatic({
                 }
               }
 
-              const match = await resolveId.call(this, '/' + id, paths);
+              const match = await resolveId.call(this, id, paths);
 
               if (match) {
                 addDependicies?.([match.id.split('?')[0]]);
@@ -52,7 +52,7 @@ function djangoStatic({
                 return null;
               }
 
-              return await resolveId.call(this, '/' + id, paths);
+              return await resolveId.call(this, id, paths);
             },
           } : null,
         ].filter(Boolean),
