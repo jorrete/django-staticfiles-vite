@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const djangoStatic = require('./plugin-django-static');
 const { build, defineConfig, mergeConfig, loadConfigFromFile } = require('vite');
-const { resolveId } = require('./utils');
+const { resolveId, isCSS } = require('./utils');
 const { mkdirSync, writeFileSync, readFileSync, readFile, unlinkSync } = require('fs');
 const { join, dirname } = require('path');
 const replace = require("postcss-replace");
@@ -15,14 +15,6 @@ const {
   outDir,
   paths,
 } = JSON.parse(process.argv[2] || '{}');
-
-function isCSS(filename) {
-  return [
-    "css",
-    "scss",
-    "sass",
-  ].some((ext) => filename.endsWith(ext));
-}
 
 (async () => {
   mkdirSync(dirname(join(outDir, name)), { recursive: true });

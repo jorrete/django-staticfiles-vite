@@ -42,7 +42,16 @@ const extensions = [
   'txt',
 ];
 
+function isCSS(filename) {
+  return [
+    "css",
+    "scss",
+    "sass",
+  ].some((ext) => filename.endsWith(ext));
+}
+
 module.exports = {
   resolveId,
   extensions,
+  isCSS,
 };
