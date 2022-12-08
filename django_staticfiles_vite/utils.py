@@ -123,7 +123,6 @@ def vite_build(name, filename):
         }
     )
     env = os.environ.copy()
-    # print(arguments)
 
     pipe = subprocess.run(
         args=[
