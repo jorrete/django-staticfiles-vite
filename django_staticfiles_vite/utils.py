@@ -81,11 +81,8 @@ def vite_serve():
     arguments = dumps(
         {
             "base": VITE_URL,
-            "cssExtensions": CSS_EXTENSIONS,
-            "jsExtensions": JS_EXTENSIONS,
             "paths": paths if settings.DEBUG else [str(settings.STATIC_ROOT)],
             "port": VITE_PORT,
-            "root": VITE_ROOT if settings.DEBUG else str(settings.STATIC_ROOT),
         }
     )
 
@@ -94,8 +91,6 @@ def vite_serve():
 
     env = os.environ.copy()
 
-    # Can't remeber why here use subprocess and os.system in others
-    # maybe because it's a live command
     subprocess.run(
         args=[
             "npx",

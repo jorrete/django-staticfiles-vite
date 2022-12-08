@@ -6,8 +6,6 @@ const djangoStatic = require('./plugin-django-static');
 const {
   paths,
   base,
-  cssExtensions,
-  jsExtensions,
   port,
 } = JSON.parse(process.argv[2] || '{}');
 
