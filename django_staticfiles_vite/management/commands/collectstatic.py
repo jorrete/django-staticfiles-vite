@@ -156,8 +156,4 @@ class Command(CollectStaticCommand):
             self.vite_proccess()
             options["ignore_patterns"].extend(self.vite_files)
 
-        print(self.vite_files)
         super().handle(**options)
-
-
-# ['download/congo.js', 'test_preact/App.jsx', 'test_preact/App.module.scss', 'www/App.module.scss', 'www/font.scss', 'www/foo.js', 'www/styles.css', 'www/styles2.css', 'www/App.jsx', 'www/main.js', 'www/raw.css', 'www/mongo/index.js', 'www/pics/fox.txt']
