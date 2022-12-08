@@ -20,8 +20,8 @@ function djangoStatic({
             find: findStaticAliasServe = new RegExp(`^${STATIC_TOKEN}(.*)`),
             replacement: '$1',
             async customResolver(id, importer) {
-              if (id[0] === '/') {
-                return;
+              if (id.startsWith('/')) {
+                return null;
               }
 
               if (command === 'build') {
@@ -44,8 +44,8 @@ function djangoStatic({
             find: findStaticBaseServe = new RegExp(`^${base}(.*)`),
             replacement: '$1',
             async customResolver(id, importer) {
-              if (id[0] === '/') {
-                return;
+              if (id.startsWith('/')) {
+                return null;
               }
 
               if (!importer.endsWith('.html')) {
