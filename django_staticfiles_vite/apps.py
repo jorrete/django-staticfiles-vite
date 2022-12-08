@@ -2,15 +2,19 @@ from django.apps import AppConfig, apps
 from django.contrib.staticfiles.finders import get_finders
 
 
+def clean_path(path):
+    return path.replace("lib64", "lib")
+
+
 def get_static_paths():
     paths = []
     for finder in get_finders():
         if getattr(finder, "apps", None):
-            paths.extend([finder.storages[app].location for app in finder.apps])
+            paths.extend([['', clean_path(finder.storages[app].location)] for app in finder.apps])
         elif getattr(finder, "locations", None):
-            paths.extend([str(path[1]) for path in finder.locations])
+            paths.extend([[path[0], clean_path(str(path[1]))] for path in finder.locations])
 
-    return [path.replace("lib64", "lib") for path in paths]
+    return paths
 
 
 class StaticfilesViteConfig(AppConfig):

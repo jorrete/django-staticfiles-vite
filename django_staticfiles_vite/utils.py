@@ -77,7 +77,7 @@ def kill_vite_server():
 
 
 def vite_serve():
-    paths = apps.get_app_config("django_staticfiles_vite").paths
+    paths = [path[1] for path in apps.get_app_config("django_staticfiles_vite").paths]
     arguments = dumps(
         {
             "base": VITE_URL,
@@ -105,7 +105,7 @@ def vite_serve():
 
 
 def vite_build(name, filename):
-    paths = apps.get_app_config("django_staticfiles_vite").paths
+    paths = [path[1] for path in apps.get_app_config("django_staticfiles_vite").paths]
     base, _ = splitext(name)
     arguments = dumps(
         {
