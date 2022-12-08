@@ -62,7 +62,7 @@ class Command(CollectStaticCommand):
         )
 
     def vite_proccess(self):
-        self.vite_files = {}
+        self.vite_files = []
         vite_deps = set()
         found_files = {}
 
@@ -78,18 +78,17 @@ class Command(CollectStaticCommand):
                     prefixed_path = path
 
                 if prefixed_path not in found_files:
-                    found_files[prefixed_path] = (path, find(path))
+                    found_files[prefixed_path] = (path, find(prefixed_path))
 
                     if path_is_vite_bunlde(path):
                         self.log("Vite building '%s'" % prefixed_path, level=1)
-                        deps = vite_build(prefixed_path, find(path))
-
+                        deps = vite_build(prefixed_path, find(prefixed_path))
                         for dep in deps:
                             vite_deps.add(dep)
 
         for prefixed_path, (path, filepath) in found_files.items():
             if filepath in vite_deps and not path_is_vite_bunlde(prefixed_path):
-                self.vite_files[prefixed_path] = (path, filepath)
+                self.vite_files.append(path)
 
     def copy_file(self, path, prefixed_path, source_storage):
         if path_is_vite_bunlde(path):
@@ -111,6 +110,6 @@ class Command(CollectStaticCommand):
 
         if use_vite:
             self.vite_proccess()
-            options["ignore_patterns"].extend(self.vite_files.keys())
+            options["ignore_patterns"].extend(self.vite_files)
 
         super().handle(**options)
