@@ -52,7 +52,7 @@ function djangoStatic({
         return []
       }
     },
-    buildEnd(foo, bar) {
+    buildEnd() {
       addDependicies?.(Array.from(this.getModuleIds())
         .filter((path) => {
           return (
