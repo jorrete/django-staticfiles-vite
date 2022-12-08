@@ -46,7 +46,7 @@ function djangoStatic({ base, paths, command, addDependicies }) {
     'txt',
   ];
   const findStaticAliasBuild = new RegExp(`^static@(?!.*\.(${extensions.join('|')}))`)
-  const findStaticAliasServe = /^static@(.*)/;
+  const findStaticAliasServe = new RegExp('^static@(.*)');
   const findStaticBaseBuild = new RegExp(`^${base}(?!.*\.(${extensions.join('|')}))`)
   const findStaticBaseServe = new RegExp(`^${base}(.*)`);
 
