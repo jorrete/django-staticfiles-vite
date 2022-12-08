@@ -40,22 +40,7 @@ function djangoStatic({
               }
             },
           },
-          // command === 'serve' ? {
-          //   find: findStaticBaseServe = new RegExp(`^${base}(.*)`),
-          //   replacement: '$1',
-          //   async customResolver(id, importer) {
-          //     if (id.startsWith('/')) {
-          //       return null;
-          //     }
-          //
-          //     if (!importer.endsWith('.html')) {
-          //       return null;
-          //     }
-          //
-          //     return await resolveId.call(this, id, paths);
-          //   },
-          // } : null,
-        ].filter(Boolean),
+        ],
       }
     }),
     handleHotUpdate(ctx) {
