@@ -42,15 +42,9 @@ function isCSS(filename) {
         postcss: {
           plugins: [
             replace({
-              pattern: '/static/',
-              data: {
-                replaceAll: 'http://foo.com/static/',
-              },
-            }),
-            replace({
               pattern: 'static@',
               data: {
-                replaceAll: 'http://foo.com/static/',
+                replaceAll: base,
               },
             }),
           ],

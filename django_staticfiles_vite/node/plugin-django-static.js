@@ -1,61 +1,14 @@
 const vite = require('vite');
-const { resolveId } = require('./utils');
+const { resolveId, extensions } = require('./utils');
 
-function djangoStatic({ base, paths, command, addDependicies }) {
-  async function djangoResolver(id) {
-    const match = await resolveId.call(this, id, paths);
-
-    if (match) {
-      addDependicies?.([match.id.split('?')[0]]);
-      return match;
-    }
-
-    for (let index = 0; index < paths.length; index++) {
-      const path = paths[index];
-      const match = await this.resolve(`${path}${id}`);
-      if (match) {
-        addDependicies?.([match.id.split('?')[0]]);
-        return match;
-      }
-    }
-  }
-
-  const extensions = [
-    // images
-    'png',
-    'jpe?g',
-    'jfif',
-    'pjpeg',
-    'pjp',
-    'gif',
-    'svg',
-    'ico',
-    'webp',
-    'avif',
-
-    // media
-    'mp4',
-    'webm',
-    'ogg',
-    'mp3',
-    'wav',
-    'flac',
-    'aac',
-
-    // fonts
-    'woff2?',
-    'eot',
-    'ttf',
-    'otf',
-
-    // other
-    'webmanifest',
-    'pdf',
-    'txt',
-  ];
+function djangoStatic({
+  addDependicies,
+  base,
+  command,
+  paths,
+}) {
   const findStaticAliasBuild = new RegExp(`^static@(?!.*\.(${extensions.join('|')}))`)
   const findStaticAliasServe = new RegExp('^static@(.*)');
-  const findStaticBaseBuild = new RegExp(`^${base}(?!.*\.(${extensions.join('|')}))`)
   const findStaticBaseServe = new RegExp(`^${base}(.*)`);
 
   return {
@@ -70,14 +23,27 @@ function djangoStatic({ base, paths, command, addDependicies }) {
           {
             find: command === 'build' ? findStaticAliasBuild : findStaticAliasServe,
             replacement: '/$1',
-            customResolver: djangoResolver,
+            async customResolver(id, importer) {
+              const match = await resolveId.call(this, id, paths);
+
+              if (match) {
+                addDependicies?.([match.id.split('?')[0]]);
+                return match;
+              }
+            },
           },
-          {
-            find: command === 'build' ? findStaticBaseBuild : findStaticBaseServe,
+          command === 'serve' ? {
+            find: findStaticBaseServe,
             replacement: '/$1',
-            customResolver: djangoResolver,
-          },
-        ],
+            async customResolver(id, importer) {
+              if (!importer.endsWith('.html')) {
+                return null;
+              }
+
+              return await resolveId.call(this, id, paths);
+            },
+          } : null,
+        ].filter(Boolean),
       }
     }),
     handleHotUpdate(ctx) {

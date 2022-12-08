@@ -1,4 +1,4 @@
-@import '/static/www/mongo/tongo.css';
+@import 'static@www/mongo/tongo.css';
 
 html {
   background-image: url("/static/www/pics/fox.jpg");

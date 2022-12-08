@@ -1,4 +1,4 @@
-import styles from '/static/www/App.module.scss';
+import styles from 'static@www/App.module.scss';
 import './font.scss';
 
 function Button() {

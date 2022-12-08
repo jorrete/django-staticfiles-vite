@@ -1,5 +1,5 @@
 // import from directory
-import mongo from '/static/www/mongo';
+import mongo from 'static@www/mongo';
 console.log(mongo);
 // // import relative
 // import foo from './foo';
