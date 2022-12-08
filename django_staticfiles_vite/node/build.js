@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const djangoStatic = require('./plugin-django-static');
 const { build, defineConfig, mergeConfig, loadConfigFromFile } = require('vite');
-const { resolveId, isCSS } = require('./utils');
+const { resolveId, isCSS, STATIC_TOKEN } = require('./utils');
 const { mkdirSync, writeFileSync, readFileSync, readFile, unlinkSync } = require('fs');
 const { join, dirname } = require('path');
 const replace = require("postcss-replace");
@@ -34,7 +34,7 @@ const {
         postcss: {
           plugins: [
             replace({
-              pattern: 'static@',
+              pattern: STATIC_TOKEN,
               data: {
                 replaceAll: base,
               },

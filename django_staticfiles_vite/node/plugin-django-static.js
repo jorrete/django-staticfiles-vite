@@ -1,5 +1,5 @@
 const vite = require('vite');
-const { resolveId, extensions } = require('./utils');
+const { resolveId, extensions, STATIC_TOKEN } = require('./utils');
 
 function djangoStatic({
   addDependicies,
@@ -7,8 +7,8 @@ function djangoStatic({
   command,
   paths,
 }) {
-  const findStaticAliasBuild = new RegExp(`^static@(?!.*\.(${extensions.join('|')}))`)
-  const findStaticAliasServe = new RegExp('^static@(.*)');
+  const findStaticAliasBuild = new RegExp(`^${STATIC_TOKEN}(?!.*\.(${extensions.join('|')}))`)
+  const findStaticAliasServe = new RegExp(`^${STATIC_TOKEN}(.*)`);
   const findStaticBaseServe = new RegExp(`^${base}(.*)`);
 
   return {

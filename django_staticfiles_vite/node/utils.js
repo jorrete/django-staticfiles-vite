@@ -50,8 +50,11 @@ function isCSS(filename) {
   ].some((ext) => filename.endsWith(ext));
 }
 
+const STATIC_TOKEN = 'static@';
+
 module.exports = {
   resolveId,
   extensions,
   isCSS,
+  STATIC_TOKEN,
 };
