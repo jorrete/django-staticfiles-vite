@@ -14,10 +14,10 @@ from django.utils._os import safe_join
 
 from ...settings import VITE_IGNORE_EXCLUDE, VITE_OUT_DIR
 from ...utils import (
-    normalize_extension,
     clean_path,
     get_bundle_css_name,
     is_path_js,
+    normalize_extension,
     path_is_vite_bunlde,
     vite_build,
 )
@@ -75,11 +75,12 @@ class ViteStorage(staticfiles_storage.__class__):
                 found_files[prefixed_path_clean] = (self, prefixed_path_clean)
 
                 if is_path_js(prefixed_path_clean):
-                    prefixed_path_css = get_bundle_css_name(normalize_extension(prefixed_path))
+                    prefixed_path_css = get_bundle_css_name(
+                        normalize_extension(prefixed_path)
+                    )
                     if exists(self.path(prefixed_path_css)):
                         found_files[prefixed_path_css] = (self, prefixed_path_css)
 
-        # print(found_files)
         return super().post_process(*args, **kwargs)
 
     def _open(self, name, mode):
@@ -95,7 +96,11 @@ class ViteStorage(staticfiles_storage.__class__):
 class Command(CollectStaticCommand):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.storage = ViteStorage()
+        self.storage = (
+            ViteStorage()
+            if getattr(staticfiles_storage, "manifest_storage", None)
+            else staticfiles_storage
+        )
 
     def add_arguments(self, parser):
         super().add_arguments(parser)
