@@ -18,7 +18,6 @@ from .settings import (
     VITE_OUT_DIR,
     VITE_PORT,
     VITE_ROOT,
-    VITE_TSCONFIG_GENERATE,
     VITE_TSCONFIG_PATH,
     VITE_URL,
 )
@@ -108,7 +107,7 @@ def vite_serve():
         }
     )
 
-    if VITE_TSCONFIG_GENERATE:
+    if VITE_TSCONFIG_PATH:
         write_tsconfig(paths)
 
     env = os.environ.copy()

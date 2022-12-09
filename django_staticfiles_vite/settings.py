@@ -1,4 +1,5 @@
 import sys
+import tempfile
 from os.path import abspath, dirname, join
 
 from django.conf import settings
@@ -12,9 +13,9 @@ VITE_EXTENSION_MAP_DEFAULT = {
     ".css": [".css", ".sass", ".scss"],
 }
 VITE_PORT_DEFAULT = 5555
-VITE_TSCONFIG_GENERATE_DEFAULT = True
-VITE_TSCONFIG_PATH_DEFAULT = "/tmp/tsconfig.django.json"
+VITE_TSCONFIG_PATH_DEFAULT = None
 VITE_IGNORE_EXCLUDE_DEFAULT = []
+VITE_OUT_DIR_DEFAULT = join(tempfile.mkdtemp())
 
 # SETTINGS
 VITE_BUNDLE_KEYWORD = getattr(
@@ -23,12 +24,9 @@ VITE_BUNDLE_KEYWORD = getattr(
 VITE_EXTENSION_MAP = getattr(
     settings, "VITE_EXTENSION_MAP", VITE_EXTENSION_MAP_DEFAULT
 )
-VITE_OUT_DIR = "/tmp/vite_static"
+VITE_OUT_DIR = getattr(settings, "VITE_OUT_DIR", VITE_OUT_DIR_DEFAULT)
 VITE_PORT = getattr(settings, "VITE_PORT", VITE_PORT_DEFAULT) + (
     1 if TESTING else 0
-)
-VITE_TSCONFIG_GENERATE = getattr(
-    settings, "VITE_TSCONFIG_GENERATE", VITE_TSCONFIG_GENERATE_DEFAULT
 )
 VITE_TSCONFIG_PATH = getattr(
     settings, "VITE_TSCONFIG_PATH", VITE_TSCONFIG_PATH_DEFAULT

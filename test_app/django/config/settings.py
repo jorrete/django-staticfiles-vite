@@ -142,3 +142,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 VITE_IGNORE_EXCLUDE = [
     "admin/css/nav_sidebar.css",
 ]
+VITE_TSCONFIG_PATH_DEFAULT = "/tmp/tsconfig.django.json"
