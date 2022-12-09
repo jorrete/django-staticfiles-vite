@@ -10,9 +10,6 @@ from ..settings import VITE_BUNDLE_KEYWORD, VITE_PORT
 from ..utils import normalize_extension, path_is_vite_bunlde, get_bundle_css_name
 
 register = template.Library()
-regexp = compile(
-    "vite_\\w+\\s+[\"'](\\w+\\.{0}\\.\\w+)[\"']".format(VITE_BUNDLE_KEYWORD)
-)
 
 
 def build_vite_url(name):
