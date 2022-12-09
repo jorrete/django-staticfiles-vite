@@ -1,3 +1,4 @@
+import glob
 import os
 import shutil
 from os.path import exists, join
@@ -16,6 +17,7 @@ from ...settings import VITE_IGNORE_EXCLUDE, VITE_OUT_DIR
 from ...utils import (
     clean_path,
     get_bundle_css_name,
+    is_path_css,
     is_path_js,
     normalize_extension,
     path_is_vite_bunlde,
@@ -115,6 +117,8 @@ class Command(CollectStaticCommand):
         self.vite_files = []
         vite_deps = set()
         found_files = {}
+        js_bundle_files = {}
+        css_bundle_files = {}
 
         if exists(VITE_OUT_DIR):
             shutil.rmtree(VITE_OUT_DIR)
@@ -131,10 +135,20 @@ class Command(CollectStaticCommand):
                     found_files[prefixed_path] = (path, find(prefixed_path))
 
                     if path_is_vite_bunlde(path):
-                        self.log("Vite building '%s'" % prefixed_path, level=1)
-                        deps = vite_build(prefixed_path, find(prefixed_path))
-                        for dep in deps:
-                            vite_deps.add(dep)
+                        bundle = (
+                            css_bundle_files if is_path_css(path) else js_bundle_files
+                        )
+                        bundle[prefixed_path] = find(prefixed_path)
+
+        self.log("Vite building css", level=1)
+        deps = vite_build(css_bundle_files, True)
+        for dep in deps:
+            vite_deps.add(dep)
+
+        self.log("Vite building js", level=1)
+        deps = vite_build(js_bundle_files, False)
+        for dep in deps:
+            vite_deps.add(dep)
 
         for prefixed_path, (path, filepath) in found_files.items():
             filepath = clean_path(filepath)
@@ -164,6 +178,11 @@ class Command(CollectStaticCommand):
                 return
             super().copy_file(path, prefixed_path, source_storage)
 
+    def copy_vite_chunks(self):
+        pattern = join(VITE_OUT_DIR, 'chunk.*')
+        for chunk in glob.glob(pattern):
+            shutil.copy(chunk, self.storage.location)
+
     def handle(self, **options):
         self.set_options(**options)
         use_vite = options["vite"]
@@ -173,3 +192,6 @@ class Command(CollectStaticCommand):
             options["ignore_patterns"].extend(self.vite_files)
 
         super().handle(**options)
+
+        if use_vite:
+            self.copy_vite_chunks()

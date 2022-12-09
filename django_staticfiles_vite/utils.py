@@ -125,15 +125,14 @@ def vite_serve():
     )
 
 
-def vite_build(name, filename):
+def vite_build(entry, is_css):
     paths = apps.get_app_config("django_staticfiles_vite").paths
-    base, _ = splitext(name)
     arguments = dumps(
         {
+            "buildCSS": is_css,
             "base": VITE_URL,
-            "entry": filename,
+            "entry": entry,
             "format": "es",
-            "name": base,
             "outDir": VITE_OUT_DIR,
             "paths": paths,
         }

@@ -34,6 +34,27 @@ function isCSS(filename) {
   ]);
 }
 
+function isJS(filename) {
+  return hasExtension(filename, [
+    "js",
+    "jsx",
+    "ts",
+    "ts,",
+  ]);
+}
+
+function removeExtension(filename) {
+  return filename.split('.').slice(0, -1).join('.');
+}
+
+function normalizeCSS(filename) {
+  return removeExtension(filename) + '.css';
+}
+
+function normalizeJS(filename) {
+  return removeExtension(filename) + '.js';
+}
+
 const excludeExtCSS = [
   // images
   'png',
@@ -59,5 +80,7 @@ module.exports = {
   hasExtension,
   excludeExtCSS,
   isCSS,
+  normalizeJS,
+  normalizeCSS,
   STATIC_TOKEN,
 };
