@@ -30,7 +30,7 @@ def path_is_vite_bunlde(name):
     return ".{}".format(VITE_BUNDLE_KEYWORD) in name
 
 
-def clean_bundle_name(name):
+def normalize_extension(name):
     base, extension = splitext(name)
     new_extension = extension
 

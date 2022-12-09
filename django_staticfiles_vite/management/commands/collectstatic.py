@@ -14,7 +14,7 @@ from django.utils._os import safe_join
 
 from ...settings import VITE_IGNORE_EXCLUDE, VITE_OUT_DIR
 from ...utils import (
-    clean_bundle_name,
+    normalize_extension,
     clean_path,
     get_bundle_css_name,
     is_path_js,
@@ -65,7 +65,7 @@ class ViteStorage(staticfiles_storage.__class__):
         found_files = args[0]
 
         for prefixed_path in list(found_files.keys()):
-            prefixed_path_clean = clean_bundle_name(prefixed_path)
+            prefixed_path_clean = normalize_extension(prefixed_path)
             if path_is_vite_bunlde(prefixed_path_clean):
                 found_files[prefixed_path_clean] = (self, prefixed_path_clean)
 
@@ -75,7 +75,7 @@ class ViteStorage(staticfiles_storage.__class__):
                     
 
                 if is_path_js(prefixed_path_clean):
-                    prefixed_path_css = get_bundle_css_name(clean_bundle_name(prefixed_path))
+                    prefixed_path_css = get_bundle_css_name(normalize_extension(prefixed_path))
                     if exists(self.path(prefixed_path_css)):
                         found_files[prefixed_path_css] = (self, prefixed_path_css)
 
@@ -83,7 +83,7 @@ class ViteStorage(staticfiles_storage.__class__):
         return super().post_process(*args, **kwargs)
 
     def _open(self, name, mode):
-        name = clean_bundle_name(name)
+        name = normalize_extension(name)
         path = (
             safe_join(VITE_OUT_DIR, name)
             if path_is_vite_bunlde(name)
@@ -142,7 +142,7 @@ class Command(CollectStaticCommand):
 
     def copy_file(self, path, prefixed_path, source_storage):
         if path_is_vite_bunlde(path):
-            prefixed_path = clean_bundle_name(prefixed_path)
+            prefixed_path = normalize_extension(prefixed_path)
             bundle_path = join(VITE_OUT_DIR, prefixed_path)
             dest_path = self.storage.path(prefixed_path)
             shutil.copy(bundle_path, dest_path)

@@ -7,7 +7,7 @@ from django.utils.safestring import mark_safe
 from django.contrib.staticfiles.storage import staticfiles_storage
 
 from ..settings import VITE_BUNDLE_KEYWORD, VITE_PORT
-from ..utils import clean_bundle_name, path_is_vite_bunlde, get_bundle_css_name
+from ..utils import normalize_extension, path_is_vite_bunlde, get_bundle_css_name
 
 register = template.Library()
 regexp = compile(
@@ -49,7 +49,7 @@ def vite_static(name):
         )
 
     if not settings.DEBUG:
-        name = clean_bundle_name(name)
+        name = normalize_extension(name)
         return static(name)
 
     return build_vite_url(name)
@@ -73,7 +73,7 @@ def vite_script(name, **kwargs):
                     '<link href="{}" rel="stylesheet">'.format(
                         vite_static(
                             get_bundle_css_name(
-                                clean_bundle_name(name)
+                                normalize_extension(name)
                             )
                         )
                     )
