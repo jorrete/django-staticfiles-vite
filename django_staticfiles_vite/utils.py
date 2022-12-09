@@ -160,5 +160,10 @@ def is_path_js(path):
     return extension in JS_EXTENSIONS
 
 
+def is_path_css(path):
+    _, extension = splitext(path)
+    return extension in CSS_EXTENSIONS
+
+
 def clean_path(path):
     return path.replace("lib64", "lib")
