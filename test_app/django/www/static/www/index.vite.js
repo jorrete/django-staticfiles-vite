@@ -1,26 +1,22 @@
-import mongo from 'static@www/mongo';
-console.log(mongo);
-import 'static@download/congo.js';
-// import relative
-import foo from './foo';
-// check preact render
-import { render } from 'preact'
-import App from './App.jsx';
-// check import from node
-import color from 'color-convert';
-
-import deepClone from 'deep-clone';
-
-// inject styles
 import './styles.css';
 import styles from './styles2.css';
+console.log({ styles });
 import './main';
 import './raw.css';
 import fox from 'static@www/pics/fox.txt?raw';
-console.log(fox);
+import 'static@download/congo.js';
+import mongo from 'static@www/mongo';
+console.log({ mongo });
+import foo_static from 'static@www/foo.js';
+console.log({ foo_static });
+import foo_relative from './foo';
+console.log({ foo_relative });
+import { render } from 'preact'
+import App from './App.jsx';
+import color from 'color-convert';
+console.log({ color });
+import deepClone from 'deep-clone';
+console.log({ deepClone });
+console.log({ fox });
 
-console.log(deepClone);
-console.log(styles);
-
-console.log(color, mongo, foo);
 render(<App foo={3} />, document.getElementById('app'))
