@@ -9,7 +9,7 @@ TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
 # DEFAULTS
 VITE_BUNDLE_KEYWORD_DEFAULT = "vite"
 VITE_EXTENSION_MAP_DEFAULT = {
-    ".js": [".js", ".mjs", ".ts", ".jsx", ".tsx", ".json"],
+    ".js": [".js", ".mjs", ".ts", ".jsx", ".tsx"],
     ".css": [".css", ".sass", ".scss"],
 }
 VITE_PORT_DEFAULT = 5555
