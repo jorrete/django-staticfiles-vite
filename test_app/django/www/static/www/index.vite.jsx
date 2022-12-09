@@ -18,7 +18,7 @@ console.log({ color });
 import deepClone from 'deep-clone';
 console.log({ deepClone });
 console.log({ fox });
-import { foo, bar } from './myModules';
-console.log({ foo, bar });
+import def, { foo, bar } from './myModules';
+console.log({ def, foo, bar });
 
 render(<App foo={3} />, document.getElementById('app'))
