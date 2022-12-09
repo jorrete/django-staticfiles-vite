@@ -66,13 +66,13 @@ class ViteStorage(staticfiles_storage.__class__):
 
         for prefixed_path in list(found_files.keys()):
             prefixed_path_clean = normalize_extension(prefixed_path)
+
+            # files already transformed or removed must get out of the manifest
+            if not exists(self.path(prefixed_path)):
+                del found_files[prefixed_path]
+
             if path_is_vite_bunlde(prefixed_path_clean):
                 found_files[prefixed_path_clean] = (self, prefixed_path_clean)
-
-                # this removes already build files index.vite.jsx > index.vite.js
-                if prefixed_path != prefixed_path_clean:
-                    del found_files[prefixed_path]
-                    
 
                 if is_path_js(prefixed_path_clean):
                     prefixed_path_css = get_bundle_css_name(normalize_extension(prefixed_path))
@@ -153,6 +153,10 @@ class Command(CollectStaticCommand):
                 if exists(bundle_path_css):
                     shutil.copy(bundle_path_css, dest_path_css)
         else:
+            # this means that a non native extension that is not being imported
+            # has been collected so ignore it
+            if prefixed_path != normalize_extension(prefixed_path):
+                return
             super().copy_file(path, prefixed_path, source_storage)
 
     def handle(self, **options):
