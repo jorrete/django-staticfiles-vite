@@ -132,7 +132,7 @@ def vite_build(name, filename):
         {
             "base": VITE_URL,
             "entry": filename,
-            "format": "iife",
+            "format": "es",
             "name": base,
             "outDir": VITE_OUT_DIR,
             "paths": paths,
