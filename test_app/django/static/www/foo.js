@@ -1,4 +1,4 @@
 export default {
   foo: true,
-  from: 'www app',
+  from: 'static folder',
 };

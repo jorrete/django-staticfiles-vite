@@ -54,12 +54,12 @@ def write_tsconfig(paths):
 
     for alias, path in paths:
         if alias:
-            print(alias, path)
             ts_paths["{}{}/*".format(settings.STATIC_URL, alias)] = [
                 "{}/*".format(path)
             ]
             ts_paths["static@{}/*".format(alias)] = ["{}/*".format(path)]
-        else:
+    for alias, path in paths:
+        if not alias:
             if "{}*".format(settings.STATIC_URL) not in ts_paths:
                 ts_paths["{}*".format(settings.STATIC_URL)] = []
             ts_paths["{}*".format(settings.STATIC_URL)].append("{}/*".format(path))

@@ -1,4 +1,4 @@
-import mongo from 'static@www/mongo/index.js';
+import mongo from 'static@www/mongo';
 console.log(mongo);
 import 'static@download/congo.js';
 // import relative
