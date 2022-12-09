@@ -65,16 +65,21 @@ class ViteStorage(staticfiles_storage.__class__):
         found_files = args[0]
 
         for prefixed_path in list(found_files.keys()):
-            prefixed_path = clean_bundle_name(prefixed_path)
-            if path_is_vite_bunlde(prefixed_path):
-                found_files[prefixed_path] = (self, prefixed_path)
+            prefixed_path_clean = clean_bundle_name(prefixed_path)
+            if path_is_vite_bunlde(prefixed_path_clean):
+                found_files[prefixed_path_clean] = (self, prefixed_path_clean)
 
-                if is_path_js(prefixed_path):
-                    path_css = get_bundle_css_name(prefixed_path)
-                    filepath_css = get_bundle_css_name(prefixed_path)
-                    if exists(self.path(filepath_css)):
-                        found_files[path_css] = (self, filepath_css)
+                # this removes already build files index.vite.jsx > index.vite.js
+                if prefixed_path != prefixed_path_clean:
+                    del found_files[prefixed_path]
+                    
 
+                if is_path_js(prefixed_path_clean):
+                    prefixed_path_css = get_bundle_css_name(clean_bundle_name(prefixed_path))
+                    if exists(self.path(prefixed_path_css)):
+                        found_files[prefixed_path_css] = (self, prefixed_path_css)
+
+        # print(found_files)
         return super().post_process(*args, **kwargs)
 
     def _open(self, name, mode):
@@ -133,7 +138,6 @@ class Command(CollectStaticCommand):
                 and not path_is_vite_bunlde(prefixed_path)
                 and prefixed_path not in VITE_IGNORE_EXCLUDE
             ):
-                # self.vite_files.append(path)
                 self.vite_files.append(prefixed_path)
 
     def copy_file(self, path, prefixed_path, source_storage):
