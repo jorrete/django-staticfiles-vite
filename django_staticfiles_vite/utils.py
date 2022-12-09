@@ -45,14 +45,36 @@ def get_bundle_css_name(path):
     return path.replace(".js", ".js.css")
 
 
+def build_prefix_path(path):
+    return "{}/{}".format(path[1], path[0]) if path[0] else path[1]
+
+
 def write_tsconfig(paths):
+    ts_paths = {}
+
+    for alias, path in paths:
+        if alias:
+            print(alias, path)
+            ts_paths["{}{}/*".format(settings.STATIC_URL, alias)] = [
+                "{}/*".format(path)
+            ]
+            ts_paths["static@{}/*".format(alias)] = ["{}/*".format(path)]
+        else:
+            if "{}*".format(settings.STATIC_URL) not in ts_paths:
+                ts_paths["{}*".format(settings.STATIC_URL)] = []
+            ts_paths["{}*".format(settings.STATIC_URL)].append("{}/*".format(path))
+
+            if "static@*" not in ts_paths:
+                ts_paths["static@*"] = []
+            ts_paths["static@*"].append("{}/*".format(path))
+
     with open(VITE_TSCONFIG_PATH, "w") as file:
         file.write(
             dumps(
                 {
                     "compilerOptions": {
-                        "include": ["{}/**/*".format(path) for path in paths],
-                        "paths": {"/static/*": ["{}/*".format(path) for path in paths]},
+                        "include": ["{}/**/*".format(path[1]) for path in paths],
+                        "paths": ts_paths,
                     }
                 }
             )
