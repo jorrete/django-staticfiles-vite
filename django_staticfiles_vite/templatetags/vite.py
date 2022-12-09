@@ -70,7 +70,13 @@ def vite_script(name, **kwargs):
                     " defer" if defer else "",
                 ),
                 (
-                    '<link href="{}" rel="stylesheet">'.format(vite_static(get_bundle_css_name(name)))
+                    '<link href="{}" rel="stylesheet">'.format(
+                        vite_static(
+                            get_bundle_css_name(
+                                clean_bundle_name(name)
+                            )
+                        )
+                    )
                     if style
                     else ""
                 ),

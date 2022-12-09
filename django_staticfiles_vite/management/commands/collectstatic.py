@@ -65,6 +65,7 @@ class ViteStorage(staticfiles_storage.__class__):
         found_files = args[0]
 
         for prefixed_path in list(found_files.keys()):
+            prefixed_path = clean_bundle_name(prefixed_path)
             if path_is_vite_bunlde(prefixed_path):
                 found_files[prefixed_path] = (self, prefixed_path)
 
@@ -77,6 +78,7 @@ class ViteStorage(staticfiles_storage.__class__):
         return super().post_process(*args, **kwargs)
 
     def _open(self, name, mode):
+        name = clean_bundle_name(name)
         path = (
             safe_join(VITE_OUT_DIR, name)
             if path_is_vite_bunlde(name)
@@ -136,6 +138,7 @@ class Command(CollectStaticCommand):
 
     def copy_file(self, path, prefixed_path, source_storage):
         if path_is_vite_bunlde(path):
+            prefixed_path = clean_bundle_name(prefixed_path)
             bundle_path = join(VITE_OUT_DIR, prefixed_path)
             dest_path = self.storage.path(prefixed_path)
             shutil.copy(bundle_path, dest_path)
