@@ -14,7 +14,8 @@ class PlaywrightTestCase():
         os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
         super().setUpClass()
         cls.playwright = sync_playwright().start()
-        cls.browser = cls.playwright.chromium.launch(headless=False)
+        headless = os.getenv("DJANGO_TEST_HEADLESS", "true") != "false"
+        cls.browser = cls.playwright.chromium.launch(headless=headless)
 
     @classmethod
     def tearDownClass(cls):

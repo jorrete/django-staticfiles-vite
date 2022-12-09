@@ -3,6 +3,7 @@ from django.test import override_settings
 from tests.utils import get_test_templates
 
 from .utils import ViteLiveServerTestCase, PlaywrightTestCase, LiveServerTestCase
+from django_staticfiles_vite.tests import call_collectstatic_vite
 
 
 class TemplatesMixin(object):
@@ -23,11 +24,5 @@ class DevTests(TemplatesMixin, PlaywrightTestCase, ViteLiveServerTestCase):
 @override_settings(DEBUG=False, ALLOWED_HOSTS=["*"])
 class ProdTests(TemplatesMixin, PlaywrightTestCase, LiveServerTestCase):
     def setUp(self):
-        call_command(
-            "collectstatic",
-            clear=True,
-            interactive=False,
-            verbosity=0,  # no output to keep test clean
-            vite=True,
-        )
+        call_collectstatic_vite()
         super().setUp()

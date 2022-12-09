@@ -26,6 +26,9 @@ dev-prod:
 test:
 	source ${VENV_PATH}/bin/activate && cd ./${EXAMPLE_PATH}/django && ./manage.py test
 
+test-browser:
+	source ${VENV_PATH}/bin/activate && cd ./${EXAMPLE_PATH}/django && DJANGO_TEST_HEADLESS=false ./manage.py test
+
 debugpy:
 	source ${VENV_PATH}/bin/activate &&
 	./${EXAMPLE_PATH}/django/manage.py runvite &

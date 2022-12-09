@@ -1,8 +1,19 @@
 from time import sleep
 
+from django.core.management import call_command
 from django.contrib.staticfiles.testing import LiveServerTestCase
 
 from .utils import kill_vite_server, thread_vite_server
+
+
+def call_collectstatic_vite():
+    call_command(
+        "collectstatic",
+        clear=True,
+        interactive=False,
+        verbosity=0,  # no output to keep test clean
+        vite=True,
+    )
 
 
 class ViteLiveServerTestCase(LiveServerTestCase):
