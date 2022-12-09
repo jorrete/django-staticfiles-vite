@@ -1,7 +1,7 @@
 from time import sleep
 
-from django.core.management import call_command
 from django.contrib.staticfiles.testing import LiveServerTestCase
+from django.core.management import call_command
 
 from .utils import kill_vite_server, thread_vite_server
 
