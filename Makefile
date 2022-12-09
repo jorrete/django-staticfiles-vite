@@ -16,6 +16,13 @@ install:
 dev:
 	source ${VENV_PATH}/bin/activate && ./${EXAMPLE_PATH}/django/manage.py runserver --vite=auto
 
+collectstatic:
+	source ${VENV_PATH}/bin/activate && ./${EXAMPLE_PATH}/django/manage.py collectstatic --clear --noinput --vite
+
+dev-prod:
+	source ${VENV_PATH}/bin/activate && DJANGO_DEBUG=false ./${EXAMPLE_PATH}/django/manage.py collectstatic --clear --noinput --vite
+	source ${VENV_PATH}/bin/activate && DJANGO_DEBUG=false ./${EXAMPLE_PATH}/django/manage.py runserver
+
 test:
 	source ${VENV_PATH}/bin/activate && cd ./${EXAMPLE_PATH}/django && ./manage.py test
 

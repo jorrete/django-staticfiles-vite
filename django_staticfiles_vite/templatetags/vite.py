@@ -16,7 +16,7 @@ regexp = compile(
 
 
 def build_vite_url(name):
-    return "http://localhost:{}/static/{}".format(VITE_PORT, name)
+    return "http://localhost:{}{}{}".format(VITE_PORT, settings.STATIC_URL, name)
 
 
 @register.simple_tag
@@ -24,7 +24,6 @@ def vite_hrm(*args):
     if not settings.DEBUG:
         return ""
 
-    # path = build_vite_url("@vite/client")
     path = "http://localhost:{}/{}".format(VITE_PORT, "@vite/client")
 
     return mark_safe('<script type="module" src="{}"></script>'.format(path))
@@ -60,10 +59,8 @@ def vite_static(name):
 def vite_script(name, **kwargs):
     """ """
     defer = kwargs.get("defer", False)
-    style = kwargs.get("style", False)
-
+    style = kwargs.get("style", False) and not settings.DEBUG
     path = vite_static(name)
-    path_css = vite_static(get_bundle_css_name(name))
 
     return mark_safe(
         "\n".join(
@@ -73,8 +70,8 @@ def vite_script(name, **kwargs):
                     " defer" if defer else "",
                 ),
                 (
-                    '<link href="{}" rel="stylesheet">'.format(path_css)
-                    if (style and not settings.DEBUG)
+                    '<link href="{}" rel="stylesheet">'.format(vite_static(get_bundle_css_name(name)))
+                    if style
                     else ""
                 ),
             ]
