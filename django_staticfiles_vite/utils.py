@@ -92,7 +92,7 @@ def kill_vite_server():
         path = cmd[1] if len(cmd) > 1 else None
         args = cmd[2] if len(cmd) > 2 else None
         try:
-            if path and path.endswith("django-vite-serve") and str(VITE_PORT) in args:
+            if path and path.endswith("django_staticfiles_vite/node/serve.js") and str(VITE_PORT) in args:
                 os.kill(proc.pid, signal.SIGTERM)
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
