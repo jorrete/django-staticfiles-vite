@@ -1,7 +1,7 @@
-const { defineConfig } = require('vite');
-const preact = require('@preact/preset-vite').default;
+import { defineConfig } from 'vite';
+import preact from '@preact/preset-vite';
 
-module.exports = defineConfig({
+export default defineConfig({
   plugins: [
     preact(),
   ],
@@ -9,7 +9,7 @@ module.exports = defineConfig({
     minify: false,
     // minify: 'esbuild',
   },
-  // esbuild: {
-  //   drop: ['console', 'debugger'],
-  // },
+  esbuild: {
+    drop: ['console', 'debugger'],
+  },
 });
