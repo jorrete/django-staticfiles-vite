@@ -12,9 +12,5 @@
         "@preact/preset-vite": "^2.3.0",
         "preact": "^10.10.6",
         "qunit": "^2.17.2"
-    },
-    "scripts": {
-        "django-vite-serve": "/home/jorro/Development/python/django-staticfiles-vite/django_staticfiles_vite/node/serve.js",
-        "django-vite-build": "/home/jorro/Development/python/django-staticfiles-vite/django_staticfiles_vite/node/build.js"
     }
 }

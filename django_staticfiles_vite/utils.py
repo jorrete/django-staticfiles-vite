@@ -116,11 +116,12 @@ def vite_serve():
     env = environ.copy()
     pkg_path = get_pgk_json(settings.BASE_DIR)
     env["NODE_PATH"] = join(dirname(pkg_path), "node_modules")
+    serve_path = join(dirname(__file__), "node", "serve.js")
 
     subprocess.run(
         args=[
-            "npx",
-            "django-vite-serve",
+            'node',
+            serve_path,
             "{}".format(arguments),
         ],
         cwd=settings.ROOT_DIR,
@@ -145,11 +146,12 @@ def vite_build(entry, is_css):
     env = environ.copy()
     pkg_path = get_pgk_json(settings.BASE_DIR)
     env["NODE_PATH"] = join(dirname(pkg_path), "node_modules")
+    build_path = join(dirname(__file__), "node", "build.js")
 
     pipe = subprocess.run(
         args=[
-            "npx",
-            "django-vite-build",
+            'node',
+            build_path,
             "{}".format(arguments),
         ],
         cwd=settings.ROOT_DIR,
