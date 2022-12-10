@@ -3,7 +3,7 @@ import os
 import signal
 import subprocess
 import sys
-from json import dumps, loads, load
+from json import dumps, load, loads
 from os import environ
 from os.path import dirname, expanduser, join, splitext
 from pathlib import Path
@@ -21,9 +21,9 @@ from .settings import (
     VITE_OUT_DIR,
     VITE_PORT,
     VITE_ROOT,
+    VITE_TSCONFIG_EXTENDS,
     VITE_TSCONFIG_PATH,
     VITE_URL,
-    VITE_TSCONFIG_EXTENDS,
 )
 
 TESTING = sys.argv[1:2] == ["test"]
@@ -56,7 +56,6 @@ def write_tsconfig(paths):
     tsconfig = VITE_TSCONFIG_EXTENDS
     tsconfig_include = tsconfig.get("compilerOptions", {}).get("include", [])
     tsconfig_paths = tsconfig.get("compilerOptions", {}).get("paths", {})
-    print(tsconfig)
 
     for _, path in paths:
         tsconfig_include.append(f"{path}/**/*")
@@ -102,7 +101,11 @@ def kill_vite_server():
         path = cmd[1] if len(cmd) > 1 else None
         args = cmd[2] if len(cmd) > 2 else None
         try:
-            if path and path.endswith("django_staticfiles_vite/node/serve.js") and str(VITE_PORT) in args:
+            if (
+                path
+                and path.endswith("django_staticfiles_vite/node/serve.js")
+                and str(VITE_PORT) in args
+            ):
                 os.kill(proc.pid, signal.SIGTERM)
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
