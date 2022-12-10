@@ -8,7 +8,7 @@ export default defineConfig({
   build: {
     minify: false,
   },
-  esbuild: {
-    drop: ['console', 'debugger'],
-  },
+  // esbuild: {
+  //   drop: ['console', 'debugger'],
+  // },
 });
