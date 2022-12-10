@@ -3,7 +3,7 @@ import os
 import signal
 import subprocess
 import sys
-from json import dumps, loads
+from json import dumps, loads, load
 from os import environ
 from os.path import dirname, expanduser, join, splitext
 from pathlib import Path
@@ -23,6 +23,7 @@ from .settings import (
     VITE_ROOT,
     VITE_TSCONFIG_PATH,
     VITE_URL,
+    VITE_TSCONFIG_EXTENDS,
 )
 
 TESTING = sys.argv[1:2] == ["test"]
@@ -52,31 +53,40 @@ def build_prefix_path(path):
 
 
 def write_tsconfig(paths):
-    ts_paths = {}
+    tsconfig = VITE_TSCONFIG_EXTENDS
+    tsconfig_include = tsconfig.get("compilerOptions", {}).get("include", [])
+    tsconfig_paths = tsconfig.get("compilerOptions", {}).get("paths", {})
+    print(tsconfig)
 
+    for _, path in paths:
+        tsconfig_include.append(f"{path}/**/*")
+
+    # paths with alias must be forced to be first
     for alias, path in paths:
         if alias:
-            ts_paths[f"{settings.STATIC_URL}{alias}/*"] = [f"{path}/*"]
-            ts_paths[f"static@{alias}/*"] = [f"{path}/*"]
+            tsconfig_paths[f"{settings.STATIC_URL}{alias}/*"] = [f"{path}/*"]
+            tsconfig_paths[f"static@{alias}/*"] = [f"{path}/*"]
+
     for alias, path in paths:
         if not alias:
-            if f"{settings.STATIC_URL}*" not in ts_paths:
-                ts_paths[f"{settings.STATIC_URL}*"] = []
-            ts_paths[f"{settings.STATIC_URL}*"].append(f"{path}/*")
+            if f"{settings.STATIC_URL}*" not in tsconfig_paths:
+                tsconfig_paths[f"{settings.STATIC_URL}*"] = []
+            tsconfig_paths[f"{settings.STATIC_URL}*"].append(f"{path}/*")
 
-            if "static@*" not in ts_paths:
-                ts_paths["static@*"] = []
-            ts_paths["static@*"].append(f"{path}/*")
+            if "static@*" not in tsconfig_paths:
+                tsconfig_paths["static@*"] = []
+            tsconfig_paths["static@*"].append(f"{path}/*")
 
     with open(VITE_TSCONFIG_PATH, "w") as file:
         file.write(
             dumps(
                 {
                     "compilerOptions": {
-                        "include": [f"{path[1]}/**/*" for path in paths],
-                        "paths": ts_paths,
-                    }
-                }
+                        "paths": tsconfig_paths,
+                    },
+                    "include": tsconfig_include,
+                },
+                indent=4,
             )
         )
 
@@ -175,14 +185,24 @@ def clean_path(path):
     return path.replace("lib64", "lib")
 
 
-def get_pgk_json(path):
+def find_file_up_tree(name, path, root=None):
     path = Path(path)
-    pkg_json = path / "package.json"
+    file = path / name
 
-    if Path(expanduser("~")) == path:
+    root = root if root else expanduser("~")
+
+    if Path(root) == path:
         return None
 
-    if not pkg_json.is_file():
-        return get_pgk_json(path.parent)
+    if not file.is_file():
+        return find_file_up_tree(name, path.parent)
 
-    return pkg_json
+    return file
+
+
+def get_pgk_json(path):
+    return find_file_up_tree("package.json", path)
+
+
+def get_tsconfig(path):
+    return find_file_up_tree("tsconfig.json", path)
