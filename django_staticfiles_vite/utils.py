@@ -187,4 +187,4 @@ def get_pgk_json(path):
     if not pkg_json.is_file():
         return get_pgk_json(path.parent)
 
-    return str(pkg_json)
+    return pkg_json

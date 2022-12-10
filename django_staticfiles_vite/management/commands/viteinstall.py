@@ -29,12 +29,15 @@ def run_command(command):
 
 class Command(RunserverCommand):
     def handle(self, *args, **options):
-        # module_path = dirname(django_staticfiles_vite.__file__)
-        # pkg_path = get_pgk_json(getcwd())
-        # pkg_json = json.load(open(pkg_path, 'r'))
-        # pkg_json["scripts"] = pkg_json.get("scripts", {})
-        # npm_path = dirname(pkg_path)
-        # json.dump(pkg_json, open(pkg_path, 'w'), indent=4)
+        pkg_path = get_pgk_json(getcwd())
+        if not pkg_path.is_file():
+            run_command(
+                [
+                    "npm",
+                    "init",
+                    "--yes",
+                ]
+            )
         run_command(
             [
                 "npm",
