@@ -5,9 +5,9 @@ export default defineConfig({
   plugins: [
     preact(),
   ],
-  build: {
-    minify: false,
-  },
+  // build: {
+  //   minify: false,
+  // },
   // esbuild: {
   //   drop: ['console', 'debugger'],
   // },
