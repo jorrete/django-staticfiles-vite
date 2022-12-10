@@ -30,7 +30,7 @@ def run_command(command):
 
 class Command(RunserverCommand):
     def handle(self, *args, **options):
-        pkg_path = get_pgk_json(getcwd())
+        pkg_path = get_pgk_json(settings.BASE_DIR)
         if not pkg_path.is_file():
             run_command(
                 [
