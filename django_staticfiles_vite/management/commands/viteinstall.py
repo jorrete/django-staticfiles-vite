@@ -1,15 +1,15 @@
 import json
-from pathlib import Path
 import subprocess
 from os import environ, getcwd
-from os.path import dirname, join, expanduser
+from os.path import dirname, expanduser, join
+from pathlib import Path
 
 from django.conf import settings
 from django.core.management.commands.runserver import Command as RunserverCommand
 
 import django_staticfiles_vite
 
-from ...utils import vite_serve, get_pgk_json
+from ...utils import get_pgk_json, vite_serve
 
 VITE_DEPENDENCIES = [
     "vite@^3.2.4",
@@ -27,6 +27,7 @@ def run_command(command):
         encoding="utf8",
     )
 
+
 class Command(RunserverCommand):
     def handle(self, *args, **options):
         pkg_path = get_pgk_json(getcwd())
@@ -42,5 +43,6 @@ class Command(RunserverCommand):
             [
                 "npm",
                 "install",
-            ] + VITE_DEPENDENCIES
+            ]
+            + VITE_DEPENDENCIES
         )

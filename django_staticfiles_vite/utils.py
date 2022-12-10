@@ -120,7 +120,7 @@ def vite_serve():
 
     subprocess.run(
         args=[
-            'node',
+            "node",
             serve_path,
             "{}".format(arguments),
         ],
@@ -150,7 +150,7 @@ def vite_build(entry, is_css):
 
     pipe = subprocess.run(
         args=[
-            'node',
+            "node",
             build_path,
             "{}".format(arguments),
         ],
