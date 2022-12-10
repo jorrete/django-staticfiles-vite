@@ -1,5 +1,5 @@
 import './styles.css';
-import styles from './styles2.css';
+import styles from './styles2.css?inline';
 console.log({ styles });
 import './main';
 import './raw.css';
