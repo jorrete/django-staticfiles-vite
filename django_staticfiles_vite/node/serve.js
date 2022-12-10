@@ -53,6 +53,7 @@ const {
       }
     },
   });
+
   await server.listen();
   server.printUrls();
 })()
