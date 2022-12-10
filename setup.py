@@ -1,4 +1,6 @@
 from setuptools import find_packages, setup
+from setuptools.command.develop import develop
+from setuptools.command.install import install
 
 setup(
     name="django-staticfiles-vite",
