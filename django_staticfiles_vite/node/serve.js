@@ -2,8 +2,8 @@
 const { resolve } = require('path');
 const { defineConfig, createServer, mergeConfig, loadConfigFromFile } = require('vite');
 const djangoStatic = require('./plugin-django-static');
-const replace = require("postcss-replace");
 const { STATIC_TOKEN } = require('./utils');
+const replace = require("postcss-replace");
 
 const {
   paths,

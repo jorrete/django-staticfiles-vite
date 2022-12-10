@@ -4,12 +4,15 @@ import signal
 import subprocess
 import sys
 from json import dumps, loads
-from os.path import splitext
+from os import environ
+from os.path import dirname, expanduser, join, splitext
+from pathlib import Path
 
 import psutil
 from django.apps import apps
 from django.conf import settings
 
+from . import node
 from .settings import (
     CSS_EXTENSIONS,
     JS_EXTENSIONS,
@@ -110,7 +113,9 @@ def vite_serve():
     if VITE_TSCONFIG_PATH:
         write_tsconfig(paths)
 
-    env = os.environ.copy()
+    env = environ.copy()
+    pkg_path = get_pgk_json(settings.BASE_DIR)
+    env["NODE_PATH"] = join(dirname(pkg_path), "node_modules")
 
     subprocess.run(
         args=[
@@ -137,7 +142,9 @@ def vite_build(entry, is_css):
             "paths": paths,
         }
     )
-    env = os.environ.copy()
+    env = environ.copy()
+    pkg_path = get_pgk_json(settings.BASE_DIR)
+    env["NODE_PATH"] = join(dirname(pkg_path), "node_modules")
 
     pipe = subprocess.run(
         args=[
@@ -166,3 +173,16 @@ def is_path_css(path):
 
 def clean_path(path):
     return path.replace("lib64", "lib")
+
+
+def get_pgk_json(path):
+    path = Path(path)
+    pkg_json = path / "package.json"
+
+    if Path(expanduser("~")) == path:
+        return None
+
+    if not pkg_json.is_file():
+        return get_pgk_json(path.parent)
+
+    return str(pkg_json)
