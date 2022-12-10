@@ -8,7 +8,7 @@ from playwright.sync_api import sync_playwright
 from django_staticfiles_vite.tests import ViteLiveServerTestCase
 
 
-class PlaywrightTestCase():
+class PlaywrightTestCase:
     @classmethod
     def setUpClass(cls):
         os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"

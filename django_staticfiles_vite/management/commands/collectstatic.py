@@ -179,7 +179,7 @@ class Command(CollectStaticCommand):
             super().copy_file(path, prefixed_path, source_storage)
 
     def copy_vite_chunks(self):
-        pattern = join(VITE_OUT_DIR, 'chunk.*')
+        pattern = join(VITE_OUT_DIR, "chunk.*")
         for chunk in glob.glob(pattern):
             shutil.copy(chunk, self.storage.location)
 

@@ -2,18 +2,18 @@ from re import compile
 
 from django import template
 from django.conf import settings
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.templatetags.static import static
 from django.utils.safestring import mark_safe
-from django.contrib.staticfiles.storage import staticfiles_storage
 
 from ..settings import VITE_BUNDLE_KEYWORD, VITE_PORT
-from ..utils import normalize_extension, path_is_vite_bunlde, get_bundle_css_name
+from ..utils import get_bundle_css_name, normalize_extension, path_is_vite_bunlde
 
 register = template.Library()
 
 
 def build_vite_url(name):
-    return "http://localhost:{}{}{}".format(VITE_PORT, settings.STATIC_URL, name)
+    return f"http://localhost:{VITE_PORT}{settings.STATIC_URL}{name}"
 
 
 @register.simple_tag
@@ -21,9 +21,9 @@ def vite_hrm(*args):
     if not settings.DEBUG:
         return ""
 
-    path = "http://localhost:{}/{}".format(VITE_PORT, "@vite/client")
+    path = f"http://localhost:{VITE_PORT}/@vite/client"
 
-    return mark_safe('<script type="module" src="{}"></script>'.format(path))
+    return mark_safe(f'<script type="module" src="{path}"></script>')
 
 
 @register.simple_tag
@@ -40,9 +40,7 @@ def vite_static(name):
     """
     if not path_is_vite_bunlde(name):
         raise Exception(
-            'Missing vite bundle keyworkd "{0}" for static path: {1}'.format(
-                VITE_BUNDLE_KEYWORD, name
-            )
+            f'Missing vite bundle keyworkd "{VITE_BUNDLE_KEYWORD}" for static path: {name}'
         )
 
     if not settings.DEBUG:
@@ -62,18 +60,9 @@ def vite_script(name, **kwargs):
     return mark_safe(
         "\n".join(
             [
-                '<script src="{}" type="module"{}></script>'.format(
-                    path,
-                    " defer" if defer else "",
-                ),
+                f'<script src="{path}" type="module"{" defer" if defer else ""}></script>',
                 (
-                    '<link href="{}" rel="stylesheet">'.format(
-                        vite_static(
-                            get_bundle_css_name(
-                                normalize_extension(name)
-                            )
-                        )
-                    )
+                    f'<link href="{vite_static(get_bundle_css_name(normalize_extension(name)))}" rel="stylesheet">'
                     if style
                     else ""
                 ),
@@ -90,5 +79,5 @@ def vite_style(name, **kwargs):
     path = vite_static(name)
 
     return mark_safe(
-        '<link href="{}" rel="stylesheet"{}>'.format(path, " defer" if defer else "")
+        f"<link href=\"{path}\" rel=\"stylesheet\"{' defer' if defer else ''}>"
     )

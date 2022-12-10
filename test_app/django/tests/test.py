@@ -10,7 +10,7 @@ class TemplatesMixin(object):
     def test_templates(self):
         for template in get_test_templates():
             page = self.browser.new_page()
-            url = "{}/tests/vite_test/{}".format(self.live_server_url, template)
+            url = f"{self.live_server_url}/tests/vite_test/{template}"
             page.goto(url)
             assert page.evaluate("() => window.qunitPassed")
             page.close()

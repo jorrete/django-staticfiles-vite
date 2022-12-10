@@ -28,7 +28,7 @@ urlpatterns = [
 if not settings.DEBUG:
     urlpatterns = urlpatterns + [
         re_path(
-            r"^{}(?P<path>.*)$".format(settings.STATIC_URL[1:]),
+            fr"^{settings.STATIC_URL[1:]}(?P<path>.*)$",
             serve,
             {
                 "document_root": settings.STATIC_ROOT,

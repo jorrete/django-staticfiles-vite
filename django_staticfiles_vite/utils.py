@@ -29,7 +29,7 @@ TESTING = sys.argv[1:2] == ["test"]
 
 
 def path_is_vite_bunlde(name):
-    return ".{}".format(VITE_BUNDLE_KEYWORD) in name
+    return f".{VITE_BUNDLE_KEYWORD}" in name
 
 
 def normalize_extension(name):
@@ -40,7 +40,7 @@ def normalize_extension(name):
         if extension in VITE_EXTENSION_MAP.get(target):
             new_extension = target
 
-    return "{}{}".format(base, new_extension)
+    return f"{base}{new_extension}"
 
 
 def get_bundle_css_name(path):
@@ -48,7 +48,7 @@ def get_bundle_css_name(path):
 
 
 def build_prefix_path(path):
-    return "{}/{}".format(path[1], path[0]) if path[0] else path[1]
+    return f"{path[1]}/{path[0]}" if path[0] else path[1]
 
 
 def write_tsconfig(paths):
@@ -56,26 +56,24 @@ def write_tsconfig(paths):
 
     for alias, path in paths:
         if alias:
-            ts_paths["{}{}/*".format(settings.STATIC_URL, alias)] = [
-                "{}/*".format(path)
-            ]
-            ts_paths["static@{}/*".format(alias)] = ["{}/*".format(path)]
+            ts_paths[f"{settings.STATIC_URL}{alias}/*"] = [f"{path}/*"]
+            ts_paths[f"static@{alias}/*"] = [f"{path}/*"]
     for alias, path in paths:
         if not alias:
-            if "{}*".format(settings.STATIC_URL) not in ts_paths:
-                ts_paths["{}*".format(settings.STATIC_URL)] = []
-            ts_paths["{}*".format(settings.STATIC_URL)].append("{}/*".format(path))
+            if f"{settings.STATIC_URL}*" not in ts_paths:
+                ts_paths[f"{settings.STATIC_URL}*"] = []
+            ts_paths[f"{settings.STATIC_URL}*"].append(f"{path}/*")
 
             if "static@*" not in ts_paths:
                 ts_paths["static@*"] = []
-            ts_paths["static@*"].append("{}/*".format(path))
+            ts_paths["static@*"].append(f"{path}/*")
 
     with open(VITE_TSCONFIG_PATH, "w") as file:
         file.write(
             dumps(
                 {
                     "compilerOptions": {
-                        "include": ["{}/**/*".format(path[1]) for path in paths],
+                        "include": [f"{path[1]}/**/*" for path in paths],
                         "paths": ts_paths,
                     }
                 }
@@ -122,7 +120,7 @@ def vite_serve():
         args=[
             "node",
             serve_path,
-            "{}".format(arguments),
+            f"{arguments}",
         ],
         cwd=settings.ROOT_DIR,
         env=env,
@@ -152,7 +150,7 @@ def vite_build(entry, is_css):
         args=[
             "node",
             build_path,
-            "{}".format(arguments),
+            f"{arguments}",
         ],
         cwd=settings.ROOT_DIR,
         env=env,
