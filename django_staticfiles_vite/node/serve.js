@@ -1,14 +1,13 @@
-#!/usr/bin/env node
+/* eslint-disable node/no-missing-require */
 const { resolve } = require('path');
 const { createServer } = require('vite');
 const djangoStatic = require('./plugin-django-static');
-const { STATIC_TOKEN } = require('./utils');
-const replace = require("postcss-replace");
+const replace = require('postcss-replace');
 
 const {
   paths,
   base,
-  port,
+  port
 } = JSON.parse(process.argv[2] || '{}');
 
 (async () => {
@@ -18,23 +17,23 @@ const {
       postcss: {
         plugins: [
           replace({
-            pattern: /(url\(["\']?)/,
+            pattern: /(url\(["']?)/,
             data: {
-              replaceAll: `$1http://localhost:${port}`,
-            },
-          }),
-        ],
-      },
+              replaceAll: `$1http://localhost:${port}`
+            }
+          })
+        ]
+      }
     },
     plugins: [
       {
         ...djangoStatic({
           base,
           paths,
-          command: 'serve',
+          command: 'serve'
         }),
-        enforce: 'pre',
-      },
+        enforce: 'pre'
+      }
     ],
     server: {
       cors: true,
@@ -42,18 +41,18 @@ const {
       port,
       hmr: {
         host: 'localhost',
-        port,
+        port
       },
       fs: {
         strict: true,
         allow: [
-          ...paths.map(([alias, path]) => path),
-          resolve(process.cwd(), 'node_modules'),
+          ...paths.map(([, path]) => path),
+          resolve(process.cwd(), 'node_modules')
         ]
       }
-    },
+    }
   });
 
   await server.listen();
   server.printUrls();
-})()
+})();

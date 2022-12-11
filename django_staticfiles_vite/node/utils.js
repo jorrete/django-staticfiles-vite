@@ -2,7 +2,7 @@ const { extname, join } = require('path');
 
 const STATIC_TOKEN = 'static@';
 
-async function resolveId(id, paths) {
+async function resolveId (id, paths) {
   for (let index = 0; index < paths.length; index++) {
     const [alias, path] = paths[index];
 
@@ -22,36 +22,36 @@ async function resolveId(id, paths) {
   return null;
 }
 
-function hasExtension(filename, extensions) {
+function hasExtension (filename, extensions) {
   return extensions.some((ext) => (new RegExp(ext).test(extname(filename).slice(1))));
 }
 
-function isCSS(filename) {
+function isCSS (filename) {
   return hasExtension(filename, [
-    "css",
-    "scss",
-    "sass",
+    'css',
+    'scss',
+    'sass'
   ]);
 }
 
-function isJS(filename) {
+function isJS (filename) {
   return hasExtension(filename, [
-    "js",
-    "jsx",
-    "ts",
-    "ts,",
+    'js',
+    'jsx',
+    'ts',
+    'ts,'
   ]);
 }
 
-function removeExtension(filename) {
+function removeExtension (filename) {
   return filename.split('.').slice(0, -1).join('.');
 }
 
-function normalizeCSS(filename) {
+function normalizeCSS (filename) {
   return removeExtension(filename) + '.css';
 }
 
-function normalizeJS(filename) {
+function normalizeJS (filename) {
   return removeExtension(filename) + '.js';
 }
 
@@ -72,7 +72,7 @@ const excludeExtCSS = [
   'woff2?',
   'eot',
   'ttf',
-  'otf',
+  'otf'
 ];
 
 module.exports = {
@@ -80,7 +80,8 @@ module.exports = {
   hasExtension,
   excludeExtCSS,
   isCSS,
+  isJS,
   normalizeJS,
   normalizeCSS,
-  STATIC_TOKEN,
+  STATIC_TOKEN
 };

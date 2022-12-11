@@ -1,24 +1,10 @@
-#!/usr/bin/env node
+/* eslint-disable node/no-missing-require */
 const djangoStatic = require('./plugin-django-static');
 const { build } = require('vite');
-const {
-  resolveId,
-  isCSS,
-  isJS,
-  STATIC_TOKEN,
-  normalizeCSS,
-  normalizeJS,
-} = require('./utils');
-const {
-  mkdirSync,
-  writeFileSync,
-  readFileSync,
-  readFile,
-  unlinkSync,
-} = require('fs');
-const { join, dirname, basename } = require('path');
-const replace = require("postcss-replace");
-const { deprecate } = require('util');
+const { STATIC_TOKEN, normalizeCSS, normalizeJS } = require('./utils');
+const { mkdirSync } = require('fs');
+const { join, dirname } = require('path');
+const replace = require('postcss-replace');
 
 const {
   base,
@@ -26,17 +12,17 @@ const {
   format,
   outDir,
   paths,
-  buildCSS = false,
+  buildCSS = false
 } = JSON.parse(process.argv[2] || '{}');
 
 (async () => {
   Object.keys(entry).forEach((name) => {
     mkdirSync(dirname(join(outDir, name)), { recursive: true });
-  })
+  });
 
   const dependencies = [];
 
-  function addDependicies(deps) {
+  function addDependicies (deps) {
     dependencies.push(...deps);
   }
 
@@ -49,11 +35,11 @@ const {
           replace({
             pattern: STATIC_TOKEN,
             data: {
-              replaceAll: base,
-            },
-          }),
-        ],
-      },
+              replaceAll: base
+            }
+          })
+        ]
+      }
     },
     plugins: [
       {
@@ -61,10 +47,10 @@ const {
           base,
           paths,
           addDependicies,
-          command: 'build',
+          command: 'build'
         }),
-        enforce: 'pre',
-      },
+        enforce: 'pre'
+      }
     ],
     build: {
       assetsInlineLimit: 10,
@@ -74,7 +60,7 @@ const {
       rollupOptions: {
         output: {
           chunkFileNames: 'chunk.[name].[hash].js',
-          assetFileNames: ({ name, type, source }) => {
+          assetFileNames: ({ name, source }) => {
             if (source === '/* vite internal call, ignore */') {
               return name;
             }
@@ -92,8 +78,8 @@ const {
             const finalName = join(
               alias,
               normalizeCSS(
-                name.replace(path.replace(process.cwd(), '').slice(1), '').slice(1),
-              ),
+                name.replace(path.replace(process.cwd(), '').slice(1), '').slice(1)
+              )
             );
 
             if (buildCSS) {
@@ -101,18 +87,18 @@ const {
             }
 
             return finalName.replace('.css', '.js.css');
-          },
-        },
+          }
+        }
       },
       lib: {
-        entry: entry,
+        entry,
         formats: [format],
         fileName: (_, name) => {
           return normalizeJS(name);
-        },
-      },
-    },
+        }
+      }
+    }
   });
 
   process.stdout.write(JSON.stringify(Array.from(new Set(dependencies))));
-})()
+})();

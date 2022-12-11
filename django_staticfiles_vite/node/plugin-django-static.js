@@ -1,11 +1,10 @@
-const vite = require('vite');
 const { resolveId, excludeExtCSS, hasExtension, STATIC_TOKEN, isCSS } = require('./utils');
 
-function djangoStatic({
+function djangoStatic ({
   addDependicies,
   base,
   command,
-  paths,
+  paths
 }) {
   return {
     name: 'django-static',
@@ -17,9 +16,9 @@ function djangoStatic({
       resolve: {
         alias: [
           {
-            find: findStaticAliasServe = new RegExp(`^(?:${STATIC_TOKEN}|${base})(.*)`),
+            find: new RegExp(`^(?:${STATIC_TOKEN}|${base})(.*)`),
             replacement: '$1',
-            async customResolver(id, importer, foo, bar) {
+            async customResolver (id, importer) {
               if (id.startsWith('/')) {
                 return null;
               }
@@ -38,30 +37,30 @@ function djangoStatic({
                 addDependicies?.([match.id.split('?')[0]]);
                 return match;
               }
-            },
-          },
-        ],
+            }
+          }
+        ]
       }
     }),
-    handleHotUpdate(ctx) {
+    handleHotUpdate (ctx) {
       if (ctx.file.endsWith('.html')) {
         ctx.server.ws.send({ type: 'full-reload' });
-        return []
+        return [];
       }
     },
-    buildEnd() {
+    buildEnd () {
       addDependicies?.(Array.from(this.getModuleIds())
         .filter((path) => {
           return (
-            !path.includes('node_modules')
-              && path[0] === '/'
-          )
+            !path.includes('node_modules') &&
+              path[0] === '/'
+          );
         })
         .map((path) => {
-          return path.split('?')[0].replace('\x00', '')
+          return path.split('?')[0].replace('\x00', '');
         }));
-    },
-  }
+    }
+  };
 }
 
 module.exports = djangoStatic;

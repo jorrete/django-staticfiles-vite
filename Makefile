@@ -54,5 +54,8 @@ flake8:
 autoflake:
 	autoflake --config .autoflake --verbose ${MODULE_PATH} ${EXAMPLE_PATH}
 
+eslint:
+	npx eslint --fix ${MODULE_PATH}/node/*.js
+
 pre-commit:
 	pre-commit run --all-files
