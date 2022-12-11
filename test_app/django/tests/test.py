@@ -1,9 +1,9 @@
-from django.core.management import call_command
 from django.test import override_settings
 from tests.utils import get_test_templates
 
-from .utils import ViteLiveServerTestCase, PlaywrightTestCase, LiveServerTestCase
 from django_staticfiles_vite.tests import call_collectstatic_vite
+
+from .utils import LiveServerTestCase, PlaywrightTestCase, ViteLiveServerTestCase
 
 
 class TemplatesMixin(object):
