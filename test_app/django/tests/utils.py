@@ -1,11 +1,7 @@
 import os
-from time import sleep
 
-from django.contrib.staticfiles.testing import LiveServerTestCase
 from django.template.loader import engines
 from playwright.sync_api import sync_playwright
-
-from django_staticfiles_vite.tests import ViteLiveServerTestCase
 
 
 class PlaywrightTestCase:
