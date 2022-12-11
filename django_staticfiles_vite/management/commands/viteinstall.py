@@ -1,15 +1,10 @@
-import json
 import subprocess
-from os import environ, getcwd
-from os.path import dirname, expanduser, join
-from pathlib import Path
+from os import environ
 
 from django.conf import settings
 from django.core.management.commands.runserver import Command as RunserverCommand
 
-import django_staticfiles_vite
-
-from ...utils import get_pgk_json, vite_serve
+from ...utils import get_pgk_json
 
 VITE_DEPENDENCIES = [
     "vite@^3.2.4",

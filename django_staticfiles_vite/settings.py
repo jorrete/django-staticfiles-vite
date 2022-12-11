@@ -1,6 +1,6 @@
 import sys
 import tempfile
-from os.path import abspath, dirname, join
+from os.path import join
 
 from django.conf import settings
 

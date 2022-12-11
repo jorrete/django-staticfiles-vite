@@ -3,10 +3,8 @@ import os
 from django.contrib.staticfiles.management.commands.runserver import (
     Command as RunserverCommand,
 )
-from django.contrib.staticfiles.storage import staticfiles_storage
 
-from ... import settings
-from ...utils import kill_vite_server, vite_serve, thread_vite_server
+from ...utils import thread_vite_server
 
 
 class Command(RunserverCommand):

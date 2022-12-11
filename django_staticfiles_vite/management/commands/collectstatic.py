@@ -3,9 +3,8 @@ import os
 import shutil
 from os.path import exists, join
 
-from django.conf import settings
 from django.contrib.staticfiles import utils
-from django.contrib.staticfiles.finders import FileSystemFinder, find, get_finders
+from django.contrib.staticfiles.finders import find, get_finders
 from django.contrib.staticfiles.management.commands.collectstatic import (
     Command as CollectStaticCommand,
 )

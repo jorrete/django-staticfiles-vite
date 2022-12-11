@@ -3,7 +3,7 @@ import os
 import signal
 import subprocess
 import sys
-from json import dumps, load, loads
+from json import dumps, loads
 from os import environ
 from os.path import dirname, expanduser, join, splitext
 from pathlib import Path
@@ -12,7 +12,6 @@ import psutil
 from django.apps import apps
 from django.conf import settings
 
-from . import node
 from .settings import (
     CSS_EXTENSIONS,
     JS_EXTENSIONS,
@@ -20,7 +19,6 @@ from .settings import (
     VITE_EXTENSION_MAP,
     VITE_OUT_DIR,
     VITE_PORT,
-    VITE_ROOT,
     VITE_TSCONFIG_EXTENDS,
     VITE_TSCONFIG_PATH,
     VITE_URL,
