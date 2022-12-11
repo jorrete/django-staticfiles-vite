@@ -26,3 +26,12 @@ repos:
         entry: flake8
         types: [python]
         language: system
+      - id: eslint
+        name: eslint
+        entry: npx eslint
+        language: system
+        types_or: [javascript, jsx, ts, tsx]
+        args:
+          [
+            "--fix",
+          ]
