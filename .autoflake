@@ -1,0 +1,7 @@
+[autoflake]
+in-place = true
+recursive = true
+remove-all-unused-imports = true
+remove-unused-variables = true
+remove-duplicate-keys = true
+exclude = "django/manage.py"

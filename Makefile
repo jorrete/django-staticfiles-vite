@@ -35,9 +35,16 @@ debugpy:
 	python -m debugpy --listen 5678 --wait-for-client ./${EXAMPLE_PATH}/django/manage.py runserver --noreload --nothreading --vite=manual
 
 black:
-	black ${MODULE_PATH}
+	black --preview ./${EXAMPLE_PATH}/django
+
+isort:
+	isort ./${EXAMPLE_PATH}/django
 
 flake8:
-	flake8 ${MODULE_PATH}
+	flake8 ./${EXAMPLE_PATH}/django
 
-prepare: black flake8
+autoflake:
+	autoflake --config .autoflake --verbose ./${EXAMPLE_PATH}/django
+
+pre-commit:
+	pre-commit run --all-files
