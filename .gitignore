@@ -1,6 +1,7 @@
 **/__pycache__
 **/node_modules
 **/.django
+build
 *.py[cod]
 .venv
 *.egg-info
