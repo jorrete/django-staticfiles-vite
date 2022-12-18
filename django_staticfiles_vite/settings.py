@@ -12,7 +12,7 @@ VITE_EXTENSION_MAP_DEFAULT = {
     ".js": [".js", ".mjs", ".ts", ".jsx", ".tsx"],
     ".css": [".css", ".sass", ".scss"],
 }
-VITE_PORT_DEFAULT = 5555
+VITE_PORT_DEFAULT = 6555
 VITE_TSCONFIG_PATH_DEFAULT = None
 VITE_TSCONFIG_EXTENDS_DEFAULT = {
     "compilerOptions": {
