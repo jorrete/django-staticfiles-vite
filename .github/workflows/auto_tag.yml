@@ -1,0 +1,19 @@
+name: auto_tag
+permissions: write-all
+on:
+  push:
+    branches:
+      - main
+jobs:
+  tag_repo:
+    name: Add latest tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Remove old tag
+        continue-on-error: true
+        run:  git push --delete origin "${{github.ref_name}}@latest"
+      - name: Add new tag
+        run: git tag "${{github.ref_name}}@latest"
+      - name: Push tag
+        run: git push origin --tags ${{github.ref_name}}
