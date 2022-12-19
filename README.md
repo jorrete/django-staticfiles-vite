@@ -10,7 +10,7 @@ When using **collectstatic** in deployment the assets are compiled with vitejs.
 Also allow to integrate easily npm dependencies as javascript assets.
 
 ## Status
-There is an issue opened in [vitejs](https://github.com/vitejs/vite/pull/4679) that prevents to pass extra paths to the postcss configuration. Until that issue is fixed we use a patched version.
+It works with vite 3.
 
 # Use
 
