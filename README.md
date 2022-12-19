@@ -12,6 +12,10 @@ Also allow to integrate easily npm dependencies as javascript assets.
 ## Status
 It works with vite 3.
 
+# Installation
+```sh
+pip install git+https://github.com/jorrete/django-staticfiles-vite.git#main.latest
+```
 # Use
 
 Create a **package.json** and a **vite.config.js** files in your project ddirectory and install dependencies.
