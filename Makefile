@@ -19,13 +19,14 @@ install:
 	mkdir ${EXAMPLE_PATH}/.django
 	${DJANGO_PATH}/manage.py migrate
 
-dev:
-	source ${VENV_PATH}/bin/activate
-	${DJANGO_PATH}/manage.py runserver 0.0.0.0:${DJANGO_PORT} --vite=auto
-
 collectstatic:
 	source ${VENV_PATH}/bin/activate
 	${DJANGO_PATH}/manage.py collectstatic --clear --noinput --vite
+
+dev:
+	source ${VENV_PATH}/bin/activate
+	export DJANGO_DEBUG=false
+	${DJANGO_PATH}/manage.py runserver 0.0.0.0:${DJANGO_PORT} --vite=auto
 
 dev-prod:
 	source ${VENV_PATH}/bin/activate
