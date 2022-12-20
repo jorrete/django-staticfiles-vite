@@ -11,12 +11,6 @@ register = template.Library()
 
 @register.simple_tag
 def vite_static(name, **kwargs):
-    if not path_is_vite_bunlde(name):
-        raise Exception(
-            f'Missing vite bundle keyworkd "{VITE_BUNDLE_KEYWORD}" for static path:'
-            f" {name}"
-        )
-
     if not settings.DEBUG:
         name = normalize_extension(name)
         return static(name)
@@ -27,6 +21,12 @@ def vite_static(name, **kwargs):
 @register.simple_tag
 def vite_script(name, **kwargs):
     """ """
+    if not path_is_vite_bunlde(name):
+        raise Exception(
+            f'Missing vite bundle keyworkd "{VITE_BUNDLE_KEYWORD}" for static path:'
+            f" {name}"
+        )
+
     hrm = kwargs.get("hrm", True)
     defer = kwargs.get("defer", False)
     style = kwargs.get("style", False) and not settings.DEBUG
@@ -60,6 +60,12 @@ def vite_script(name, **kwargs):
 @register.simple_tag
 def vite_style(name, **kwargs):
     """ """
+    if not path_is_vite_bunlde(name):
+        raise Exception(
+            f'Missing vite bundle keyworkd "{VITE_BUNDLE_KEYWORD}" for static path:'
+            f" {name}"
+        )
+
     path = vite_static(name)
 
     return mark_safe(f'<link href="{path}" rel="stylesheet">')
