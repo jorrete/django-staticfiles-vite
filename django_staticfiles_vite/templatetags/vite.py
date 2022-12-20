@@ -15,7 +15,17 @@ def vite_static(name, **kwargs):
         name = normalize_extension(name)
         return static(name)
 
-    return f"http://localhost:{VITE_PORT}{settings.STATIC_URL}{name}"
+    return (
+        f"http://localhost:{VITE_PORT}{'' if name[0] == '/' else settings.STATIC_URL}{name}"
+    )
+
+
+@register.simple_tag
+def vite_hrm(**kwargs):
+    return (
+        '<script type="module"'
+        f' src="http://localhost:{VITE_PORT}/@vite/client"></script>'
+    )
 
 
 @register.simple_tag
@@ -35,12 +45,7 @@ def vite_script(name, **kwargs):
     return mark_safe(
         "\n".join(
             [
-                (
-                    '<script type="module"'
-                    f' src="http://localhost:{VITE_PORT}/@vite/client"></script>'
-                    if hrm and settings.DEBUG
-                    else ""
-                ),
+                (vite_hrm() if hrm and settings.DEBUG else ""),
                 (
                     f'<script src="{path}"'
                     f' type="module"{" defer" if defer else ""}></script>'
