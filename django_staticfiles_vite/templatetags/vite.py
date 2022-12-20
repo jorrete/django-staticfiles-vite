@@ -9,7 +9,8 @@ from ..utils import get_bundle_css_name, normalize_extension, path_is_vite_bunld
 register = template.Library()
 
 
-def vite_static(name):
+@register.simple_tag
+def vite_static(name, **kwargs):
     if not path_is_vite_bunlde(name):
         raise Exception(
             f'Missing vite bundle keyworkd "{VITE_BUNDLE_KEYWORD}" for static path:'
