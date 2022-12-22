@@ -10,7 +10,7 @@ import foo_static from 'static@www/foo.js';
 console.log({ foo_static });
 import foo_relative from './foo';
 console.log({ foo_relative });
-import { render } from 'preact'
+import { render } from 'preact';
 import App from './App.jsx';
 import color from 'color-convert';
 console.log({ color });
@@ -19,7 +19,7 @@ console.log({ deepClone });
 import def, { foo, bar } from './myModules';
 console.log({ def, foo, bar });
 
-render(<App foo={3} />, document.getElementById('app'))
+render(<App foo={3} />, document.getElementById('app'));
 
 document.addEventListener('click', async () => {
   const fox = await import('static@www/pics/fox.txt?raw');

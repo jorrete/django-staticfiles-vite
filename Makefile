@@ -9,6 +9,9 @@ DJANGO_PATH=${EXAMPLE_PATH}/django
 VENV_PATH=.venv
 DJANGO_PORT=8000
 
+# values
+test = ${DJANGO_PATH}
+
 install:
 	test -d ${VENV_PATH} || python${PYTHON_VERSION} -m venv ${VENV_PATH}
 	source ${VENV_PATH}/bin/activate
@@ -25,7 +28,7 @@ collectstatic:
 
 dev:
 	source ${VENV_PATH}/bin/activate
-	export DJANGO_DEBUG=false
+	export DJANGO_DEBUG=true
 	${DJANGO_PATH}/manage.py runserver 0.0.0.0:${DJANGO_PORT} --vite=auto
 
 dev-prod:
@@ -36,12 +39,17 @@ dev-prod:
 
 test:
 	source ${VENV_PATH}/bin/activate
-	${DJANGO_PATH}/manage.py test ${DJANGO_PATH}
+	${DJANGO_PATH}/manage.py test $(test)
 
-test-browser:
+test-debug:
 	source ${VENV_PATH}/bin/activate
-	export DJANGO_TEST_HEADLESS=false
-	./${DJANGO_PATH}/manage.py migrate test
+	export TESTING_BROWSER_DEBUG=true
+	./${DJANGO_PATH}/manage.py test --failfast --keepdb $(test)
+
+test-dev:
+	source ${VENV_PATH}/bin/activate
+	export TESTING_BROWSER_FORCE_OPEN=true
+	./${DJANGO_PATH}/manage.py test --keepdb $(test)
 
 black:
 	black --preview ${MODULE_PATH} ${EXAMPLE_PATH}

@@ -19,6 +19,7 @@ from django.urls import include, path, re_path
 from django.views.static import serve
 
 urlpatterns = [
+    path("", include("django_staticfiles_vite.urls")),
     path("admin/", admin.site.urls),
     path("tests/", include("tests.urls", namespace="tests")),
     path("", include("www.urls")),

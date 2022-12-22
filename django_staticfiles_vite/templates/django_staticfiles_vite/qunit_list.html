@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <title>QUnit Test</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+  {% for test in tests %}
+  <ul>
+    <li>
+      <div>{{ test.name }}</div>
+      <ul>
+        {% for qunit in test.qunit %}
+        <li>
+          <a href="{{qunit.url}}">{{ qunit.name }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+
+    </li>
+  </ul>
+  {% endfor %}
+</body>
+
+</html>

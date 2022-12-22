@@ -4,7 +4,8 @@ function djangoStatic ({
   addDependicies,
   base,
   command,
-  paths
+  paths,
+  testPaths = [],
 }) {
   return {
     name: 'django-static',
@@ -15,6 +16,18 @@ function djangoStatic ({
       appType: 'custom', // don't include html middlewares
       resolve: {
         alias: [
+          {
+            find: new RegExp('^(?:/w+/tests/)(.*)'),
+            replacement: '$1',
+            async customResolver (id) {
+              const match = await resolveId.call(this, id, testPaths);
+
+              if (match) {
+                addDependicies?.([match.id.split('?')[0]]);
+                return match;
+              }
+            }
+          },
           {
             find: new RegExp(`^(?:${STATIC_TOKEN}|${base})(.*)`),
             replacement: '$1',

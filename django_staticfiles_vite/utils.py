@@ -50,11 +50,12 @@ def build_prefix_path(path):
     return f"{path[1]}/{path[0]}" if path[0] else path[1]
 
 
-def write_tsconfig(paths):
+def write_tsconfig(paths, test_paths):
     tsconfig = VITE_TSCONFIG_EXTENDS
     tsconfig_include = tsconfig.get("compilerOptions", {}).get("include", [])
     tsconfig_paths = tsconfig.get("compilerOptions", {}).get("paths", {})
 
+    # static
     for _, path in paths:
         tsconfig_include.append(f"{path}/**/*")
 
@@ -73,6 +74,14 @@ def write_tsconfig(paths):
             if "static@*" not in tsconfig_paths:
                 tsconfig_paths["static@*"] = []
             tsconfig_paths["static@*"].append(f"{path}/*")
+
+    # tests
+    for _, path in test_paths:
+        tsconfig_include.append(f"{path}/**/*")
+
+    # paths with alias must be forced to be first
+    for alias, path in test_paths:
+        tsconfig_paths[f"/{alias}/*"] = [f"{path}/*"]
 
     with open(VITE_TSCONFIG_PATH, "w") as file:
         file.write(
@@ -110,17 +119,28 @@ def kill_vite_server():
 
 
 def vite_serve():
-    paths = apps.get_app_config("django_staticfiles_vite").paths
+    paths = (
+        apps.get_app_config("django_staticfiles_vite").paths
+        if settings.DEBUG
+        else [["", str(settings.STATIC_ROOT)]]
+    )
+    test_paths = (
+        apps.get_app_config("django_staticfiles_vite").test_paths
+        if settings.DEBUG
+        else [["", str(settings.STATIC_ROOT)]]
+    )
+
     arguments = dumps(
         {
             "base": VITE_URL,
             "paths": paths if settings.DEBUG else [str(settings.STATIC_ROOT)],
+            "testPaths": test_paths,
             "port": VITE_PORT,
         }
     )
 
     if VITE_TSCONFIG_PATH:
-        write_tsconfig(paths)
+        write_tsconfig(paths, test_paths)
 
     env = environ.copy()
     pkg_path = get_pgk_json(settings.BASE_DIR)

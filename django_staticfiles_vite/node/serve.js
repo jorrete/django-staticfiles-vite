@@ -6,6 +6,7 @@ const replace = require('postcss-replace');
 
 const {
   paths,
+  testPaths,
   base,
   port
 } = JSON.parse(process.argv[2] || '{}');
@@ -30,6 +31,7 @@ const {
         ...djangoStatic({
           base,
           paths,
+          testPaths,
           command: 'serve'
         }),
         enforce: 'pre'
@@ -44,9 +46,9 @@ const {
         port
       },
       fs: {
-        strict: true,
+        strict: false,
         allow: [
-          ...paths.map(([, path]) => path),
+          ...[].concat(testPaths, paths).map(([, path]) => path),
           resolve(process.cwd(), 'node_modules')
         ]
       }

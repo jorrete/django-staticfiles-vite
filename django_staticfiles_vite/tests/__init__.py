@@ -3,7 +3,7 @@ from time import sleep
 from django.contrib.staticfiles.testing import LiveServerTestCase
 from django.core.management import call_command
 
-from .utils import kill_vite_server, thread_vite_server
+from ..utils import kill_vite_server, thread_vite_server
 
 
 def call_collectstatic_vite():

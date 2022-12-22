@@ -1,7 +1,19 @@
+import glob
+from os.path import join
+
 from django.apps import AppConfig, apps
+from django.conf import settings
 from django.contrib.staticfiles.finders import get_finders
 
 from .utils import clean_path
+
+
+def get_test_paths():
+    test_path = join(settings.BASE_DIR, "*/tests/")
+    return [
+        ["/".join(path[1:-1].split("/")[-2:]), path[:-1]]
+        for path in glob.glob(test_path, recursive=True)
+    ]
 
 
 def get_static_paths():
@@ -30,3 +42,4 @@ class StaticfilesViteConfig(AppConfig):
                 '[staticfiles_vite] "django.contrib.staticfiles" must be installed'
             )
         self.paths = get_static_paths()
+        self.test_paths = get_test_paths()

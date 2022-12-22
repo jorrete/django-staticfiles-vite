@@ -34,4 +34,5 @@ repos:
         args:
           [
             "--fix",
+            "django_staticfiles_vite/**/*.js",
           ]

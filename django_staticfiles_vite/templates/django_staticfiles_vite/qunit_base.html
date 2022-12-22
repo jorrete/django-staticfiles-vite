@@ -1,0 +1,7 @@
+{% load vite %}
+<div id="qunit" style="opacity: 0.8;"></div>
+{% if vite_client %}
+<script type="module" src="{% vite_static "/@vite/client" %}"></script>
+{% endif %}
+<link href="{% vite_static "/node_modules/qunit/qunit/qunit.css" %}" rel="stylesheet">
+<script src="{% vite_static test_path %}" type="module" defer></script>
