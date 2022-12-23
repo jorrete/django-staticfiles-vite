@@ -17,6 +17,7 @@ class PlaywrightTestCase:
         super().setUpClass()
         cls.playwright = sync_playwright().start()
         cls.browser = cls.playwright.chromium.launch(headless=cls.isHeadless())
+        cls.page = cls.browser.new_page()
 
     @classmethod
     def tearDownClass(cls):
@@ -35,7 +36,6 @@ class QUitPlaywrightTestCase(
         return not cls.isDebug()
 
     def load_qunit_url(self, url):
-        self.page = self.browser.new_page()
         self.page.goto(f"{self.live_server_url}{url}")
 
     def get_qunit_result(self):
