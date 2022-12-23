@@ -4,4 +4,27 @@
 <script type="module" src="{% vite_static "/@vite/client" %}"></script>
 {% endif %}
 <link href="{% vite_static "/node_modules/qunit/qunit/qunit.css" %}" rel="stylesheet">
-<script src="{% vite_static test_path %}" type="module" defer></script>
+<script type="module">
+  import '{% vite_static "/node_modules/qunit/qunit/qunit.js" %}';
+  window.QUnit.config.autostart = false;
+
+  window.QUnit.done((result) => {
+    window.qunitResult = result;
+    if (window._qunitDone) {
+      window._qunitDone(result);
+    }
+  });
+
+  window.qunitDone = (callback) => {
+    if (window.qunitResult) {
+      callback(window.qunitResult);
+      return;
+    }
+
+    window._qunitDone = callback;
+  };
+
+  import '{% vite_static test_path %}';
+
+  window.QUnit.start();
+</script>

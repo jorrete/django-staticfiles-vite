@@ -17,19 +17,26 @@ class QUnitTestCase:
     template = "django_staticfiles_vite/qunit_default.html"
 
     @classmethod
-    def get_qunit_tests(cls):
+    def get_qunit_file_paths(cls):
         file = getfile(cls)
         dir = dirname(file)
         [base, _] = splitext(basename(file))
-        qunit_tests = glob(join(dir, f"{base}*.js"), recursive=True)
+        return [
+            test_path.replace(str(settings.BASE_DIR), "")
+            for test_path in glob(join(dir, f"{base}*.js"), recursive=True)
+        ]
+
+    @classmethod
+    def get_qunit_tests(cls):
         return [
             {
                 "url": cls.get_qunit_url(
-                    cls.get_test_name(), qunit_test.replace(str(settings.BASE_DIR), "")
+                    cls.get_test_name(),
+                    qunit_test,
                 ),
-                "name": basename(qunit_test),
+                "name": qunit_test,
             }
-            for qunit_test in qunit_tests
+            for qunit_test in cls.get_qunit_file_paths()
         ]
 
     @classmethod

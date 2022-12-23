@@ -1,5 +1,3 @@
-import QUnit from 'static@qunit';
-
 QUnit.test('Dummy test', function(assert) {
   assert.expect(2);
 

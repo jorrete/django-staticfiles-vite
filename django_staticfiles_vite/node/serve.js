@@ -46,7 +46,7 @@ const {
         port
       },
       fs: {
-        strict: false,
+        strict: true,
         allow: [
           ...[].concat(testPaths, paths).map(([, path]) => path),
           resolve(process.cwd(), 'node_modules')

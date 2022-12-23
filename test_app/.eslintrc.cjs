@@ -1,5 +1,8 @@
 // eslint-disable-next-line no-undef
 module.exports = {
+  'globals': {
+    'QUnit': 'readonly',
+  },
   'env': {
     'node': true,
     'browser': true,
