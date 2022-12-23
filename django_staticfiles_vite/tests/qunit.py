@@ -15,9 +15,13 @@ TESTING_BROWSER_FORCE_OPEN = (
 class QUnitTestCase:
     url = "/qunit/test/"
     template = "django_staticfiles_vite/qunit_default.html"
+    qunit_file_paths = []
 
     @classmethod
     def get_qunit_file_paths(cls):
+        if len(cls.qunit_file_paths):
+            return cls.qunit_file_paths
+
         file = getfile(cls)
         dir = dirname(file)
         [base, _] = splitext(basename(file))

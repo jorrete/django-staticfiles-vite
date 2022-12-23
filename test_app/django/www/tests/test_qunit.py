@@ -5,7 +5,9 @@ from django_staticfiles_vite.tests import playwright, selenium
 
 @override_settings(DEBUG=True, ALLOWED_HOSTS=[])
 class PlayStandalineTestCase(playwright.QUitPlaywrightTestCase):
-    pass
+    qunit_file_paths = [
+        "/www/tests/test_qunit.js",
+    ]
 
 
 @override_settings(DEBUG=True, ALLOWED_HOSTS=[])
