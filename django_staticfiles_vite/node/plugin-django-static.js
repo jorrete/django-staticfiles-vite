@@ -17,7 +17,7 @@ function djangoStatic ({
       resolve: {
         alias: [
           {
-            find: new RegExp('^(?:/w+/tests/)(.*)'),
+            find: new RegExp('^(?:/[\\w_-]+/tests/)(.*)'),
             replacement: '$1',
             async customResolver (id) {
               const match = await resolveId.call(this, id, testPaths);
