@@ -6,7 +6,7 @@
 <link href="{% vite_static "/node_modules/qunit/qunit/qunit.css" %}" rel="stylesheet">
 <script type="module">
   import '{% vite_static "/node_modules/qunit/qunit/qunit.js" %}';
-  window.QUnit.config.autostart = false;
+  // window.QUnit.config.autostart = false;
 
   window.QUnit.done((result) => {
     window.qunitResult = result;
@@ -26,5 +26,5 @@
 
   import '{% vite_static test_path %}';
 
-  window.QUnit.start();
+  // window.QUnit.start();
 </script>
