@@ -24,14 +24,10 @@ class QUnitTestCase:
         qunit_tests = glob(join(dir, f"{base}*.js"), recursive=True)
         return [
             {
-                "base": cls.get_test_name(),
                 "url": cls.get_qunit_url(
                     cls.get_test_name(), qunit_test.replace(str(settings.BASE_DIR), "")
                 ),
-                "title": f"{cls.get_test_name()} {basename(qunit_test)}",
                 "name": basename(qunit_test),
-                "path": qunit_test.replace(str(settings.BASE_DIR), ""),
-                "file": qunit_test,
             }
             for qunit_test in qunit_tests
         ]
