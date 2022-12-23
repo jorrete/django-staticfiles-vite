@@ -46,11 +46,6 @@ test-debug:
 	export TESTING_BROWSER_DEBUG=true
 	./${DJANGO_PATH}/manage.py test --failfast --keepdb $(test)
 
-test-dev:
-	source ${VENV_PATH}/bin/activate
-	export TESTING_BROWSER_FORCE_OPEN=true
-	./${DJANGO_PATH}/manage.py test --keepdb $(test)
-
 black:
 	black --preview ${MODULE_PATH} ${EXAMPLE_PATH}
 
