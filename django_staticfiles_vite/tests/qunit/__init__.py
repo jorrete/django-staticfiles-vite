@@ -31,13 +31,10 @@ class QUnitTestCase:
         ]
 
     @classmethod
-    def get_qunit_tests(cls):
+    def get_qunit_tests(cls, port=None):
         return [
             {
-                "url": cls.get_qunit_url(
-                    cls.get_test_name(),
-                    qunit_test,
-                ),
+                "url": cls.get_qunit_url(cls.get_test_name(), qunit_test, port=port),
                 "name": qunit_test,
             }
             for qunit_test in cls.get_qunit_file_paths()
@@ -81,8 +78,16 @@ class QUnitTestCase:
         return f"{cls.__module__}.{cls.__name__}"
 
     @classmethod
-    def get_qunit_url(cls, test_name, qunit_test):
-        return f"{cls.url}?qunit={test_name}&variant={qunit_test}"
+    def get_qunit_url(cls, test_name, qunit_test, port=None):
+        url = f"{cls.url}?qunit={test_name}&variant={qunit_test}"
+
+        if port:
+            url = f"{url}&port={port}"
+
+        return url
+
+    def get_port(self):
+        raise NotImplementedError
 
     def load_qunit_url(self, url):
         raise NotImplementedError
@@ -99,7 +104,7 @@ class QUnitTestCase:
 
     def test_qunit(self):
         try:
-            for test in self.get_qunit_tests():
+            for test in self.get_qunit_tests(self.get_port()):
                 with self.subTest(msg=test["name"]):
                     passed = self.run_qunit(test["url"])
                     self.assertTrue(passed, "QUnit without errors")

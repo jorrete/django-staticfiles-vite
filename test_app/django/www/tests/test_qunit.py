@@ -1,20 +1,37 @@
+from django.contrib.staticfiles import testing
 from django.test import override_settings
 
-from django_staticfiles_vite.tests import playwright, selenium
+from django_staticfiles_vite import tests
+from django_staticfiles_vite.tests.qunit import live, playwright, selenium
 
 
 @override_settings(DEBUG=True, ALLOWED_HOSTS=[])
-class PlayStandalineTestCase(playwright.QUitPlaywrightTestCase):
+class PlayStandalineTestCase(
+    live.QUnitLiveServerTestCase,
+    playwright.QUitPlaywrightTestCase,
+    tests.ViteLiveServerTestCase,
+    testing.LiveServerTestCase,
+):
     qunit_file_paths = [
         "/www/tests/test_qunit.js",
     ]
 
 
 @override_settings(DEBUG=True, ALLOWED_HOSTS=[])
-class PlayURLTestCase(playwright.QUitPlaywrightTestCase):
+class PlayURLTestCase(
+    live.QUnitLiveServerTestCase,
+    playwright.QUitPlaywrightTestCase,
+    tests.ViteLiveServerTestCase,
+    testing.LiveServerTestCase,
+):
     url = "/"
 
 
 @override_settings(DEBUG=True, ALLOWED_HOSTS=[])
-class SeleniumFooTestCase(selenium.QUitSeleniumTestCase):
+class SeleniumFooTestCase(
+    live.QUnitLiveServerTestCase,
+    selenium.QUitSeleniumTestCase,
+    tests.ViteLiveServerTestCase,
+    testing.LiveServerTestCase,
+):
     pass

@@ -1,6 +1,5 @@
 from time import sleep
 
-from django.contrib.staticfiles.testing import LiveServerTestCase
 from django.core.management import call_command
 
 from ..utils import kill_vite_server, thread_vite_server
@@ -16,7 +15,7 @@ def call_collectstatic_vite():
     )
 
 
-class ViteLiveServerTestCase(LiveServerTestCase):
+class ViteLiveServerTestCase:
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
