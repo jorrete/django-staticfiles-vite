@@ -1,3 +1,5 @@
+import QUnit from 'qunit';
+
 QUnit.test('Dummy test', function(assert) {
   assert.expect(2);
 

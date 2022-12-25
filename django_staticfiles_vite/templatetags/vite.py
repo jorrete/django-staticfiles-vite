@@ -74,3 +74,30 @@ def vite_style(name, **kwargs):
     path = vite_static(name)
 
     return mark_safe(f'<link href="{path}" rel="stylesheet">')
+
+
+@register.simple_tag
+def vite_qunit(name, **kwargs):
+    """ """
+    style = not settings.DEBUG
+    path = (
+        f"http://localhost:{VITE_PORT}{'' if name[0] == '/' else settings.STATIC_URL}{name}"
+        if settings.DEBUG
+        else f"{settings.STATIC_URL[:-1]}{name}"
+    )
+
+    return mark_safe(
+        "\n".join(
+            [
+                (vite_hrm() if settings.DEBUG else ""),
+                f'<script src="{path}" type="module" defer></script>',
+                (
+                    "<link"
+                    f' href="{get_bundle_css_name(normalize_extension(path))}"'
+                    ' rel="stylesheet">'
+                    if style
+                    else ""
+                ),
+            ]
+        )
+    )

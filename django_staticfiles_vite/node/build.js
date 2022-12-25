@@ -12,6 +12,7 @@ const {
   format,
   outDir,
   paths,
+  testPaths,
   buildCSS = false
 } = JSON.parse(process.argv[2] || '{}');
 
@@ -46,6 +47,7 @@ const {
         ...djangoStatic({
           base,
           paths,
+          testPaths,
           addDependicies,
           command: 'build'
         }),
@@ -59,13 +61,13 @@ const {
       outDir,
       rollupOptions: {
         output: {
-          chunkFileNames: 'chunk.[name].[hash].js',
+          chunkFileNames: 'chunk.[name].js',
           assetFileNames: ({ name, source }) => {
             if (source === '/* vite internal call, ignore */') {
               return name;
             }
 
-            const [alias, path] = paths.find(([alias, path]) => {
+            const [alias, path] = [].concat(paths, testPaths).find(([alias, path]) => {
               const relativePath = path.replace(process.cwd(), '').slice(1);
 
               if (name.startsWith(relativePath + '/')) {
@@ -86,7 +88,7 @@ const {
               return finalName;
             }
 
-            return finalName.replace('.css', '.js.css');
+            return (finalName.includes('/tests/') ? 'tests/' : '') + finalName.replace('.css', '.js.css');
           }
         }
       },

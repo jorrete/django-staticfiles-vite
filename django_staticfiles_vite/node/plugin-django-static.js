@@ -1,3 +1,4 @@
+/* eslint-disable no-unexpected-multiline */
 const { resolveId, excludeExtCSS, hasExtension, STATIC_TOKEN, isCSS } = require('./utils');
 
 function djangoStatic ({
@@ -55,6 +56,44 @@ function djangoStatic ({
         ]
       }
     }),
+    resolveId(id) {
+      if (id === 'qunit') {
+        return id;
+      }
+    },
+    load(id) {
+      if (id === 'qunit') {
+        return `
+          import '/node_modules/qunit/qunit/qunit.js'
+
+          window.QUnit.done((result) => {
+            window.qunitResult = result;
+            if (window._qunitDone) {
+              window._qunitDone(result);
+            }
+          });
+
+          window.qunitDone = (callback) => {
+            if (window.qunitResult) {
+              callback(window.qunitResult);
+              return;
+            }
+
+            window._qunitDone = callback;
+          };
+
+          export default window.QUnit;
+        `;
+      }
+    },
+    transform(src, id) {
+      if (id.endsWith('?qunit')) {
+        return `
+        import 'qunit/qunit/qunit.css';
+        ${src}
+        `;
+      }
+    },
     handleHotUpdate (ctx) {
       if (ctx.file.endsWith('.html')) {
         ctx.server.ws.send({ type: 'full-reload' });

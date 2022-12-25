@@ -9,6 +9,7 @@ def call_collectstatic_vite():
     call_command(
         "collectstatic",
         clear=True,
+        tests=True,
         interactive=False,
         verbosity=0,  # no output to keep test clean
         vite=True,

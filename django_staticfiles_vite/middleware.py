@@ -1,4 +1,5 @@
 import sys
+import urllib.parse
 
 from django.template.loader import get_template
 
@@ -26,7 +27,10 @@ class QUnitMiddleware:
         variant = request.GET.get("variant", None)
         response = self.get_response(request)
         if test_path and variant:
-            content = render_qunit(variant, request)
-            response.content = response.content.replace(b"</body>", str.encode(content))
+            content = render_qunit(urllib.parse.unquote(variant), request)
+            response.content = response.content.replace(
+                b"</body>",
+                str.encode(content + "\n</body>"),
+            )
 
         return response

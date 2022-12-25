@@ -1,8 +1,9 @@
-import glob
 import os
 import shutil
+from glob import glob
 from os.path import exists, join
 
+from django.conf import settings
 from django.contrib.staticfiles import utils
 from django.contrib.staticfiles.finders import find, get_finders
 from django.contrib.staticfiles.management.commands.collectstatic import (
@@ -22,6 +23,16 @@ from ...utils import (
     path_is_vite_bunlde,
     vite_build,
 )
+
+
+def collect_test_files():
+    files = {
+        join("tests", file.replace(str(settings.BASE_DIR), "")[1:]): file + "?qunit"
+        for file in glob(
+            join(str(settings.BASE_DIR), "*/tests/**/*.js"), recursive=True
+        )
+    }
+    vite_build(files, False)
 
 
 def get_files_patched(storage, ignore_patterns=None, location=""):
@@ -111,6 +122,12 @@ class Command(CollectStaticCommand):
             dest="vite",
             help="Serve static files from from Vite",
         )
+        parser.add_argument(
+            "--tests",
+            action="store_true",
+            dest="tests",
+            help="Process js tests",
+        )
 
     def vite_proccess(self):
         self.vite_files = []
@@ -179,12 +196,21 @@ class Command(CollectStaticCommand):
 
     def copy_vite_chunks(self):
         pattern = join(VITE_OUT_DIR, "chunk.*")
-        for chunk in glob.glob(pattern):
+        for chunk in glob(pattern):
             shutil.copy(chunk, self.storage.location)
+
+    def collect_tests(self):
+        self.log("Vite building qunit tests", level=1)
+        collect_test_files()
+        bundle_path = join(VITE_OUT_DIR, "tests")
+        dest_path = self.storage.path("tests")
+        shutil.rmtree(dest_path)
+        shutil.copytree(bundle_path, dest_path)
 
     def handle(self, **options):
         self.set_options(**options)
         use_vite = options["vite"]
+        process_tests = options["tests"]
 
         if use_vite:
             self.vite_proccess()
@@ -194,3 +220,5 @@ class Command(CollectStaticCommand):
 
         if use_vite:
             self.copy_vite_chunks()
+            if process_tests:
+                self.collect_tests()

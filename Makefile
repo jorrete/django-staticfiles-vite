@@ -34,7 +34,7 @@ dev:
 dev-prod:
 	source ${VENV_PATH}/bin/activate
 	export DJANGO_DEBUG=false
-	${DJANGO_PATH}/manage.py collectstatic --clear --noinput --vite
+	${DJANGO_PATH}/manage.py collectstatic --clear --noinput --vite --tests
 	${DJANGO_PATH}/manage.py runserver 0.0.0.0:${DJANGO_PORT}
 
 test:

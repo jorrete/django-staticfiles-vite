@@ -133,7 +133,8 @@ def vite_serve():
     arguments = dumps(
         {
             "base": VITE_URL,
-            "paths": paths if settings.DEBUG else [str(settings.STATIC_ROOT)],
+            # "paths": paths if settings.DEBUG else [str(settings.STATIC_ROOT)],
+            "paths": paths,
             "testPaths": test_paths,
             "port": VITE_PORT,
         }
@@ -162,6 +163,7 @@ def vite_serve():
 
 def vite_build(entry, is_css):
     paths = apps.get_app_config("django_staticfiles_vite").paths
+    test_paths = apps.get_app_config("django_staticfiles_vite").test_paths
     arguments = dumps(
         {
             "buildCSS": is_css,
@@ -170,6 +172,7 @@ def vite_build(entry, is_css):
             "format": "es",
             "outDir": VITE_OUT_DIR,
             "paths": paths,
+            "testPaths": test_paths,
         }
     )
     env = environ.copy()
