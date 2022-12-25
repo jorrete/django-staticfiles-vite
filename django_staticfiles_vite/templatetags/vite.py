@@ -79,7 +79,6 @@ def vite_style(name, **kwargs):
 @register.simple_tag
 def vite_qunit(name, **kwargs):
     """ """
-    style = not settings.DEBUG
     path = (
         f"http://localhost:{VITE_PORT}{'' if name[0] == '/' else settings.STATIC_URL}{name}"
         if settings.DEBUG
@@ -90,14 +89,15 @@ def vite_qunit(name, **kwargs):
         "\n".join(
             [
                 (vite_hrm() if settings.DEBUG else ""),
-                f'<script src="{path}" type="module" defer></script>',
                 (
-                    "<link"
-                    f' href="{get_bundle_css_name(normalize_extension(path))}"'
-                    ' rel="stylesheet">'
-                    if style
-                    else ""
+                    ""
+                    if settings.DEBUG
+                    else (
+                        f'<link href="{settings.STATIC_URL[:-1]}/qunit.css"'
+                        ' rel="stylesheet">'
+                    )
                 ),
+                f'<script src="{path}" type="module" defer></script>',
             ]
         )
     )

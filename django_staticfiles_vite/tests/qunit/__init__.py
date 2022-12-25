@@ -26,6 +26,7 @@ class QUnitTestCase:
         file = getfile(cls)
         dir = dirname(file)
         [base, _] = splitext(basename(file))
+
         return [
             test_path.replace(str(settings.BASE_DIR), "")
             for test_path in glob(join(dir, f"{base}*.js"), recursive=True)
@@ -81,8 +82,9 @@ class QUnitTestCase:
     @classmethod
     def get_qunit_url(cls, test_name, qunit_test, port=None):
         qunit_test = urllib.parse.quote(
-            f"/tests{qunit_test}{'?qunit' if settings.DEBUG else ''}"
+            f"{qunit_test}?qunit" if settings.DEBUG else f"/tests{qunit_test}"
         )
+
         url = f"{cls.url}?qunit={test_name}&variant={qunit_test}"
 
         if port:

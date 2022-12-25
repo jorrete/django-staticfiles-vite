@@ -1,8 +1,11 @@
+import glob
+import inspect
 import multiprocessing
 import os
 import signal
 import subprocess
 import sys
+from importlib import import_module
 from json import dumps, loads
 from os import environ
 from os.path import dirname, expanduser, join, splitext
@@ -23,6 +26,7 @@ from .settings import (
     VITE_TSCONFIG_PATH,
     VITE_URL,
 )
+from .tests.qunit import QUnitTestCase
 
 TESTING = sys.argv[1:2] == ["test"]
 
@@ -230,3 +234,37 @@ def get_pgk_json(path):
 
 def get_tsconfig(path):
     return find_file_up_tree("tsconfig.json", path)
+
+
+def get_test_module(test_path):
+    return import_module(
+        splitext(test_path)[0].replace(str(settings.BASE_DIR), "")[1:].replace("/", ".")
+    )
+
+
+def get_qunit_tests_from_module(mod):
+    return [
+        obj
+        for name, obj in inspect.getmembers(mod)
+        if (
+            inspect.isclass(obj)
+            and mod.__name__ == obj.__module__
+            and issubclass(obj, QUnitTestCase)
+        )
+    ]
+
+
+def get_test_files():
+    test_path = join(settings.BASE_DIR, "*/tests/**/test_*.py")
+    return glob.glob(test_path, recursive=True)
+
+
+def get_tests():
+    test_files = get_test_files()
+    test_modules = [get_test_module(test_path) for test_path in test_files]
+    test_classes = [
+        test_class
+        for test_module in test_modules
+        for test_class in get_qunit_tests_from_module(test_module)
+    ]
+    return test_classes

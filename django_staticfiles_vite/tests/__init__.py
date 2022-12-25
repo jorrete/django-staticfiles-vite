@@ -2,7 +2,7 @@ from time import sleep
 
 from django.core.management import call_command
 
-from ..utils import kill_vite_server, thread_vite_server
+from .. import utils
 
 
 def call_collectstatic_vite():
@@ -20,10 +20,10 @@ class ViteLiveServerTestCase:
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        thread_vite_server()
+        utils.thread_vite_server()
         sleep(1)
 
     @classmethod
     def tearDownClass(cls):
         super().tearDownClass()
-        kill_vite_server()
+        utils.kill_vite_server()

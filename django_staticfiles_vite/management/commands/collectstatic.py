@@ -201,11 +201,18 @@ class Command(CollectStaticCommand):
 
     def collect_tests(self):
         self.log("Vite building qunit tests", level=1)
-        collect_test_files()
         bundle_path = join(VITE_OUT_DIR, "tests")
         dest_path = self.storage.path("tests")
-        shutil.rmtree(dest_path)
+        if exists(bundle_path):
+            shutil.rmtree(bundle_path)
+        if exists(dest_path):
+            shutil.rmtree(dest_path)
+        collect_test_files()
         shutil.copytree(bundle_path, dest_path)
+        shutil.copy(join(VITE_OUT_DIR, "qunit.css"), self.storage.path("qunit.css"))
+        shutil.copy(
+            join(VITE_OUT_DIR, "chunk.qunit.js"), self.storage.path("chunk.qunit.js")
+        )
 
     def handle(self, **options):
         self.set_options(**options)

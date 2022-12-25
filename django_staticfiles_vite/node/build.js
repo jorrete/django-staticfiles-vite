@@ -75,7 +75,11 @@ const {
               }
 
               return null;
-            });
+            }) || [null, null];
+
+            if (!path) {
+              return name;
+            }
 
             const finalName = join(
               alias,
