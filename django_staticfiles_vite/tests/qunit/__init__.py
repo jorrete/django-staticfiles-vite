@@ -79,7 +79,7 @@ class QUnitTestCase:
 
     @classmethod
     def get_qunit_url(cls, test_name, qunit_test, port=None):
-        url = f"{cls.url}?qunit={test_name}&variant={qunit_test}"
+        url = f"{cls.url}?qunit={test_name}&variant=/tests{qunit_test}"
 
         if port:
             url = f"{url}&port={port}"
