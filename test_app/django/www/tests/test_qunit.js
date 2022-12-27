@@ -11,7 +11,7 @@ QUnit.test('Dummy test 2', async function(assert) {
   assert.expect(1);
   const timeout = assert.async();
   setTimeout(() => {
-    assert.true(true);
+    assert.true(false);
     timeout();
-  }, 2000);
+  }, 200);
 });

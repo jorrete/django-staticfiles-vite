@@ -1,7 +1,7 @@
-import { render } from 'preact'
+import { render } from 'preact';
 import App from './App';
 
-render(<App />, document.getElementById('content'))
+render(<App />, document.getElementById('content'));
 
 QUnit.module('import', () => {
   QUnit.test('succesful js import', assert => {
