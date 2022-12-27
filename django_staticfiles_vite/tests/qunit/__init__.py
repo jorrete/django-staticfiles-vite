@@ -1,3 +1,4 @@
+import time
 import urllib
 from glob import glob
 from inspect import getfile
@@ -65,17 +66,6 @@ class QUnitTestCase:
         return TESTING_BROWSER_FORCE_OPEN
 
     @classmethod
-    def hasFailed(cls):
-        return getattr(cls, "_failed", None)
-
-    @classmethod
-    def tearDownClass(cls):
-        # will hang the test run so you can inspect and close with ctrl-c
-        if (cls.isDebug() and cls.hasFailed()) or cls.isForceOpen():
-            return
-        super().tearDownClass()
-
-    @classmethod
     def get_test_name(cls):
         return f"{cls.__module__}.{cls.__name__}"
 
@@ -109,12 +99,9 @@ class QUnitTestCase:
         return self.get_qunit_result()
 
     def test_qunit(self):
-        try:
-            for test in self.get_qunit_tests(self.get_port()):
-                with self.subTest(msg=test["name"]):
-                    passed = self.run_qunit(test["url"])
-                    self.assertTrue(passed, "QUnit without errors")
-            setattr(self.__class__, "_failed", False)
-        except Exception as e:
-            setattr(self.__class__, "_failed", True)
-            raise e
+        for test in self.get_qunit_tests(self.get_port()):
+            with self.subTest(msg=test["name"]):
+                passed = self.run_qunit(test["url"])
+                if self.isDebug() and not passed:
+                    time.sleep(10000000)
+                self.assertTrue(passed, "QUnit without errors")
