@@ -99,9 +99,14 @@ class QUnitTestCase:
         return self.get_qunit_result()
 
     def test_qunit(self):
-        for test in self.get_qunit_tests(self.get_port()):
-            with self.subTest(msg=test["name"]):
-                passed = self.run_qunit(test["url"])
-                if self.isDebug() and not passed:
-                    time.sleep(10000000)
-                self.assertTrue(passed, "QUnit without errors")
+        try:
+            for test in self.get_qunit_tests(self.get_port()):
+                with self.subTest(msg=test["name"]):
+                    passed = self.run_qunit(test["url"])
+                    if self.isDebug() and not passed:
+                        raise Exception("qunit")
+                    self.assertTrue(passed, "QUnit without errors")
+        except Exception as e:
+            if self.isDebug():
+                time.sleep(10000000)
+            raise e
