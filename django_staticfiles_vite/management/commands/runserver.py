@@ -1,10 +1,11 @@
 import os
 
-from django.contrib.staticfiles.management.commands.runserver import (
-    Command as RunserverCommand,
-)
+from django.utils.module_loading import import_string
 
+from ...settings import VITE_RUNSERVER_COMMAND_OVERLOAD
 from ...utils import thread_vite_server
+
+RunserverCommand = import_string(VITE_RUNSERVER_COMMAND_OVERLOAD)
 
 
 class Command(RunserverCommand):
