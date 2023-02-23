@@ -101,3 +101,23 @@ def vite_qunit(name, **kwargs):
             ]
         )
     )
+
+
+@register.simple_tag
+def vite_link(name, type, **kwargs):
+    """ """
+    if not path_is_vite_bunlde(name):
+        raise Exception(
+            f'Missing vite bundle keyworkd "{VITE_BUNDLE_KEYWORD}" for static path:'
+            f" {name}"
+        )
+
+    path = vite_static(name)
+
+    return mark_safe(
+        "\n".join(
+            [
+                f'<link src="{path}" type="{type}" />',
+            ]
+        )
+    )
