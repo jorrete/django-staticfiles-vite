@@ -13,7 +13,8 @@ const {
   outDir,
   paths,
   testPaths,
-  buildCSS = false
+  buildCSS = false,
+  context = {},
 } = JSON.parse(process.argv[2] || '{}');
 
 (async () => {
@@ -45,6 +46,7 @@ const {
     plugins: [
       {
         ...djangoStatic({
+          context,
           base,
           paths,
           testPaths,

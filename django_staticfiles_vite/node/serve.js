@@ -13,7 +13,6 @@ const {
 } = JSON.parse(process.argv[2] || '{}');
 
 (async () => {
-  console.log(context);
   const server = await createServer({
     envFile: false,
     css: {
