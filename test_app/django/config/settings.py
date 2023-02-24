@@ -147,3 +147,4 @@ VITE_IGNORE_EXCLUDE = [
 ]
 VITE_TSCONFIG_PATH = "/tmp/tsconfig.django.json"
 VITE_OUT_DIR = "/tmp/django_vite"
+VITE_CONTEXT_FUNCTION = "config.context.my_context"

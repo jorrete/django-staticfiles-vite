@@ -14,11 +14,13 @@ from pathlib import Path
 import psutil
 from django.apps import apps
 from django.conf import settings
+from django.utils.module_loading import import_string
 
 from .settings import (
     CSS_EXTENSIONS,
     JS_EXTENSIONS,
     VITE_BUNDLE_KEYWORD,
+    VITE_CONTEXT_FUNCTION,
     VITE_EXTENSION_MAP,
     VITE_OUT_DIR,
     VITE_PORT,
@@ -29,6 +31,15 @@ from .settings import (
 from .tests.qunit import QUnitTestCase
 
 TESTING = sys.argv[1:2] == ["test"]
+
+
+def get_extra_context():
+    if not VITE_CONTEXT_FUNCTION:
+        return {}
+
+    func = import_string(VITE_CONTEXT_FUNCTION)
+
+    return func()
 
 
 def path_is_vite_bunlde(name):
@@ -141,6 +152,7 @@ def vite_serve():
             "paths": paths,
             "testPaths": test_paths,
             "port": VITE_PORT,
+            "context": get_extra_context(),
         }
     )
 

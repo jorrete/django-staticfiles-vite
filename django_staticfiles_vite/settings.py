@@ -26,6 +26,7 @@ VITE_RUNSERVER_COMMAND_OVERLOAD_DEFAULT = (
     "django.contrib.staticfiles.management.commands.runserver.Command"
 )
 
+
 # SETTINGS
 VITE_BUNDLE_KEYWORD = getattr(
     settings,
@@ -66,6 +67,12 @@ VITE_RUNSERVER_COMMAND_OVERLOAD = getattr(
     settings,
     "VITE_RUNSERVER_COMMAND_OVERLOAD",
     VITE_RUNSERVER_COMMAND_OVERLOAD_DEFAULT,
+)
+
+VITE_CONTEXT_FUNCTION = getattr(
+    settings,
+    "VITE_CONTEXT_FUNCTION",
+    None,
 )
 
 # VALUES

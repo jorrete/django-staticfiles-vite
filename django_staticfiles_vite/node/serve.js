@@ -8,10 +8,12 @@ const {
   paths,
   testPaths,
   base,
-  port
+  port,
+  context,
 } = JSON.parse(process.argv[2] || '{}');
 
 (async () => {
+  console.log(context);
   const server = await createServer({
     envFile: false,
     css: {
