@@ -31,6 +31,7 @@ const {
     plugins: [
       {
         ...djangoStatic({
+          context,
           base,
           paths,
           testPaths,

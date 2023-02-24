@@ -189,6 +189,7 @@ def vite_build(entry, is_css):
             "outDir": VITE_OUT_DIR,
             "paths": paths,
             "testPaths": test_paths,
+            "context": get_extra_context(),
         }
     )
     env = environ.copy()

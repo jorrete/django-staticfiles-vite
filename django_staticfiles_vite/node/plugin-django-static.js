@@ -7,6 +7,7 @@ function djangoStatic ({
   command,
   paths,
   testPaths = [],
+  context = {},
 }) {
   return {
     name: 'django-static',
@@ -60,6 +61,10 @@ function djangoStatic ({
       if (id === 'qunit') {
         return id;
       }
+
+      if (id === '@context') {
+        return id;
+      }
     },
     load(id) {
       if (id === 'qunit') {
@@ -83,6 +88,18 @@ function djangoStatic ({
           };
 
           export default window.QUnit;
+        `;
+      }
+
+      if (id === '@context') {
+        return `export default ${JSON.stringify(context)}`;
+      }
+      if (id === '@context') {
+        const name = 'context';
+        return `
+        const ${name} = Object.freeze(${JSON.stringify(context)});
+        console.log('[${name}]', ${name});
+        export default ${name};
         `;
       }
     },
