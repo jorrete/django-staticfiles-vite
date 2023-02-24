@@ -44,7 +44,7 @@ test:
 test-debug:
 	source ${VENV_PATH}/bin/activate
 	export TESTING_BROWSER_DEBUG=true
-	./${DJANGO_PATH}/manage.py test --failfast --keepdb $(test)
+	./${DJANGO_PATH}/manage.py test --failfast --keepdb  --verbosity 2 $(test)
 
 black:
 	black --preview ${MODULE_PATH} ${EXAMPLE_PATH}
