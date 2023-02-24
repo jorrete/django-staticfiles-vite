@@ -92,9 +92,6 @@ function djangoStatic ({
       }
 
       if (id === '@context') {
-        return `export default ${JSON.stringify(context)}`;
-      }
-      if (id === '@context') {
         const name = 'context';
         return `
         const ${name} = Object.freeze(${JSON.stringify(context)});
