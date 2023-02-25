@@ -9,6 +9,8 @@ function djangoStatic ({
   testPaths = [],
   context = {},
 }) {
+  let config;
+
   return {
     name: 'django-static',
     config: () => ({
@@ -57,6 +59,9 @@ function djangoStatic ({
         ]
       }
     }),
+    configResolved(resolvedConfig) {
+      config = resolvedConfig;
+    },
     resolveId(id) {
       if (id === 'qunit') {
         return id;
@@ -95,7 +100,7 @@ function djangoStatic ({
         const name = 'context';
         return `
         const ${name} = Object.freeze(${JSON.stringify(context)});
-        console.log('[${name}]', ${name});
+        ${config.command === 'serve' ? `console.log('[${name}]', ${name});` : ''}
         export default ${name};
         `;
       }
