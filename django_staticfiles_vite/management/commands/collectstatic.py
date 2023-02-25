@@ -73,6 +73,40 @@ utils.get_files = get_files_patched
 
 
 class ViteStorage(staticfiles_storage.__class__):
+    # XXX when Django 4.2 remove
+    patterns = (
+        (
+            "*.css",
+            (
+                r"""(?P<matched>url\(['"]{0,1}\s*(?P<url>.*?)["']{0,1}\))""",
+                (
+                    r"""(?P<matched>@import\s*["']\s*(?P<url>.*?)["'])""",
+                    """@import url("%(url)s")""",
+                ),
+                (
+                    (
+                        r"(?m)(?P<matched>)^(/\*#[ \t]"
+                        r"(?-i:sourceMappingURL)=(?P<url>.*)[ \t]*\*/)$"
+                    ),
+                    "/*# sourceMappingURL=%(url)s */",
+                ),
+            ),
+        ),
+        (
+            "*.js",
+            (
+                (
+                    r"(?m)(?P<matched>)^(//# (?-i:sourceMappingURL)=(?P<url>.*))$",
+                    "//# sourceMappingURL=%(url)s",
+                ),
+                (
+                    r"""(?P<matched>["'](?P<url>/static/.*?)["'])""",
+                    """\"%(url)s\"""",
+                ),
+            ),
+        ),
+    )
+
     def post_process(self, *args, **kwargs):
         found_files = args[0]
 

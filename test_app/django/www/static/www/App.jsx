@@ -14,7 +14,7 @@ const App = () => {
       onClick={() => console.log('click')}
     >
       <img width="20" src="/static/www/pics/fox.jpg" alt="" />
-      <img width="20" src="static@/www/pics/fox.jpg" alt="" />
+      <img width="20" src="static@www/pics/fox.jpg" alt="" />
       <Button />
       preact!!!!!!
     </div>
