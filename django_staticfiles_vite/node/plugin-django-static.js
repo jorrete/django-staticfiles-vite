@@ -107,6 +107,8 @@ function djangoStatic ({
         ${src}
         `;
       }
+
+      return src.replace(new RegExp(`["']${STATIC_TOKEN}([\\w/.-]+)["']`, 'gm'), `"${base}$1"`);
     },
     handleHotUpdate (ctx) {
       if (ctx.file.endsWith('.html')) {
