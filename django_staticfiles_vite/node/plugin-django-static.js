@@ -2,7 +2,6 @@
 const { resolveId, excludeExtCSS, hasExtension, STATIC_TOKEN, isCSS } = require('./utils');
 
 function djangoStatic ({
-  addDependicies,
   base,
   command,
   paths,
@@ -27,7 +26,6 @@ function djangoStatic ({
               const match = await resolveId.call(this, id, testPaths);
 
               if (match) {
-                addDependicies?.([match.id.split('?')[0]]);
                 return match;
               }
             }
@@ -51,7 +49,6 @@ function djangoStatic ({
               const match = await resolveId.call(this, id, paths);
 
               if (match) {
-                addDependicies?.([match.id.split('?')[0]]);
                 return match;
               }
             }
@@ -121,18 +118,6 @@ function djangoStatic ({
         return [];
       }
     },
-    buildEnd () {
-      addDependicies?.(Array.from(this.getModuleIds())
-        .filter((path) => {
-          return (
-            !path.includes('node_modules') &&
-              path[0] === '/'
-          );
-        })
-        .map((path) => {
-          return path.split('?')[0].replace('\x00', '');
-        }));
-    }
   };
 }
 

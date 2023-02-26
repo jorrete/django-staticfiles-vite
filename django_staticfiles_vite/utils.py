@@ -6,7 +6,7 @@ import signal
 import subprocess
 import sys
 from importlib import import_module
-from json import dumps, loads
+from json import dumps
 from os import environ
 from os.path import dirname, expanduser, join, splitext
 from pathlib import Path
@@ -148,7 +148,6 @@ def vite_serve():
     arguments = dumps(
         {
             "base": VITE_URL,
-            # "paths": paths if settings.DEBUG else [str(settings.STATIC_ROOT)],
             "paths": paths,
             "testPaths": test_paths,
             "port": VITE_PORT,
@@ -177,7 +176,7 @@ def vite_serve():
     )
 
 
-def vite_build(entry, is_css):
+def vite_build(entry, is_css, out_dir=VITE_OUT_DIR):
     paths = apps.get_app_config("django_staticfiles_vite").paths
     test_paths = apps.get_app_config("django_staticfiles_vite").test_paths
     arguments = dumps(
@@ -186,7 +185,7 @@ def vite_build(entry, is_css):
             "base": VITE_URL,
             "entry": entry,
             "format": "es",
-            "outDir": VITE_OUT_DIR,
+            "outDir": out_dir,
             "paths": paths,
             "testPaths": test_paths,
             "context": get_extra_context(),
@@ -197,7 +196,8 @@ def vite_build(entry, is_css):
     env["NODE_PATH"] = join(dirname(pkg_path), "node_modules")
     build_path = join(dirname(__file__), "node", "build.js")
 
-    pipe = subprocess.run(
+    # pipe = subprocess.run(
+    subprocess.run(
         args=[
             "node",
             build_path,
@@ -206,10 +206,10 @@ def vite_build(entry, is_css):
         cwd=settings.ROOT_DIR,
         env=env,
         encoding="utf8",
-        stdout=subprocess.PIPE,
+        # stdout=subprocess.PIPE,
     )
 
-    return loads(pipe.stdout.split("\n")[-1])
+    # return loads(pipe.stdout.split("\n")[-1])
 
 
 def is_path_js(path):

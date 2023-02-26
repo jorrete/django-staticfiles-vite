@@ -1,6 +1,0 @@
-html {
-  background-image: url("/static/www/pics/fox.jpg");
-  background-image: url("static@www/pics/fox.jpg");
-  background-image: url('static@www/pics/fox.jpg');
-  background-image: url(static@www/pics/fox.jpg);
-}

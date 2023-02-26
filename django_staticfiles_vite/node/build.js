@@ -22,15 +22,9 @@ const {
     mkdirSync(dirname(join(outDir, name)), { recursive: true });
   });
 
-  const dependencies = [];
-
-  function addDependicies (deps) {
-    dependencies.push(...deps);
-  }
-
   await build({
     envFile: false,
-    logLevel: 'silent', // since the assets management to avoid inlining is it a hack supress warnings
+    // logLevel: 'silent', // since the assets management to avoid inlining is it a hack supress warnings
     css: {
       postcss: {
         plugins: [
@@ -50,7 +44,6 @@ const {
           base,
           paths,
           testPaths,
-          addDependicies,
           command: 'build'
         }),
         enforce: 'pre'
@@ -108,5 +101,5 @@ const {
     }
   });
 
-  process.stdout.write(JSON.stringify(Array.from(new Set(dependencies))));
+  // process.stdout.write(JSON.stringify(Array.from(new Set(dependencies))));
 })();

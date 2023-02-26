@@ -1,7 +1,6 @@
 import os
-import shutil
 from glob import glob
-from os.path import exists, join
+from os.path import dirname, exists, join
 
 from django.conf import settings
 from django.contrib.staticfiles import utils
@@ -10,12 +9,8 @@ from django.contrib.staticfiles.management.commands.collectstatic import (
     Command as CollectStaticCommand,
 )
 from django.contrib.staticfiles.storage import staticfiles_storage
-from django.core.files import File
-from django.utils._os import safe_join
 
-from ...settings import VITE_IGNORE_EXCLUDE, VITE_OUT_DIR
 from ...utils import (
-    clean_path,
     get_bundle_css_name,
     is_path_css,
     is_path_js,
@@ -129,15 +124,6 @@ class ViteStorage(staticfiles_storage.__class__):
 
         return super().post_process(*args, **kwargs)
 
-    def _open(self, name, mode):
-        name = normalize_extension(name)
-        path = (
-            safe_join(VITE_OUT_DIR, name)
-            if path_is_vite_bunlde(name)
-            else self.path(name)
-        )
-        return File(open(path, mode))
-
 
 class Command(CollectStaticCommand):
     def __init__(self, *args, **kwargs):
@@ -163,103 +149,95 @@ class Command(CollectStaticCommand):
             help="Process js tests",
         )
 
-    def vite_proccess(self):
-        self.vite_files = []
-        vite_deps = set()
-        found_files = {}
-        js_bundle_files = {}
-        css_bundle_files = {}
+    def collect_tests(self):
+        self.log("Vite building qunit tests", level=1)
 
-        if exists(VITE_OUT_DIR):
-            shutil.rmtree(VITE_OUT_DIR)
+        files = {
+            join("tests", file.replace(str(settings.BASE_DIR), "")[1:]): file + "?qunit"
+            for file in glob(
+                join(str(settings.BASE_DIR), "*/tests/**/*.js"), recursive=True
+            )
+        }
+        vite_build(files, False, out_dir=self.storage.location)
+
+    def vite_process_new(self, group_folders=True):
+        groups = {}
+        files = {}
 
         for finder in get_finders():
             for path, storage in finder.list(self.ignore_patterns):
+                if not path_is_vite_bunlde(path):
+                    continue
+
                 # Prefix the relative path if the source storage contains it
                 if getattr(storage, "prefix", None):
                     prefixed_path = join(storage.prefix, path)
                 else:
                     prefixed_path = path
 
-                if prefixed_path not in found_files:
-                    found_files[prefixed_path] = (path, find(prefixed_path))
+                dir = dirname(path) if group_folders else "__all__"
 
-                    if path_is_vite_bunlde(path):
-                        bundle = (
-                            css_bundle_files if is_path_css(path) else js_bundle_files
-                        )
-                        bundle[prefixed_path] = find(prefixed_path)
+                if dir not in groups:
+                    groups[dir] = {
+                        "js": {},
+                        "css": {},
+                    }
 
-        self.log("Vite building css", level=1)
-        deps = vite_build(css_bundle_files, True)
-        for dep in deps:
-            vite_deps.add(dep)
+                bundle = groups[dir]["css"] if is_path_css(path) else groups[dir]["js"]
 
-        self.log("Vite building js", level=1)
-        deps = vite_build(js_bundle_files, False)
-        for dep in deps:
-            vite_deps.add(dep)
+                bundle[prefixed_path] = find(prefixed_path)
+                files[prefixed_path] = storage
 
-        for prefixed_path, (path, filepath) in found_files.items():
-            filepath = clean_path(filepath)
-            if (
-                filepath in vite_deps
-                and not path_is_vite_bunlde(prefixed_path)
-                and prefixed_path not in VITE_IGNORE_EXCLUDE
-            ):
-                self.vite_files.append(prefixed_path)
+        for group in groups.values():
+            if len(group["css"].items()):
+                self.log("Vite building css", level=1)
+                vite_build(group["css"], True, out_dir=self.storage.location)
 
-    def copy_file(self, path, prefixed_path, source_storage):
-        if path_is_vite_bunlde(path):
-            prefixed_path = normalize_extension(prefixed_path)
-            bundle_path = join(VITE_OUT_DIR, prefixed_path)
-            dest_path = self.storage.path(prefixed_path)
-            shutil.copy(bundle_path, dest_path)
+            if len(group["js"].items()):
+                self.log("Vite building js", level=1)
+                vite_build(group["js"], False, out_dir=self.storage.location)
 
-            if is_path_js(prefixed_path):
-                bundle_path_css = get_bundle_css_name(bundle_path)
-                dest_path_css = get_bundle_css_name(dest_path)
-                if exists(bundle_path_css):
-                    shutil.copy(bundle_path_css, dest_path_css)
-        else:
-            # this means that a non native extension that is not being imported
-            # has been collected so ignore it
-            if prefixed_path != normalize_extension(prefixed_path):
-                return
-            super().copy_file(path, prefixed_path, source_storage)
-
-    def copy_vite_chunks(self):
-        pattern = join(VITE_OUT_DIR, "chunk.*")
-        for chunk in glob(pattern):
-            shutil.copy(chunk, self.storage.location)
-
-    def collect_tests(self):
-        self.log("Vite building qunit tests", level=1)
-        bundle_path = join(VITE_OUT_DIR, "tests")
-        dest_path = self.storage.path("tests")
-        if exists(bundle_path):
-            shutil.rmtree(bundle_path)
-        if exists(dest_path):
-            shutil.rmtree(dest_path)
-        collect_test_files()
-        shutil.copytree(bundle_path, dest_path)
-        shutil.copy(join(VITE_OUT_DIR, "qunit.css"), self.storage.path("qunit.css"))
-        shutil.copy(
-            join(VITE_OUT_DIR, "chunk.qunit.js"), self.storage.path("chunk.qunit.js")
-        )
+        if self.post_process and hasattr(self.storage, "post_process"):
+            processor = self.storage.post_process(files, dry_run=self.dry_run)
+            for original_path, processed_path, processed in processor:
+                if isinstance(processed, Exception):
+                    self.stderr.write("Post-processing '%s' failed!" % original_path)
+                    # Add a blank line before the traceback, otherwise it's
+                    # too easy to miss the relevant part of the error message.
+                    self.stderr.write()
+                    raise processed
+                if processed:
+                    self.log(
+                        "Post-processed '%s' as '%s'" % (original_path, processed_path),
+                        level=2,
+                    )
+                    self.post_processed_files.append(original_path)
+                else:
+                    self.log("Skipped post-processing '%s'" % original_path)
 
     def handle(self, **options):
         self.set_options(**options)
         use_vite = options["vite"]
         process_tests = options["tests"]
 
-        if use_vite:
-            self.vite_proccess()
-            options["ignore_patterns"].extend(self.vite_files)
+        if self.clear:
+            self.clear_dir("")
+        options["clear"] = False
 
+        if use_vite:
+            self.vite_process_new()
+            hashed_files_vite = self.storage.hashed_files
+            options["ignore_patterns"].extend(
+                [
+                    "*.vite.*",
+                    "*vite/*",
+                ]
+            )
         super().handle(**options)
 
         if use_vite:
-            self.copy_vite_chunks()
+            self.storage.hashed_files.update(hashed_files_vite)
+            self.storage.save_manifest()
+
             if process_tests:
                 self.collect_tests()

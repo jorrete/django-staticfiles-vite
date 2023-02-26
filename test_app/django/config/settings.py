@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     "channels",
     "macros",
     "www",
-    "tests",
 ]
 
 MIDDLEWARE = [
@@ -131,7 +130,6 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
     ("upload", BASE_DIR / "static_upload"),
     ("download", BASE_DIR / "static_download"),
-    BASE_DIR / "tests/test_suite",
 ]
 STATIC_ROOT = BASE_DIR / "../.django" / "collectedstatic"
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
