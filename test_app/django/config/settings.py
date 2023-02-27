@@ -29,7 +29,7 @@ ALLOWED_HOSTS = [] if DEBUG else ["*"]
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
+    # "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -146,3 +146,19 @@ VITE_IGNORE_EXCLUDE = [
 VITE_TSCONFIG_PATH = "/tmp/tsconfig.django.json"
 VITE_OUT_DIR = "/tmp/django_vite"
 VITE_CONTEXT_FUNCTION = "config.context.my_context"
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+#         },
+#     },
+# }

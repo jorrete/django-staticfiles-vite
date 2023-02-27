@@ -6,6 +6,7 @@ export default function App() {
       className={style.App}
     >
       foo
+      <img src="static@fox.png" alt="" />
     </div>
   );
 }

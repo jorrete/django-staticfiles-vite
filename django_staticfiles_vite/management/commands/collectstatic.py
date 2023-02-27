@@ -197,45 +197,56 @@ class Command(CollectStaticCommand):
                 self.log("Vite building js", level=1)
                 vite_build(group["js"], False, out_dir=self.storage.location)
 
-        if self.post_process and hasattr(self.storage, "post_process"):
-            processor = self.storage.post_process(files, dry_run=self.dry_run)
-            for original_path, processed_path, processed in processor:
-                if isinstance(processed, Exception):
-                    self.stderr.write("Post-processing '%s' failed!" % original_path)
-                    # Add a blank line before the traceback, otherwise it's
-                    # too easy to miss the relevant part of the error message.
-                    self.stderr.write()
-                    raise processed
-                if processed:
-                    self.log(
-                        "Post-processed '%s' as '%s'" % (original_path, processed_path),
-                        level=2,
-                    )
-                    self.post_processed_files.append(original_path)
-                else:
-                    self.log("Skipped post-processing '%s'" % original_path)
+        return files
 
     def handle(self, **options):
         self.set_options(**options)
         use_vite = options["vite"]
+        # use_vite = False
         process_tests = options["tests"]
 
         if self.clear:
             self.clear_dir("")
         options["clear"] = False
 
-        if use_vite:
-            self.vite_process_new()
-            hashed_files_vite = self.storage.hashed_files
-            options["ignore_patterns"].extend(
-                [
-                    "*.vite.*",
-                    "*vite/*",
-                ]
-            )
-        super().handle(**options)
+        options["ignore_patterns"].extend(
+            [
+                "*.vite.*",
+                "*vite/*",
+            ]
+        )
 
         if use_vite:
+            files = self.vite_process_new()
+
+        super().handle(**options)
+
+        hashed_files_initial = self.storage.hashed_files
+
+        if use_vite:
+            if self.post_process and hasattr(self.storage, "post_process"):
+                processor = self.storage.post_process(files, dry_run=self.dry_run)
+                for original_path, processed_path, processed in processor:
+                    if isinstance(processed, Exception):
+                        self.stderr.write(
+                            "Post-processing '%s' failed!" % original_path
+                        )
+                        # Add a blank line before the traceback, otherwise it's
+                        # too easy to miss the relevant part of the error message.
+                        self.stderr.write()
+                        raise processed
+                    if processed:
+                        self.log(
+                            "Post-processed '%s' as '%s'"
+                            % (original_path, processed_path),
+                            level=2,
+                        )
+                        self.post_processed_files.append(original_path)
+                    else:
+                        self.log("Skipped post-processing '%s'" % original_path)
+
+            hashed_files_vite = self.storage.hashed_files
+            self.storage.hashed_files.update(hashed_files_initial)
             self.storage.hashed_files.update(hashed_files_vite)
             self.storage.save_manifest()
 
