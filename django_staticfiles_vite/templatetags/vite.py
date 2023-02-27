@@ -117,7 +117,7 @@ def vite_link(name, type, **kwargs):
     return mark_safe(
         "\n".join(
             [
-                f'<link src="{path}" type="{type}" />',
+                f'<link href="{path}" type="{type}" />',
             ]
         )
     )
