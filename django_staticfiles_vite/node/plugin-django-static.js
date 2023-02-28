@@ -11,6 +11,7 @@ function djangoStatic ({
   let config;
 
   return {
+    context,
     name: 'django-static',
     config: () => ({
       publicDir: false,
