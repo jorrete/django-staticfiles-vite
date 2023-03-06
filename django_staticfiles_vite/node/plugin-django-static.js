@@ -15,7 +15,6 @@ function djangoStatic ({
     name: 'django-static',
     config: () => ({
       publicDir: false,
-      root: process.cwd(),
       clearScreen: false,
       appType: 'custom', // don't include html middlewares
       resolve: {
