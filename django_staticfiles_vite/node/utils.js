@@ -1,4 +1,5 @@
 const { extname, join } = require('path');
+const { existsSync, readFileSync } = require('fs');
 
 const STATIC_TOKEN = 'static@';
 
@@ -16,6 +17,26 @@ async function resolveId (id, paths) {
 
     if (match) {
       return match;
+    }
+  }
+
+  return null;
+}
+
+function resolveStatic(id, paths) {
+  for (let index = 0; index < paths.length; index++) {
+    const [alias, path] = paths[index];
+
+    const name = (
+      id.startsWith(`${alias}/`)
+        ? id.replace(`${alias}/`, '')
+        : id
+    );
+
+    const filepath = join(path, name);
+
+    if (existsSync(filepath)) {
+      return readFileSync(filepath);
     }
   }
 
@@ -76,6 +97,7 @@ const excludeExtCSS = [
 ];
 
 module.exports = {
+  resolveStatic,
   resolveId,
   hasExtension,
   excludeExtCSS,

@@ -1,5 +1,5 @@
 /* eslint-disable no-unexpected-multiline */
-const { resolveId, excludeExtCSS, hasExtension, STATIC_TOKEN, isCSS } = require('./utils');
+const { resolveId, resolveStatic, excludeExtCSS, hasExtension, STATIC_TOKEN, isCSS } = require('./utils');
 
 function djangoStatic ({
   base,
@@ -58,6 +58,24 @@ function djangoStatic ({
     }),
     configResolved(resolvedConfig) {
       config = resolvedConfig;
+    },
+    configureServer(server) {
+      const check = new RegExp(`^(?:${STATIC_TOKEN}|${base})(.*)`);
+
+      return () => {
+        server.middlewares.use((req, res, next) => {
+          if (check.test(req.url)) {
+            res.end(
+              resolveStatic(
+                req.url.replace(STATIC_TOKEN, '').replace(base, ''),
+                paths,
+              ),
+            );
+          }
+
+          return next();
+        });
+      };
     },
     resolveId(id) {
       if (id === 'qunit') {
