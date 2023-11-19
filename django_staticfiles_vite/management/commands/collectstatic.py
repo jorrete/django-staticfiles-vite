@@ -119,6 +119,7 @@ class ViteStorage(staticfiles_storage.__class__):
                     prefixed_path_css = get_bundle_css_name(
                         normalize_extension(prefixed_path)
                     )
+
                     if exists(self.path(prefixed_path_css)):
                         found_files[prefixed_path_css] = (self, prefixed_path_css)
 
@@ -209,12 +210,10 @@ class Command(CollectStaticCommand):
             self.clear_dir("")
         options["clear"] = False
 
-        options["ignore_patterns"].extend(
-            [
-                "*.vite.*",
-                "*vite/*",
-            ]
-        )
+        options["ignore_patterns"].extend([
+            "*.vite.*",
+            "*vite/*",
+        ])
 
         if use_vite:
             files = self.vite_process_new()

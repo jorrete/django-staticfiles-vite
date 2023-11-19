@@ -1,10 +1,9 @@
-/* eslint-disable node/no-missing-require */
-const djangoStatic = require('./plugin-django-static');
-const { build } = require('vite');
-const { STATIC_TOKEN, normalizeCSS, normalizeJS } = require('./utils');
-const { mkdirSync } = require('fs');
-const { join, dirname } = require('path');
-const replace = require('postcss-replace');
+import djangoStatic from './plugin-django-static.js';
+import replace from 'postcss-replace';
+import { STATIC_TOKEN, normalizeJS, isCSS } from './utils.js';
+import { build } from 'vite';
+import { join, dirname } from 'path';
+import { mkdirSync } from 'fs';
 
 const {
   base,
@@ -62,32 +61,15 @@ const {
               return name;
             }
 
-            const [alias, path] = [].concat(paths, testPaths).find(([alias, path]) => {
-              const relativePath = path.replace(process.cwd(), '').slice(1);
-
-              if (name.startsWith(relativePath + '/')) {
-                return [alias, relativePath];
-              }
-
-              return null;
-            }) || [null, null];
-
-            if (!path) {
+            if (buildCSS) {
               return name;
             }
 
-            const finalName = join(
-              alias,
-              normalizeCSS(
-                name.replace(path.replace(process.cwd(), '').slice(1), '').slice(1)
-              )
-            );
-
-            if (buildCSS) {
-              return finalName;
+            if (!buildCSS && isCSS(name)) {
+              return name.replace('.css', '.js.css');
             }
 
-            return (finalName.includes('/tests/') ? 'tests/' : '') + finalName.replace('.css', '.js.css');
+            return name;
           }
         }
       },

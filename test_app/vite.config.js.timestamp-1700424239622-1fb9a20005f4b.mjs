@@ -1,0 +1,18 @@
+// vite.config.js
+import { defineConfig } from 'file:///home/jorro/Development/python/django-staticfiles-vite/test_app/node_modules/vite/dist/node/index.js';
+import preact from 'file:///home/jorro/Development/python/django-staticfiles-vite/test_app/node_modules/@preact/preset-vite/dist/esm/index.mjs';
+var vite_config_default = defineConfig({
+  plugins: [
+    preact()
+  ]
+  // build: {
+  //   minify: false,
+  // },
+  // esbuild: {
+  //   drop: ['console', 'debugger'],
+  // },
+});
+export {
+  vite_config_default as default
+};
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsidml0ZS5jb25maWcuanMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImNvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9kaXJuYW1lID0gXCIvaG9tZS9qb3Jyby9EZXZlbG9wbWVudC9weXRob24vZGphbmdvLXN0YXRpY2ZpbGVzLXZpdGUvdGVzdF9hcHBcIjtjb25zdCBfX3ZpdGVfaW5qZWN0ZWRfb3JpZ2luYWxfZmlsZW5hbWUgPSBcIi9ob21lL2pvcnJvL0RldmVsb3BtZW50L3B5dGhvbi9kamFuZ28tc3RhdGljZmlsZXMtdml0ZS90ZXN0X2FwcC92aXRlLmNvbmZpZy5qc1wiO2NvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9pbXBvcnRfbWV0YV91cmwgPSBcImZpbGU6Ly8vaG9tZS9qb3Jyby9EZXZlbG9wbWVudC9weXRob24vZGphbmdvLXN0YXRpY2ZpbGVzLXZpdGUvdGVzdF9hcHAvdml0ZS5jb25maWcuanNcIjtpbXBvcnQgeyBkZWZpbmVDb25maWcgfSBmcm9tICd2aXRlJztcbmltcG9ydCBwcmVhY3QgZnJvbSAnQHByZWFjdC9wcmVzZXQtdml0ZSc7XG5cbmV4cG9ydCBkZWZhdWx0IGRlZmluZUNvbmZpZyh7XG4gIHBsdWdpbnM6IFtcbiAgICBwcmVhY3QoKSxcbiAgXSxcbiAgLy8gYnVpbGQ6IHtcbiAgLy8gICBtaW5pZnk6IGZhbHNlLFxuICAvLyB9LFxuICAvLyBlc2J1aWxkOiB7XG4gIC8vICAgZHJvcDogWydjb25zb2xlJywgJ2RlYnVnZ2VyJ10sXG4gIC8vIH0sXG59KTtcbiJdLAogICJtYXBwaW5ncyI6ICI7QUFBK1csU0FBUyxvQkFBb0I7QUFDNVksT0FBTyxZQUFZO0FBRW5CLElBQU8sc0JBQVEsYUFBYTtBQUFBLEVBQzFCLFNBQVM7QUFBQSxJQUNQLE9BQU87QUFBQSxFQUNUO0FBQUE7QUFBQTtBQUFBO0FBQUE7QUFBQTtBQUFBO0FBT0YsQ0FBQzsiLAogICJuYW1lcyI6IFtdCn0K

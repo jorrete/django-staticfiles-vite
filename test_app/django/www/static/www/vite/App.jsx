@@ -5,8 +5,15 @@ export default function App() {
     <div
       className={style.App}
     >
-      foo
-      <img src="static@fox.png" alt="" />
+      <div>
+        foo
+      </div>
+      <div>
+        <img src="static@fox.png" alt="" />
+      </div>
+      <div>
+        <a href="/qunit/">qunit</a>
+      </div>
     </div>
   );
 }

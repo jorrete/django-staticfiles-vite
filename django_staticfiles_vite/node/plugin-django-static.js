@@ -1,7 +1,13 @@
-/* eslint-disable no-unexpected-multiline */
-const { resolveId, resolveStatic, excludeExtCSS, hasExtension, STATIC_TOKEN, isCSS } = require('./utils');
+import {
+  STATIC_TOKEN,
+  excludeExtCSS,
+  hasExtension,
+  isCSS,
+  resolveId,
+  resolveStatic,
+} from './utils.js';
 
-function djangoStatic ({
+export default function djangoStatic ({
   base,
   command,
   paths,
@@ -138,5 +144,3 @@ function djangoStatic ({
     },
   };
 }
-
-module.exports = djangoStatic;

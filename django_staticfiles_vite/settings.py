@@ -18,7 +18,7 @@ VITE_TSCONFIG_EXTENDS_DEFAULT = {
     "compilerOptions": {
         "paths": {},
     },
-    "include": [],
+    # "include": [],
 }
 VITE_IGNORE_EXCLUDE_DEFAULT = []
 VITE_OUT_DIR_DEFAULT = join(tempfile.mkdtemp())

@@ -1,10 +1,19 @@
 {
   "name": "django-staticfiles-vite",
   "version": "0.3.3",
+  "type": "module",
   "engines": {
     "node": ">=8.3.0"
   },
+  "peerDependencies": {
+    "postcss-replace": "^2.0.1",
+    "sass": "^1.69.5",
+    "vite": "^5.0.0"
+  },
   "devDependencies": {
+    "postcss-replace": "^2.0.1",
+    "sass": "^1.69.5",
+    "vite": "^5.0.0",
     "eslint": "^8.29.0",
     "eslint_d": "^12.2.1",
     "eslint-define-config": "^1.12.0",

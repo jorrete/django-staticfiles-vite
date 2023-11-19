@@ -1,5 +1,5 @@
-const { extname, join } = require('path');
-const { existsSync, readFileSync } = require('fs');
+import { extname, join } from 'path';
+import { existsSync, readFileSync } from 'fs';
 
 const STATIC_TOKEN = 'static@';
 
@@ -96,7 +96,7 @@ const excludeExtCSS = [
   'otf'
 ];
 
-module.exports = {
+export {
   resolveStatic,
   resolveId,
   hasExtension,

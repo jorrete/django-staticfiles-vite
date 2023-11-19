@@ -67,12 +67,12 @@ def build_prefix_path(path):
 
 def write_tsconfig(paths, test_paths):
     tsconfig = VITE_TSCONFIG_EXTENDS
-    tsconfig_include = tsconfig.get("compilerOptions", {}).get("include", [])
+    # tsconfig_include = tsconfig.get("compilerOptions", {}).get("include", [])
     tsconfig_paths = tsconfig.get("compilerOptions", {}).get("paths", {})
 
-    # static
-    for _, path in paths:
-        tsconfig_include.append(f"{path}/**/*")
+    # # static
+    # for _, path in paths:
+    #     tsconfig_include.append(f"{path}/**/*")
 
     # paths with alias must be forced to be first
     for alias, path in paths:
@@ -90,9 +90,9 @@ def write_tsconfig(paths, test_paths):
                 tsconfig_paths["static@*"] = []
             tsconfig_paths["static@*"].append(f"{path}/*")
 
-    # tests
-    for _, path in test_paths:
-        tsconfig_include.append(f"{path}/**/*")
+    # # tests
+    # for _, path in test_paths:
+    #     tsconfig_include.append(f"{path}/**/*")
 
     # paths with alias must be forced to be first
     for alias, path in test_paths:
@@ -105,7 +105,7 @@ def write_tsconfig(paths, test_paths):
                     "compilerOptions": {
                         "paths": tsconfig_paths,
                     },
-                    "include": tsconfig_include,
+                    # "include": tsconfig_include,
                 },
                 indent=4,
             )
@@ -145,15 +145,13 @@ def vite_serve():
         else [["", str(settings.STATIC_ROOT)]]
     )
 
-    arguments = dumps(
-        {
-            "base": VITE_URL,
-            "paths": paths,
-            "testPaths": test_paths,
-            "port": VITE_PORT,
-            "context": get_extra_context(),
-        }
-    )
+    arguments = dumps({
+        "base": VITE_URL,
+        "paths": paths,
+        "testPaths": test_paths,
+        "port": VITE_PORT,
+        "context": get_extra_context(),
+    })
 
     if VITE_TSCONFIG_PATH:
         write_tsconfig(paths, test_paths)
@@ -179,18 +177,16 @@ def vite_serve():
 def vite_build(entry, is_css, out_dir=VITE_OUT_DIR):
     paths = apps.get_app_config("django_staticfiles_vite").paths
     test_paths = apps.get_app_config("django_staticfiles_vite").test_paths
-    arguments = dumps(
-        {
-            "buildCSS": is_css,
-            "base": VITE_URL,
-            "entry": entry,
-            "format": "es",
-            "outDir": out_dir,
-            "paths": paths,
-            "testPaths": test_paths,
-            "context": get_extra_context(),
-        }
-    )
+    arguments = dumps({
+        "buildCSS": is_css,
+        "base": VITE_URL,
+        "entry": entry,
+        "format": "es",
+        "outDir": out_dir,
+        "paths": paths,
+        "testPaths": test_paths,
+        "context": get_extra_context(),
+    })
     env = environ.copy()
     pkg_path = get_pgk_json(settings.BASE_DIR)
     env["NODE_PATH"] = join(dirname(pkg_path), "node_modules")

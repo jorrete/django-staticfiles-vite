@@ -1,8 +1,8 @@
 /* eslint-disable node/no-missing-require */
-const { resolve } = require('path');
-const { createServer } = require('vite');
-const djangoStatic = require('./plugin-django-static');
-const replace = require('postcss-replace');
+import { resolve } from 'path';
+import { createServer } from 'vite';
+import djangoStatic from './plugin-django-static.js';
+import replace from 'postcss-replace';
 
 const {
   paths,

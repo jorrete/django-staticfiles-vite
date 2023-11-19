@@ -7,7 +7,7 @@ from django_staticfiles_vite.tests.qunit import live, playwright, selenium
 
 
 @override_settings(DEBUG=True, ALLOWED_HOSTS=[])
-class PlayStandalineTestCase(
+class PlayStandaloneTestCase(
     live.QUnitLiveServerTestCase,
     playwright.QUitPlaywrightTestCase,
     tests.ViteLiveServerTestCase,
@@ -19,7 +19,7 @@ class PlayStandalineTestCase(
 
 
 @override_settings(DEBUG=False, ALLOWED_HOSTS=["*"])
-class PlayStandalineDeployTestCase(
+class PlayStandaloneDeployTestCase(
     live.QUnitLiveServerTestCase,
     playwright.QUitPlaywrightTestCase,
     tests.ViteLiveServerTestCase,

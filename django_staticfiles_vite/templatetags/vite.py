@@ -43,22 +43,17 @@ def vite_script(name, **kwargs):
     path = vite_static(name)
 
     return mark_safe(
-        "\n".join(
-            [
-                (vite_hrm() if hrm and settings.DEBUG else ""),
-                (
-                    f'<script src="{path}"'
-                    f' type="module"{" defer" if defer else ""}></script>'
-                ),
-                (
-                    "<link"
-                    f' href="{vite_static(get_bundle_css_name(normalize_extension(name)))}"'
-                    ' rel="stylesheet">'
-                    if style
-                    else ""
-                ),
-            ]
-        )
+        "\n".join([
+            (vite_hrm() if hrm and settings.DEBUG else ""),
+            f'<script src="{path}" type="module"{" defer" if defer else ""}></script>',
+            (
+                "<link"
+                f' href="{vite_static(get_bundle_css_name(normalize_extension(name)))}"'
+                ' rel="stylesheet">'
+                if style
+                else ""
+            ),
+        ])
     )
 
 
@@ -86,20 +81,18 @@ def vite_qunit(name, **kwargs):
     )
 
     return mark_safe(
-        "\n".join(
-            [
-                (vite_hrm() if settings.DEBUG else ""),
-                (
-                    ""
-                    if settings.DEBUG
-                    else (
-                        f'<link href="{settings.STATIC_URL[:-1]}/qunit.css"'
-                        ' rel="stylesheet">'
-                    )
-                ),
-                f'<script src="{path}" type="module" defer></script>',
-            ]
-        )
+        "\n".join([
+            (vite_hrm() if settings.DEBUG else ""),
+            (
+                ""
+                if settings.DEBUG
+                else (
+                    f'<link href="{settings.STATIC_URL[:-1]}/qunit.js.css"'
+                    ' rel="stylesheet">'
+                )
+            ),
+            f'<script src="{path}" type="module" defer></script>',
+        ])
     )
 
 
@@ -115,9 +108,7 @@ def vite_link(name, type, **kwargs):
     path = vite_static(name)
 
     return mark_safe(
-        "\n".join(
-            [
-                f'<link href="{path}" type="{type}" />',
-            ]
-        )
+        "\n".join([
+            f'<link href="{path}" type="{type}" />',
+        ])
     )
