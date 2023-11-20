@@ -1,3 +1,4 @@
 recursive-include django_staticfiles_vite *.js
 recursive-include django_staticfiles_vite *.json
 recursive-include django_staticfiles_vite *.html
+include package.json

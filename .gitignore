@@ -7,6 +7,8 @@ build
 *.egg-info
 *.egg
 .coverage
+.mypy_cache
+.ropeproject
 .tox
 .eggs
 TODO.md
