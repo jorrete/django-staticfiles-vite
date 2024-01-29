@@ -220,6 +220,7 @@ class Command(CollectStaticCommand):
 
         super().handle(**options)
 
+        # TODO when no hashed_files breaks when storage has no hashed files
         hashed_files_initial = self.storage.hashed_files
 
         if use_vite:

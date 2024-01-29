@@ -23,8 +23,6 @@ setup(
             "playwright",
             "psutil",
             "markdown",
-            "selenium",
-            "webdriver_manager",
         ]
     },
     zip_safe=False,
