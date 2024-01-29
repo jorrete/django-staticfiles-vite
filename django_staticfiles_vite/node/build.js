@@ -61,12 +61,17 @@ const {
               return name;
             }
 
+            if (name === 'qunit.css') {
+              return name;
+            }
+
             if (buildCSS) {
               return name;
             }
 
             if (!buildCSS && isCSS(name)) {
-              return name.replace('.css', '.js.css');
+              const relativePath = dirname(Object.keys(entry)[0]);
+              return join(relativePath, name.replace('.css', '.js.css'));
             }
 
             return name;

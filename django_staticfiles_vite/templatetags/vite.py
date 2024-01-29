@@ -15,9 +15,7 @@ def vite_static(name, **kwargs):
         name = normalize_extension(name)
         return static(name)
 
-    return (
-        f"http://localhost:{VITE_PORT}{'' if name[0] == '/' else settings.STATIC_URL}{name}"
-    )
+    return f"http://localhost:{VITE_PORT}{'' if name[0] == '/' else settings.STATIC_URL}{name}"
 
 
 @register.simple_tag
@@ -87,7 +85,7 @@ def vite_qunit(name, **kwargs):
                 ""
                 if settings.DEBUG
                 else (
-                    f'<link href="{settings.STATIC_URL[:-1]}/qunit.js.css"'
+                    f'<link href="{settings.STATIC_URL[:-1]}/qunit.css"'
                     ' rel="stylesheet">'
                 )
             ),

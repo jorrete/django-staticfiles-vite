@@ -221,7 +221,9 @@ class Command(CollectStaticCommand):
         super().handle(**options)
 
         # TODO when no hashed_files breaks when storage has no hashed files
-        hashed_files_initial = self.storage.hashed_files
+        hashed_files_initial = (
+            self.storage.hashed_files if hasattr(self.storage, "hashed_files") else None
+        )
 
         if use_vite:
             if self.post_process and hasattr(self.storage, "post_process"):
@@ -245,10 +247,11 @@ class Command(CollectStaticCommand):
                     else:
                         self.log("Skipped post-processing '%s'" % original_path)
 
-            hashed_files_vite = self.storage.hashed_files
-            self.storage.hashed_files.update(hashed_files_initial)
-            self.storage.hashed_files.update(hashed_files_vite)
-            self.storage.save_manifest()
+            if hashed_files_initial:
+                hashed_files_vite = self.storage.hashed_files
+                self.storage.hashed_files.update(hashed_files_initial)
+                self.storage.hashed_files.update(hashed_files_vite)
+                self.storage.save_manifest()
 
             if process_tests:
                 self.collect_tests()

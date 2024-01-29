@@ -11,14 +11,17 @@
     "vite": "^5.0.0"
   },
   "devDependencies": {
-    "postcss-replace": "^2.0.1",
-    "sass": "^1.69.5",
-    "vite": "^5.0.0",
-    "eslint": "^8.29.0",
-    "eslint_d": "^12.2.1",
-    "eslint-define-config": "^1.12.0",
-    "eslint-plugin-import": "^2.26.0",
+    "eslint": "^8.56.0",
+    "eslint_d": "^13.1.2",
+    "eslint-define-config": "^2.1.0",
+    "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-regexp": "^1.11.0"
+    "eslint-plugin-regexp": "^2.2.0",
+    "postcss-replace": "^2.0.1",
+    "sass": "^1.70.0",
+    "vite": "^5.0.12"
+  },
+  "dependencies": {
+    "npm-check-updates": "^16.14.14"
   }
 }

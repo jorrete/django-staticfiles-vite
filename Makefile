@@ -24,7 +24,8 @@ install:
 
 collectstatic:
 	source ${VENV_PATH}/bin/activate
-	${DJANGO_PATH}/manage.py collectstatic --clear --noinput --vite
+	export DJANGO_DEBUG=false
+	${DJANGO_PATH}/manage.py collectstatic --clear --noinput --vite --tests
 
 dev:
 	source ${VENV_PATH}/bin/activate
